@@ -1,0 +1,36 @@
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+  <div class="mb-10 text-center md:text-left">
+    <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Nuestros Laboratorios</h2>
+    <p class="mt-2 text-lg text-slate-500">Espacios equipados con tecnología de última generación</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    @for (lab of laboratorios(); track lab.id) {
+      <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow relative flex flex-col">
+
+        <div class="absolute top-4 right-4 bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm z-10">
+          {{ lab.estado }}
+        </div>
+
+        <div class="h-48 w-full bg-slate-200 overflow-hidden relative">
+          <img [src]="lab.imagen" [alt]="lab.nombre" class="w-full h-full object-cover">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent"></div>
+        </div>
+
+        <div class="p-6 flex flex-col flex-grow">
+          <h3 class="text-xl font-bold text-slate-900 mb-3">{{ lab.nombre }}</h3>
+
+          <div class="space-y-1 mb-6 text-sm text-slate-500 flex-grow">
+            <p>{{ lab.ubicacion }}</p>
+            <p>Capacidad: {{ lab.capacidad }} estudiantes</p>
+            <p>Equipos: {{ lab.equipos }} disponibles</p>
+          </div>
+
+          <button class="w-full bg-blue-50 text-blue-600 font-semibold py-2.5 rounded-xl hover:bg-blue-100 transition-colors focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            Reservar
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+</section>

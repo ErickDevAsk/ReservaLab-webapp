@@ -1,0 +1,41 @@
+<main class="min-h-screen bg-slate-50">
+
+  <app-navbar></app-navbar>
+
+<main class="min-h-screen bg-white">
+
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24 flex flex-col lg:flex-row items-center gap-12 border-b border-slate-100">
+
+    <div class="lg:w-1/2 flex flex-col items-start text-left">
+      <div class="px-4 py-1.5 mb-6 text-sm font-medium text-blue-600 bg-blue-50 rounded-full">
+        Solución de Gestión de Recursos Institucionales
+      </div>
+
+      <h1 class="mb-6 text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight">
+        Gestión Inteligente de <br/>
+        <span class="text-blue-600">Laboratorios Universitarios</span>
+      </h1>
+
+      <p class="mb-10 text-xl text-slate-500 max-w-lg leading-relaxed">
+        Optimiza el préstamo de equipos, administra reservas y maximiza el uso de tus recursos académicos con ReservaLab.
+      </p>
+
+      <div class="flex flex-col sm:flex-row w-full sm:w-auto gap-4">
+        <button class="w-full sm:w-auto px-8 py-4 font-semibold text-white bg-blue-600 rounded-xl hover:bg-blue-700 transition-colors shadow-md text-lg flex items-center justify-center gap-2">
+          Comenzar Gratis
+          <span>&rarr;</span>
+        </button>
+        <button class="w-full sm:w-auto px-8 py-4 font-semibold text-blue-600 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors shadow-sm text-lg">
+          Iniciar Sesión
+        </button>
+      </div>
+    </div>
+
+    <div class="lg:w-1/2 w-full">
+      <img src="https://images.unsplash.com/photo-1581092335397-9583eb92d232?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+           alt="Laboratorio Universitario"
+           class="w-full h-auto object-cover rounded-3xl shadow-xl">
+    </div>
+  </section>
+
+  <app-lab-grid></app-lab-grid>
