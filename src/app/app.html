@@ -1,7 +1,36 @@
-<div style="background: #003b5c; color: white; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: sans-serif;">
-  <h1>Reservalab Frontend</h1>
-  <p>Versión del CLI: 21.1.4 | Estado: <b>Desplegado</b></p>
-  <div style="margin-top: 20px; border: 1px solid #00b5e2; padding: 10px; border-radius: 8px;">
-    ¡Hola Mundo!
+<div class="login-container">
+  <div class="login-card">
+    <div class="logo">
+      <div class="logo-icon">RL</div> 
+      <h2>ReservaLab</h2>
+    </div>
+
+    <h1>Iniciar Sesión</h1>
+    <p>¿No tienes una cuenta? <a href="#">Regístrate aquí</a></p>
+
+    <form>
+      <div class="input-group">
+        <label>Correo Electrónico</label>
+        <div class="input-with-icon">
+          <i class="bi bi-envelope"></i>
+          <input type="email" placeholder="tu@universidad.edu">
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Contraseña</label>
+        <div class="input-with-icon">
+          <i class="bi bi-lock"></i>
+          <input type="password" placeholder="Mínimo 8 caracteres">
+        </div>
+      </div>
+
+      <div class="options">
+        <label><input type="checkbox"> Recordarme</label>
+        <a href="#">¿Olvidaste tu contraseña?</a>
+      </div>
+
+      <button type="submit" class="btn-primary">Iniciar Sesión</button>
+    </form>
   </div>
 </div>
