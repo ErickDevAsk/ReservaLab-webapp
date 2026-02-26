@@ -8,12 +8,12 @@
     <h1>Iniciar Sesión</h1>
     <p>¿No tienes una cuenta? <a href="#">Regístrate aquí</a></p>
 
-    <form>
+    <form (submit)="$event.preventDefault()">
       <div class="input-group">
-        <label>Correo Electrónico</label>
+        <label>Correo o Usuario</label>
         <div class="input-with-icon">
           <i class="bi bi-envelope"></i>
-          <input type="email" placeholder="tu@universidad.edu">
+          <input type="text" name="username" [(ngModel)]="loginData.username" placeholder="admin@uni.edu">
         </div>
       </div>
 
@@ -21,7 +21,7 @@
         <label>Contraseña</label>
         <div class="input-with-icon">
           <i class="bi bi-lock"></i>
-          <input type="password" placeholder="Mínimo 8 caracteres">
+          <input type="password" name="password" [(ngModel)]="loginData.password" placeholder="Tu contraseña">
         </div>
       </div>
 
@@ -30,7 +30,7 @@
         <a href="#">¿Olvidaste tu contraseña?</a>
       </div>
 
-      <button type="submit" class="btn-primary">Iniciar Sesión</button>
+      <button type="button" (click)="onLogin()" class="btn-primary">Iniciar Sesión</button>
     </form>
   </div>
 </div>
