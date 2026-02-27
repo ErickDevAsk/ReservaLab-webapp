@@ -36,6 +36,7 @@
     </header>
 
     <div id="dashboard-content">
+      <!-- Sección de resumen -->
       <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
         <app-summary-card 
           title="Reservas Activas" 
@@ -61,11 +62,13 @@
           iconColorClass="text-orange-500" 
         />
       </section>
+
+      <!-- Sección de próximas reservas -->
       <section class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden mb-10">
         <div class="p-6 border-b border-slate-100 flex justify-between items-center">
           <h2 class="text-xl font-bold text-slate-900">Próximas Reservas</h2>
           <a href="#" class="text-blue-600 hover:text-blue-700 text-sm font-semibold flex items-center gap-1 transition-colors">
-            Ver todas > <i class="fas fa-chevron-right text-xs"></i>
+            Ver todas <i class="fas fa-chevron-right text-xs"></i>
           </a>
         </div>
 
@@ -90,6 +93,43 @@
             </div>
           } @empty {
             <div class="p-10 text-center text-slate-500">No tienes reservas próximas.</div>
+          }
+        </div>
+      </section>
+
+      <!-- Sección de préstamos actuales -->
+      <section class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden mb-10">
+        <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+          <h2 class="text-xl font-bold text-slate-900">Mis Préstamos Actuales</h2>
+          <a href="#" class="text-blue-600 hover:text-blue-700 text-sm font-semibold flex items-center gap-1 transition-colors">
+            Ver inventario <i class="fas fa-chevron-right text-xs"></i>
+          </a>
+        </div>
+
+        <div class="divide-y divide-slate-100">
+          @for (item of prestamosActuales(); track item.id) {
+            <div class="p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:bg-slate-50/50 transition-colors">
+              <div class="space-y-1">
+                <h4 class="font-bold text-slate-900 text-lg">{{ item.equipo }}</h4>
+                <p class="text-sm text-slate-500">Código: <span class="font-mono">{{ item.codigo }}</span></p>
+                <p class="text-xs text-slate-400 italic">Vence: {{ item.vencimiento }}</p>
+              </div>
+              
+              <div class="flex items-center gap-3">
+                <button 
+                  (click)="devolverEquipo(item.id)"
+                  class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl text-sm font-bold shadow-md shadow-blue-100 transition-all active:scale-95">
+                  Devolver
+                </button>
+                <button 
+                  (click)="reportarIncidencia(item.id)"
+                  class="border border-slate-200 text-slate-700 px-6 py-2 rounded-xl text-sm font-bold hover:bg-white hover:border-red-200 hover:text-red-600 transition-all active:scale-95">
+                  Reportar
+                </button>
+              </div>
+            </div>
+          } @empty {
+            <div class="p-10 text-center text-slate-500">No tienes préstamos activos en este momento.</div>
           }
         </div>
       </section>
