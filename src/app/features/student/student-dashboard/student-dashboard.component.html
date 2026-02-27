@@ -41,7 +41,7 @@
         <app-summary-card 
           title="Reservas Activas" 
           value="3"
-          icon="fas fa-calendar-alt" 
+          icon="calendar" 
           iconBgClass="bg-blue-50" 
           iconColorClass="text-blue-500" 
         />
@@ -49,7 +49,7 @@
         <app-summary-card 
           title="Préstamos Vigentes" 
           value="2" 
-          icon="fas fa-box" 
+          icon="package" 
           iconBgClass="bg-green-50" 
           iconColorClass="text-green-500"
         />
@@ -57,7 +57,7 @@
         <app-summary-card 
           title="Horas Reservadas (mes)" 
           value="12h" 
-          icon="fas fa-clock" 
+          icon="clock" 
           iconBgClass="bg-orange-50" 
           iconColorClass="text-orange-500" 
         />
@@ -68,7 +68,10 @@
         <div class="p-6 border-b border-slate-100 flex justify-between items-center">
           <h2 class="text-xl font-bold text-slate-900">Próximas Reservas</h2>
           <a href="#" class="text-blue-600 hover:text-blue-700 text-sm font-semibold flex items-center gap-1 transition-colors">
-            Ver todas <i class="fas fa-chevron-right text-xs"></i>
+            Ver todas 
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right w-4 h-4">
+              <path d="m9 18 6-6-6-6"></path>
+            </svg>
           </a>
         </div>
 
@@ -102,7 +105,10 @@
         <div class="p-6 border-b border-slate-100 flex justify-between items-center">
           <h2 class="text-xl font-bold text-slate-900">Mis Préstamos Actuales</h2>
           <a href="#" class="text-blue-600 hover:text-blue-700 text-sm font-semibold flex items-center gap-1 transition-colors">
-            Ver inventario <i class="fas fa-chevron-right text-xs"></i>
+            Ver inventario 
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right w-4 h-4">
+              <path d="m9 18 6-6-6-6"></path>
+            </svg>
           </a>
         </div>
 
@@ -134,5 +140,46 @@
         </div>
       </section>
      </div>
+
+      <!-- Sección de acciones rápidas -->
+     <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        <div class="bg-blue-50/50 p-8 rounded-2xl border border-blue-100 hover:bg-blue-50 transition-all cursor-pointer group shadow-sm">
+          <div class="bg-white w-12 h-12 rounded-xl flex items-center justify-center shadow-sm mb-6 group-hover:scale-110 transition-transform">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar w-7 h-7 text-blue-600">
+              <path d="M8 2v4"></path>
+              <path d="M16 2v4"></path>
+              <rect width="18" height="18" x="3" y="4" rx="2"></rect>
+              <path d="M3 10h18"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-slate-900 mb-2">Hacer una reserva</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">Reserva equipos y espacios de laboratorio en segundos.</p>
+        </div>
+
+        <div class="bg-white p-8 rounded-2xl border border-slate-100 hover:border-blue-100 hover:shadow-md transition-all cursor-pointer group shadow-sm">
+          <div class="bg-slate-50 w-12 h-12 rounded-xl flex items-center justify-center mb-6 group-hover:bg-blue-50 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-package w-7 h-7 text-slate-500 group-hover:text-blue-600">
+              <path d="m7.5 4.27 9 5.15"></path>
+              <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path>
+              <path d="m3.27 6.96 8.73 5.04 8.73-5.04"></path>
+              <path d="M12 22.08V12"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-slate-900 mb-2">Ver inventario</h3>
+          <p class="text-sm text-slate-500 leading-relaxed">Explora el catálogo de equipos disponibles en la facultad.</p>
+        </div>
+
+        <div class="bg-white p-8 rounded-2xl border border-slate-100 hover:border-blue-100 hover:shadow-md transition-all cursor-pointer group shadow-sm">
+          <div class="bg-slate-50 w-12 h-12 rounded-xl flex items-center justify-center mb-6 group-hover:bg-blue-50 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-history w-7 h-7 text-slate-500 group-hover:text-blue-600">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+              <path d="M3 3v5h5"></path>
+              <path d="M12 7v5l4 2"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-slate-900 mb-2">Historial</h3>
+          <p class="text-sm text-slate-500 leading-relaxed">Revisa tus reservas anteriores y reportes de uso.</p>
+        </div>
+      </section>
   </main>
 </div>
