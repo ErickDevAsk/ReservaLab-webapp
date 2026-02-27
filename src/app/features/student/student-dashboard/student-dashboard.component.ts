@@ -1,10 +1,11 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { SummaryCardComponent } from '../../../shared/ui/summary-card/summary-card';
 
 @Component({
   selector: 'app-student-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, SummaryCardComponent],
   templateUrl: './student-dashboard.component.html',
 })
 export class StudentDashboardComponent {

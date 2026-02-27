@@ -36,6 +36,31 @@
     </header>
 
     <div id="dashboard-content">
-       </div>
+      <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        <app-summary-card 
+          title="Reservas Activas" 
+          value="3"
+          icon="fas fa-calendar-alt" 
+          iconBgClass="bg-blue-50" 
+          iconColorClass="text-blue-500" 
+        />
+          
+        <app-summary-card 
+          title="Préstamos Vigentes" 
+          value="2" 
+          icon="fas fa-box" 
+          iconBgClass="bg-green-50" 
+          iconColorClass="text-green-500"
+        />
+          
+        <app-summary-card 
+          title="Horas Reservadas (mes)" 
+          value="12h" 
+          icon="fas fa-clock" 
+          iconBgClass="bg-orange-50" 
+          iconColorClass="text-orange-500" 
+        />
+      </section>
+     </div>
   </main>
 </div>
