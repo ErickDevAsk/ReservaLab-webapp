@@ -15,7 +15,6 @@ export const routes: Routes = [
     component: FormularioReserva,
   },
   {
-    // Ruta para el dashboard del estudiante
     path: 'student-dashboard',
     component: StudentDashboardComponent
   },
