@@ -1,0 +1,246 @@
+<div class="flex min-h-screen bg-gray-100">
+
+  <!-- SIDEBAR -->
+  <aside class="w-64 bg-white shadow-lg p-4">
+
+    <h2 class="text-xl font-bold mb-6 text-blue-600">
+      ReservaLab
+    </h2>
+
+    <nav class="space-y-3">
+
+      <a class="block p-2 rounded bg-blue-500 text-white">
+        Dashboard
+      </a>
+
+      <a class="block p-2 hover:bg-gray-100 rounded">
+        Gestión Equipos
+      </a>
+
+      <a class="block p-2 hover:bg-gray-100 rounded">
+        Gestión Labs
+      </a>
+
+      <a class="block p-2 hover:bg-gray-100 rounded">
+        Aprobaciones
+      </a>
+
+      <a class="block p-2 hover:bg-gray-100 rounded">
+        Reportes
+      </a>
+
+      <a class="block p-2 hover:bg-gray-100 rounded">
+        Mi Perfil
+      </a>
+
+    </nav>
+
+  </aside>
+
+
+  <!-- CONTENIDO -->
+  <main class="flex-1 p-8">
+
+    <h1 class="text-3xl font-bold mb-2">
+      Panel de Control Técnico
+    </h1>
+
+    <p class="text-gray-500 mb-8">
+      Monitoreo y gestión de laboratorios
+    </p>
+
+
+    <!-- CARDS -->
+    <div class="grid grid-cols-4 gap-6">
+
+      <div class="bg-white p-6 rounded-xl shadow hover:shadow-xl hover:-translate-y-1 transition">
+        <p class="text-gray-500">Reservas Hoy</p>
+        <h2 class="text-3xl font-bold mt-2">24</h2>
+      </div>
+
+      <div class="bg-white p-6 rounded-xl shadow hover:shadow-xl hover:-translate-y-1 transition">
+        <p class="text-gray-500">Equipos Disponibles</p>
+        <h2 class="text-3xl font-bold mt-2">87</h2>
+      </div>
+
+      <div class="bg-white p-6 rounded-xl shadow hover:shadow-xl hover:-translate-y-1 transition">
+        <p class="text-gray-500">Devoluciones Pendientes</p>
+        <h2 class="text-3xl font-bold mt-2">12</h2>
+      </div>
+
+      <div class="bg-white p-6 rounded-xl shadow hover:shadow-xl hover:-translate-y-1 transition">
+        <p class="text-gray-500">Equipos en Mantenimiento</p>
+        <h2 class="text-3xl font-bold mt-2">5</h2>
+      </div>
+
+    </div>
+
+
+    <!-- GRAFICAS -->
+    <div class="grid grid-cols-2 gap-6 mt-8">
+
+      <div class="bg-white rounded-xl shadow p-6">
+        <h3 class="text-lg font-semibold mb-4">
+          Ocupación Semanal (%)
+        </h3>
+
+        <canvas id="ocupacionChart"></canvas>
+      </div>
+
+
+      <div class="bg-white rounded-xl shadow p-6">
+        <h3 class="text-lg font-semibold mb-4">
+          Tendencia de Reservas
+        </h3>
+
+        <canvas id="reservasChart"></canvas>
+      </div>
+
+    </div>
+
+
+    <!-- DEVOLUCIONES -->
+    <div class="bg-white rounded-xl shadow p-6 mt-8">
+
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-semibold">Devoluciones Pendientes</h3>
+        <span class="text-blue-500 text-sm cursor-pointer">Ver todas</span>
+      </div>
+
+      <table class="w-full text-sm">
+
+        <thead class="text-gray-500 border-b">
+          <tr>
+            <th class="text-left py-2">Estudiante</th>
+            <th class="text-left py-2">Equipo</th>
+            <th class="text-left py-2">Código</th>
+            <th class="text-left py-2">Fecha límite</th>
+            <th class="text-left py-2">Estado</th>
+            <th class="text-left py-2">Acciones</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr class="border-b">
+            <td class="py-3">María González</td>
+            <td>Microscopio Óptico</td>
+            <td>MIC-015</td>
+            <td>3/2/2026</td>
+            <td class="text-red-500 font-semibold">Vencido</td>
+            <td class="text-blue-500 cursor-pointer">Contactar</td>
+          </tr>
+
+          <tr class="border-b">
+            <td class="py-3">Carlos Ramírez</td>
+            <td>Centrifugadora</td>
+            <td>CEN-008</td>
+            <td>4/2/2026</td>
+            <td class="text-yellow-500 font-semibold">Vence pronto</td>
+            <td class="text-blue-500 cursor-pointer">Contactar</td>
+          </tr>
+
+          <tr>
+            <td class="py-3">Ana Martínez</td>
+            <td>Balanza Analítica</td>
+            <td>BAL-023</td>
+            <td>5/2/2026</td>
+            <td class="text-green-500 font-semibold">Vigente</td>
+            <td class="text-blue-500 cursor-pointer">Contactar</td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+
+    <!-- ALERTAS -->
+    <div class="bg-white rounded-xl shadow p-6 mt-8">
+
+      <h3 class="text-lg font-semibold mb-6 text-red-600">
+        Alertas de Equipos Dañados
+      </h3>
+
+      <div class="border rounded-lg p-4 mb-4 flex justify-between items-center">
+
+        <div>
+          <h4 class="font-semibold">Espectrofotómetro UV</h4>
+          <p class="text-sm text-gray-500">Código: ESP-004</p>
+          <p class="text-sm text-gray-500">Problema: Falla en calibración</p>
+
+          <span class="text-xs bg-red-100 text-red-600 px-2 py-1 rounded">
+            Prioridad Alta
+          </span>
+        </div>
+
+        <div class="space-x-2">
+          <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition">
+            Asignar Técnico
+          </button>
+
+          <button class="border hover:bg-gray-100 px-4 py-2 rounded transition">
+            Ver Detalles
+          </button>
+        </div>
+
+      </div>
+
+
+      <div class="border rounded-lg p-4 flex justify-between items-center">
+
+        <div>
+          <h4 class="font-semibold">Agitador Magnético</h4>
+          <p class="text-sm text-gray-500">Código: AGI-012</p>
+          <p class="text-sm text-gray-500">Problema: Motor no funciona</p>
+
+          <span class="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded">
+            Prioridad Media
+          </span>
+        </div>
+
+        <div class="space-x-2">
+          <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition">
+            Asignar Técnico
+          </button>
+
+          <button class="border hover:bg-gray-100 px-4 py-2 rounded transition">
+            Ver Detalles
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ACCIONES RAPIDAS -->
+    <div class="grid grid-cols-3 gap-6 mt-8">
+
+      <div class="bg-white rounded-xl shadow p-6 hover:shadow-xl hover:-translate-y-1 transition cursor-pointer">
+        <h3 class="text-lg font-semibold mb-2">📦 Gestionar Inventario</h3>
+        <p class="text-gray-500 text-sm">
+          Añadir, editar o eliminar equipos
+        </p>
+      </div>
+
+      <div class="bg-white rounded-xl shadow p-6 hover:shadow-xl hover:-translate-y-1 transition cursor-pointer">
+        <h3 class="text-lg font-semibold mb-2">📅 Ver Reservas</h3>
+        <p class="text-gray-500 text-sm">
+          Gestionar calendario de reservas
+        </p>
+      </div>
+
+      <div class="bg-white rounded-xl shadow p-6 hover:shadow-xl hover:-translate-y-1 transition cursor-pointer">
+        <h3 class="text-lg font-semibold mb-2">📊 Reportes</h3>
+        <p class="text-gray-500 text-sm">
+          Generar informes y estadísticas
+        </p>
+      </div>
+
+    </div>
+
+  </main>
+
+</div>
