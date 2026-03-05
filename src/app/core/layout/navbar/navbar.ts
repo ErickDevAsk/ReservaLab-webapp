@@ -11,6 +11,10 @@ import { RouterLink } from '@angular/router';
 export class Navbar {
   isMobileMenuOpen = signal(false);
 
+  scrollTo(seccionId: string) {
+    document.getElementById(seccionId)?.scrollIntoView({ behavior: 'smooth' });
+  }
+
   toggleMenu() {
     this.isMobileMenuOpen.update(state => !state);
   }

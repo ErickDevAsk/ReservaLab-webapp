@@ -10,9 +10,9 @@
       </div>
 
       <div class="hidden md:flex space-x-8 items-center">
-        <a href="#" class="text-slate-600 hover:text-blue-600 font-medium transition-colors">Beneficios</a>
-        <a href="#" class="text-slate-600 hover:text-blue-600 font-medium transition-colors">Laboratorios</a>
-        <a href="#" class="text-slate-600 hover:text-blue-600 font-medium transition-colors">Reglamento</a>
+        <a (click)="scrollTo('beneficios')" class="cursor-pointer text-slate-600 hover:text-blue-600 font-medium transition-colors">Beneficios</a>
+        <a (click)="scrollTo('laboratorios')" class="cursor-pointer text-slate-600 hover:text-blue-600 font-medium transition-colors">Laboratorios</a>
+        <a class="cursor-pointer text-slate-600 hover:text-blue-600 font-medium transition-colors">Reglamento</a>
         <button routerLink="/login-reserva" class="text-slate-600 hover:text-blue-600 font-medium transition-colors">Iniciar Sesión</button>
         <button routerLink="/login-reserva" class="bg-blue-600 text-white px-5 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-sm">Registrarse</button>
       </div>
