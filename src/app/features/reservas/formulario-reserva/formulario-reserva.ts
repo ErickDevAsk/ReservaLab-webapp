@@ -2,6 +2,9 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../../../environments/environment.development';
+import { jwtDecode } from "jwt-decode"
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-formulario-reserva',
@@ -14,17 +17,40 @@ export class FormularioReserva {
     username: '',
     password: ''
   };
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   onLogin() {
     console.log('Enviando a Django:', this.loginData);
-    const url = 'http://127.0.0.1:8000/api/token/';
+    const url = `${environment.apiUrl}token/`;
 
     this.http.post(url, this.loginData).subscribe({
       next: (res: any) => {
-        alert('¡CONEXIÓN EXITOSA!');
-        console.log('Token:', res);
-      },
+  if (res.access) {
+    localStorage.setItem('access_token', res.access);
+
+    // Decodificamos el token
+    const decodedToken: any = jwtDecode(res.access);
+    const rolUsuario = decodedToken.rol;
+
+    console.log('Rol detectado:', rolUsuario);
+
+    // Redirigimos según el rol
+    switch(rolUsuario) {
+      case 'tecnico':
+        this.router.navigate(['/tecnico-dashboard']);
+        break;
+      case 'Administrador':
+        this.router.navigate(['/admin-dashboard']);
+        break;
+      case 'Estudiante':
+        this.router.navigate(['/student-dashboard']);
+        break;
+      default:
+        alert('Rol no reconocido');
+        this.router.navigate(['/']); // Fallback
+    }
+  }
+},
       error: (err) => {
         console.error('Error:', err);
         alert('Error: Usuario no encontrado o servidor apagado.');
