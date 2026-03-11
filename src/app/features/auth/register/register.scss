@@ -1,0 +1,169 @@
+/* =========================================
+   Contenedor Principal y Tarjeta
+   ========================================= */
+.auth-wrapper {
+  min-height: 100vh;
+  background-color: #f8fafc; /* Fondo gris muy clarito */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.auth-card {
+  background: #ffffff;
+  width: 100%;
+  max-width: 420px; /* Tamaño idéntico al login */
+  border-radius: 12px;
+  padding: 2.5rem 2.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+/* =========================================
+   Cabecera y Logotipo
+   ========================================= */
+.auth-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.logo-box {
+  background-color: #2563eb; /* Azul primario */
+  color: white;
+  font-weight: bold;
+  font-size: 1.25rem;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  margin-bottom: 0.5rem;
+}
+
+.logo-text {
+  color: #4b5563;
+  font-size: 0.9rem;
+}
+
+/* =========================================
+   Textos
+   ========================================= */
+.auth-title {
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+  margin-top: 0;
+}
+
+.auth-subtitle {
+  text-align: center;
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-bottom: 2rem;
+
+  a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 500;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+/* =========================================
+   Formulario e Inputs
+   ========================================= */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+
+  label {
+    font-size: 0.85rem;
+    color: #374151;
+    margin-bottom: 0.4rem;
+  }
+
+  input,select {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    color: #1f2937;
+    transition: all 0.2s;
+    width: 100%; /* Asegura que no se haga chiquito */
+
+    &:focus {
+      outline: none;
+      border-color: #2563eb;
+      background-color: #ffffff;
+      /* Simula un brillo azul al seleccionar el input */
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    &::placeholder {
+      color: #9ca3af;
+    }
+  }
+}
+
+/* =========================================
+   Diseño Responsivo (La magia para celulares)
+   ========================================= */
+.form-row {
+  display: flex;
+  gap: 1rem;
+
+  .form-group {
+    flex: 1; /* Mitad y mitad en escritorio */
+  }
+}
+
+/* Si la pantalla es menor a 480px (celulares), ponlos uno debajo del otro */
+@media (max-width: 480px) {
+  .form-row {
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+}
+
+/* =========================================
+   Botón
+   ========================================= */
+.btn-primary {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #1d4ed8;
+  }
+}
+
+/* Pone el borde rojo si el input es inválido y el usuario ya lo tocó */
+input.ng-invalid.ng-touched {
+  border-color: #ef4444; /* Rojo Tailwind */
+  &:focus {
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+  }
+}

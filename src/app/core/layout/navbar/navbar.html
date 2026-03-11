@@ -1,25 +1,26 @@
-<nav class="bg-white border-b border-slate-100 sticky top-0 z-50">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center h-16">
+<nav class="navbar">
+  <div class="navbar-container">
+    <div class="navbar-content">
 
-      <div class="flex items-center gap-2 cursor-pointer">
-        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="logo-section">
+        <svg class="logo-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
         </svg>
-        <span class="text-xl font-bold text-blue-600">ReservaLab</span>
+        <span class="logo-text">ReservaLab</span>
       </div>
 
-      <div class="hidden md:flex space-x-8 items-center">
-        <a (click)="scrollTo('beneficios')" class="cursor-pointer text-slate-600 hover:text-blue-600 font-medium transition-colors">Beneficios</a>
-        <a (click)="scrollTo('laboratorios')" class="cursor-pointer text-slate-600 hover:text-blue-600 font-medium transition-colors">Laboratorios</a>
-        <a class="cursor-pointer text-slate-600 hover:text-blue-600 font-medium transition-colors">Reglamento</a>
-        <button routerLink="/login-reserva" class="text-slate-600 hover:text-blue-600 font-medium transition-colors">Iniciar Sesión</button>
-        <button routerLink="/login-reserva" class="bg-blue-600 text-white px-5 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-sm">Registrarse</button>
+      <div class="desktop-menu">
+        <a (click)="scrollTo('beneficios')" class="nav-link">Beneficios</a>
+        <a (click)="scrollTo('laboratorios')" class="nav-link">Laboratorios</a>
+        <a class="nav-link">Reglamento</a>
+
+        <button routerLink="/login-reserva" class="btn-text">Iniciar Sesión</button>
+        <button routerLink="/register" class="btn-primary">Registrarse</button>
       </div>
 
-      <div class="md:hidden flex items-center">
-        <button (click)="toggleMenu()" class="text-slate-600 hover:text-slate-900 focus:outline-none">
-          <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <div class="mobile-toggle">
+        <button (click)="toggleMenu()" class="btn-icon">
+          <svg class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             @if (!isMobileMenuOpen()) {
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
             } @else {
@@ -28,18 +29,21 @@
           </svg>
         </button>
       </div>
+
     </div>
   </div>
 
   @if (isMobileMenuOpen()) {
-    <div class="md:hidden bg-white border-t border-slate-100 absolute w-full shadow-lg">
-      <div class="px-4 pt-2 pb-4 space-y-1 flex flex-col">
-        <a (click)="scrollTo('beneficios')" class="block px-3 py-3 text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-blue-600 rounded-md">Beneficios</a>
-        <a (click)="scrollTo('laboratorios')" class="block px-3 py-3 text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-blue-600 rounded-md">Laboratorios</a>
-        <a href="#" class="block px-3 py-3 text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-blue-600 rounded-md">Reglamento</a>
-        <hr class="my-2 border-slate-100">
-        <button routerLink="/login-reserva" class="text-slate-600 hover:text-blue-600 font-medium transition-colors">Iniciar Sesión</button>
-        <button routerLink="/login-reserva" class="bg-blue-600 text-white px-5 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-sm">Registrarse</button>
+    <div class="mobile-menu">
+      <div class="mobile-menu-content">
+        <a (click)="scrollTo('beneficios')" class="mobile-link">Beneficios</a>
+        <a (click)="scrollTo('laboratorios')" class="mobile-link">Laboratorios</a>
+        <a href="#" class="mobile-link">Reglamento</a>
+
+        <hr class="divider">
+
+        <button routerLink="/login-reserva" class="mobile-btn-text">Iniciar Sesión</button>
+        <button routerLink="/register" class="mobile-btn-primary">Registrarse</button>
       </div>
     </div>
   }
