@@ -20,7 +20,7 @@ export interface Prestamo{
   vencimiento: string;
 }
 
-@Component({
+@Component({  
   selector: 'app-student-dashboard',
   standalone: true,
   imports: [CommonModule, SummaryCardComponent],

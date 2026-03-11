@@ -5,6 +5,7 @@ import { FormularioReserva } from './features/reservas/formulario-reserva/formul
 // Importamos el componente del dashboard del estudiante
 import { StudentDashboardComponent } from './features/student/student-dashboard/student-dashboard.component';
 import { TecnicoDashboard } from './features/tecnico/tecnico-dashboard/tecnico-dashboard';
+import { Reglamento } from './features/landing/reglamento/reglamento';
 export const routes: Routes = [
   {
     path: '',
@@ -24,6 +25,10 @@ export const routes: Routes = [
   {
     path: 'tecnico-dashboard',
     component: TecnicoDashboard
+  },
+  {
+    path: 'reglamento',
+    component: Reglamento
   },
   {
     path: '**',
