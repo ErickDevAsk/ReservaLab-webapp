@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { LandingPage } from './features/landing/landing-page/landing-page';
 import { Register } from './features/auth/register/register';
 import { FormularioReserva } from './features/reservas/formulario-reserva/formulario-reserva';
+import { authGuard } from './core/guards/auth-guard';
 // Importamos el componente del dashboard del estudiante
 import { StudentDashboardComponent } from './features/student/student-dashboard/student-dashboard.component';
 import { TecnicoDashboard } from './features/tecnico/tecnico-dashboard/tecnico-dashboard';
@@ -17,6 +18,11 @@ export const routes: Routes = [
   {
     path: 'login-reserva',
     component: FormularioReserva,
+  },
+  {
+    path: 'student-dashboard',
+    component: StudentDashboardComponent,
+    canActivate: [authGuard]
   },
   {
     path: 'student-dashboard',

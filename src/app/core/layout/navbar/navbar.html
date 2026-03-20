@@ -12,10 +12,16 @@
       <div class="desktop-menu">
         <a (click)="scrollTo('beneficios')" class="nav-link">Beneficios</a>
         <a (click)="scrollTo('laboratorios')" class="nav-link">Laboratorios</a>
-        <a class="nav-link">Reglamento</a>
+        <a routerLink="/reglamento" class="nav-link">Reglamento</a>
 
-        <button routerLink="/login-reserva" class="btn-text">Iniciar Sesión</button>
-        <button routerLink="/register" class="btn-primary">Registrarse</button>
+        @if (!isLoggedIn()) {
+          <button routerLink="/login-reserva" class="btn-text">Iniciar Sesión</button>
+          <button routerLink="/register" class="btn-primary">Registrarse</button>
+        } @else {
+          <span class="nav-link" style="font-weight: bold; color: #2563eb;">Hola, {{ username() }}</span>
+          <button routerLink="/student-dashboard" class="btn-text">Mi Dashboard</button>
+          <button (click)="logout()" class="btn-primary" style="background-color: #ef4444; border-color: #ef4444;">Salir</button>
+        }
       </div>
 
       <div class="mobile-toggle">
@@ -38,12 +44,18 @@
       <div class="mobile-menu-content">
         <a (click)="scrollTo('beneficios')" class="mobile-link">Beneficios</a>
         <a (click)="scrollTo('laboratorios')" class="mobile-link">Laboratorios</a>
-        <a href="#" class="mobile-link">Reglamento</a>
+        <a routerLink="/reglamento" class="mobile-link">Reglamento</a>
 
         <hr class="divider">
 
-        <button routerLink="/login-reserva" class="mobile-btn-text">Iniciar Sesión</button>
-        <button routerLink="/register" class="mobile-btn-primary">Registrarse</button>
+        @if (!isLoggedIn()) {
+          <button routerLink="/login-reserva" class="mobile-btn-text">Iniciar Sesión</button>
+          <button routerLink="/register" class="mobile-btn-primary">Registrarse</button>
+        } @else {
+          <span class="mobile-link" style="font-weight: bold; color: #2563eb;">Hola, {{ username() }}</span>
+          <button routerLink="/student-dashboard" class="mobile-btn-text">Mi Dashboard</button>
+          <button (click)="logout()" class="mobile-btn-primary" style="background-color: #ef4444; border-color: #ef4444;">Salir</button>
+        }
       </div>
     </div>
   }
