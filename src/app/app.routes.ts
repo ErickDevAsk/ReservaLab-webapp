@@ -27,6 +27,11 @@ export const routes: Routes = [
   },
   {
     path: 'student-dashboard',
+    component: StudentDashboardComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'student-dashboard',
     component: StudentDashboardComponent
   },
   {
