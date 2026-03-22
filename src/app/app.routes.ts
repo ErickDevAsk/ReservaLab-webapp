@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { LandingPage } from './features/landing/landing-page/landing-page';
 import { Register } from './features/auth/register/register';
-import { FormularioReserva } from './features/reservas/formulario-reserva/formulario-reserva';
+import { LoginComponent } from './features/auth/login/login.component';
 import { authGuard } from './core/guards/auth-guard';
 // Importamos el componente del dashboard del estudiante
 import { StudentDashboardComponent } from './features/student/student-dashboard/student-dashboard.component';
@@ -17,7 +17,7 @@ export const routes: Routes = [
     component: Register },
   {
     path: 'login-reserva',
-    component: FormularioReserva,
+    component: LoginComponent,
   },
   {
     path: 'student-dashboard',

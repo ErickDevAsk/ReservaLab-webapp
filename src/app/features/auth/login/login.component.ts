@@ -7,12 +7,12 @@ import { jwtDecode } from "jwt-decode"
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-formulario-reserva',
+  selector: 'app-login',
   imports: [FormsModule, CommonModule],
-  templateUrl: './formulario-reserva.html',
-  styleUrl: './formulario-reserva.scss',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss'],
 })
-export class FormularioReserva {
+export class LoginComponent {
   loginData = {
     username: '',
     password: ''
