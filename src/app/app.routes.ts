@@ -7,6 +7,7 @@ import { authGuard } from './core/guards/auth-guard';
 import { StudentDashboardComponent } from './features/student/student-dashboard/student-dashboard.component';
 import { TecnicoDashboard } from './features/tecnico/tecnico-dashboard/tecnico-dashboard';
 import { Reglamento } from './features/landing/reglamento/reglamento';
+import { ReservasDashboard } from './features/reservas/reservas-dashboard/reservas-dashboard';
 export const routes: Routes = [
   {
     path: '',
@@ -35,6 +36,10 @@ export const routes: Routes = [
   {
     path: 'reglamento',
     component: Reglamento
+  },
+  {
+    path: 'reservas',
+    component: ReservasDashboard
   },
   {
     path: '**',
