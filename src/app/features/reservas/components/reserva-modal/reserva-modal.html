@@ -1,0 +1,50 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+  <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden border border-border">
+    <div class="p-6 border-b border-border flex justify-between items-center bg-muted/30">
+      <h3 class="text-xl font-bold text-foreground">Confirmar Reserva</h3>
+      <button (click)="cerrar()" class="text-muted-foreground hover:text-foreground">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </div>
+
+    <div class="p-6 space-y-4">
+      <div class="flex items-center gap-2 text-sm text-primary font-medium">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span>{{ horaInicio() }} - {{ nombreLab() }}</span>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-1">Duración (Horas)</label>
+        <select [(ngModel)]="duracion" class="w-full p-2 border border-border rounded-lg bg-background">
+          <option [ngValue]="1">1 hora</option>
+          <option [ngValue]="2">2 horas</option>
+          <option [ngValue]="3">3 horas</option>
+          <option [ngValue]="4">4 horas</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-1">Equipo necesario</label>
+        <input type="text" [(ngModel)]="equipo" placeholder="Ej: Kit de Redes, Osciloscopio..." 
+               class="w-full p-2 border border-border rounded-lg bg-background">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-1">Propósito de la reserva</label>
+        <textarea [(ngModel)]="proposito" rows="3" placeholder="Describe tu actividad (mín. 10 caracteres)"
+                  class="w-full p-2 border border-border rounded-lg bg-background resize-none"></textarea>
+      </div>
+    </div>
+
+    <div class="p-6 border-t border-border flex gap-3">
+      <button (click)="cerrar()" 
+              class="flex-1 px-4 py-2 border border-border rounded-lg hover:bg-muted transition-colors">
+        Cancelar
+      </button>
+      <button (click)="confirmarReserva()" 
+              class="flex-1 px-4 py-2 bg-primary text-primary-foreground rounded-lg font-bold hover:bg-primary/90 transition-colors">
+        Reservar
+      </button>
+    </div>
+  </div>
+</div>
