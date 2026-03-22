@@ -10,7 +10,7 @@
         <button class="px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-primary text-primary-foreground">Diario</button>
       </div>
     </div>
-
+    <!-- Calendario de reservas -->
     <div class="bg-white rounded-lg border border-border p-6">
       <div class="flex items-center justify-between mb-6">
         <button class="px-4 py-2 border border-border rounded-lg hover:bg-muted transition-colors">← Anterior</button>
@@ -23,6 +23,14 @@
           <p class="text-lg font-semibold text-foreground">{{ fechaVisual() }}</p>
         </div>
 
+        <!-- Mensaje de error si la API falla -->
+        @if (errorApi()) {
+          <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span>{{ errorApi() }}</span>
+          </div>
+        }
+        <!-- Listado de horarios -->
         @for (slot of horarioSlots(); track slot.hora) {
           <button 
             (click)="seleccionarSlot(slot)"
@@ -41,7 +49,7 @@
                 </p>
               </div>
             </div>
-
+            <!-- Icono de disponibilidad -->
             @if (slot.disponible) {
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary">
                 <path d="M5 12h14"></path>
@@ -52,7 +60,7 @@
         }
       </div>
     </div>
-
+    
     <div class="bg-white rounded-lg border border-border p-4">
       <div class="flex flex-wrap items-center gap-6">
         <div class="flex items-center gap-2">
@@ -66,4 +74,13 @@
       </div>
     </div>
   </div>
+   <!-- Modal de reserva -->
+    @if (mostrarModal()) {
+    <app-reserva-modal 
+      [horaInicio]="slotSeleccionado()"
+      [nombreLab]="'Laboratorio de Redes'" 
+      (alCerrar)="cerrarModal()"
+      (alConfirmar)="procesarReserva($event)">
+    </app-reserva-modal>
+    }
 </main>
