@@ -1,119 +1,279 @@
-import { Component, signal, inject } from '@angular/core'; //añadimos inject para usar servicios en el futuro
+import { Component, signal, computed, inject } from '@angular/core'; //agregamos inject y computed
 import { CommonModule } from '@angular/common';
-import { ReservaModal } from '../components/reserva-modal/reserva-modal'; //importamos el modal para usarlo en la plantilla
-import { ReservaService } from '../../../core/services/reserva'; //importamos el servicio de reservas para usarlo en el futuro
+import { Router } from '@angular/router'; //agregamos Router para navegación
+import { ReservaModal } from '../components/reserva-modal/reserva-modal'; //importamos el modal
+import { ReservaService } from '../../../core/services/reserva'; //importamos el servicio de reservas para manejar la lógica de backend
+import { NotificationService } from '../../../core/services/notification'; //importamos el servicio de notificaciones para mostrar mensajes visuales al usuario
 
+//Interfaces y tipos relacionados con la vista y selección de slots
+export type VistaCalendario = 'semanal' | 'diario';
+
+export interface SlotActivo {
+  fecha: Date;
+  hora: string;
+  fechaDisplay: string;
+  diaIdx: number;
+  horaIdx: number;
+}
+
+export interface DiaCalendario {
+  nombre: string;
+  numero: number;
+  fecha: Date;
+}
+
+export interface SlotDiario {
+  hora: string;
+  rango: string;
+  disponible: boolean;
+  horaIdx: number;
+}
+
+// Componente principal del dashboard de reservas
 @Component({
   selector: 'app-reservas-dashboard',
   standalone: true,
-  //agremos el modal a los imports para poder usarlo en la plantilla
   imports: [CommonModule, ReservaModal],
   templateUrl: './reservas-dashboard.html',
   styleUrl: './reservas-dashboard.scss',
 })
 
 export class ReservasDashboard {
-slotSeleccionado(): string {
-throw new Error('Method not implemented.');
-}
 
-  //inyectamos el servicio de reservas
-  private readonly reservaService = inject(ReservaService); 
+  // Servicios
+  private readonly router         = inject(Router);
+  private readonly reservaService = inject(ReservaService);
+  private readonly notifService   = inject(NotificationService);
 
-  // Señales para el estado de la vista
-  public mesAnio = signal<string>('marzo 2026');
-  public fechaVisual = signal<string>('domingo, 22 de marzo');
+  // Sidebar
+  sidebarCollapsed = signal(false);
 
-  // Estado del modal
-  public mostrarModal = signal<boolean>(false);
-  public horaSeleccionada = signal<string>('');
+  // Vista activa
+  vista = signal<VistaCalendario>('semanal');
 
-  //Exportamos el estado del servicio para usarlo en el html 
-  public cargando = this.reservaService.loading;
-  public errorApi = this.reservaService.error;
+  // Semana base = lunes de la semana actual
+  semanaBase = signal<Date>(this.getLunes(new Date()));
 
-  // Listado dinámico de horarios (simulado por ahora)
-  public horarioSlots = signal([
-    { hora: '08:00 - 09:00', disponible: true },
-    { hora: '09:00 - 10:00', disponible: true },
-    { hora: '10:00 - 11:00', disponible: true },
-    { hora: '11:00 - 12:00', disponible: true },
-    { hora: '12:00 - 13:00', disponible: true },
-    { hora: '13:00 - 14:00', disponible: true },
-    { hora: '14:00 - 15:00', disponible: true },
-    { hora: '15:00 - 16:00', disponible: true },
-    { hora: '16:00 - 17:00', disponible: true },
-    { hora: '17:00 - 18:00', disponible: true },
-    { hora: '18:00 - 19:00', disponible: true },
-  ]);
-  
+  // Día seleccionado para vista diaria
+  diaSeleccionado = signal<Date>(new Date());
 
-  /**
-   * Maneja el clic en un horario disponible
-   */
+  // Modal
+  mostrarModal = signal(false);
+  slotActivo   = signal<SlotActivo | null>(null);
 
-  seleccionarSlot(slot: any) {
-    if (slot.disponible) {
-      console.log(`Iniciando reserva para el bloque: ${slot.hora}`);
-      this.horaSeleccionada.set(slot.hora); //Guardamos la hora seleccionada para pasarla al modal
-      this.mostrarModal.set(true); //Abrimos el modal
+  // Estado del servicio
+  cargando = this.reservaService.loading;
+  errorApi = this.reservaService.error;
+
+  // Horas del día
+  readonly horas = [
+    '08:00', '09:00', '10:00', '11:00', '12:00',
+    '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'
+  ];
+
+  readonly nombresDias = ['lun', 'mar', 'mié', 'jue', 'vie', 'sáb', 'dom'];
+
+  // Disponibilidad 7 días x 11 horas (todas disponibles inicialmente)
+  disponibilidad = signal<boolean[][]>(
+    Array.from({ length: 7 }, () => Array(11).fill(true))
+  );
+
+  // Computed para generar los datos de la vista semanal y diaria
+  diasSemana = computed<DiaCalendario[]>(() => {
+    const lunes = this.semanaBase();
+    return this.nombresDias.map((nombre, i) => {
+      const fecha = new Date(lunes);
+      fecha.setDate(lunes.getDate() + i);
+      return { nombre, numero: fecha.getDate(), fecha };
+    });
+  });
+
+  mesAnioLabel = computed(() => {
+    const base = this.vista() === 'semanal'
+      ? this.semanaBase()
+      : this.diaSeleccionado();
+    return base.toLocaleDateString('es-MX', { month: 'long', year: 'numeric' });
+  });
+
+  fechaDiariaLabel = computed(() =>
+    this.diaSeleccionado().toLocaleDateString('es-MX', {
+      weekday: 'long', day: 'numeric', month: 'long'
+    })
+  );
+
+  diaSeleccionadoIndex = computed(() => {
+    const selec = this.diaSeleccionado();
+    return this.diasSemana().findIndex(
+      d => d.fecha.toDateString() === selec.toDateString()
+    );
+  });
+
+  horariosDelDia = computed<SlotDiario[]>(() => {
+    const diaIdx = this.diaSeleccionadoIndex();
+    const disp   = this.disponibilidad();
+    return this.horas.map((hora, horaIdx) => ({
+      hora,
+      rango: `${hora} - ${this.getHoraFin(hora)}`,
+      disponible: diaIdx >= 0 ? (disp[diaIdx]?.[horaIdx] ?? true) : true,
+      horaIdx
+    }));
+  });
+
+  // Navegación del calendario (semanal y diario)
+  irAnterior() {
+    if (this.vista() === 'semanal') {
+      const nueva = new Date(this.semanaBase());
+      nueva.setDate(nueva.getDate() - 7);
+      this.semanaBase.set(nueva);
+    } else {
+      const nueva = new Date(this.diaSeleccionado());
+      nueva.setDate(nueva.getDate() - 1);
+      this.diaSeleccionado.set(nueva);
+      if (!this.diasSemana().some(d => d.fecha.toDateString() === nueva.toDateString())) {
+        this.semanaBase.set(this.getLunes(nueva));
+      }
     }
   }
-  
-  cerrarModal() {
-    this.mostrarModal.set(false);
+
+  irSiguiente() {
+    if (this.vista() === 'semanal') {
+      const nueva = new Date(this.semanaBase());
+      nueva.setDate(nueva.getDate() + 7);
+      this.semanaBase.set(nueva);
+    } else {
+      const nueva = new Date(this.diaSeleccionado());
+      nueva.setDate(nueva.getDate() + 1);
+      this.diaSeleccionado.set(nueva);
+      if (!this.diasSemana().some(d => d.fecha.toDateString() === nueva.toDateString())) {
+        this.semanaBase.set(this.getLunes(nueva));
+      }
+    }
   }
 
-  /*
-    aqui es donde se conectara el backend
-  */
+  // Cambio de vista
+  cambiarVista(v: VistaCalendario) {
+    this.vista.set(v);
+  }
 
-  procesarReserva(datosDelModal: any) {
-    console.log('Iniciando envío a Django con datos:', datosDelModal);
+  // Click en encabezado de día (semanal) → ir a vista diaria de ese día
+  seleccionarDiaParaDiario(diaIdx: number) {
+    this.diaSeleccionado.set(this.diasSemana()[diaIdx].fecha);
+    this.vista.set('diario');
+  }
 
-    // 1. Preparamos el objeto final (JSON) que se enviará al backend
+  // Selección de slots y manejo del modal
+  seleccionarSlotSemanal(diaIdx: number, horaIdx: number) {
+    if (!this.estaDisponible(diaIdx, horaIdx)) return;
+
+    const dia  = this.diasSemana()[diaIdx];
+    const hora = this.horas[horaIdx];
+
+    this.slotActivo.set({
+      fecha: dia.fecha,
+      hora,
+      fechaDisplay: dia.fecha.toLocaleDateString('es-MX', {
+        weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+      }),
+      diaIdx,
+      horaIdx
+    });
+    this.mostrarModal.set(true);
+  }
+
+  seleccionarSlotDiario(slot: SlotDiario) {
+    if (!slot.disponible) return;
+
+    const diaIdx = this.diaSeleccionadoIndex();
+    if (diaIdx < 0) return;
+
+    const d = this.diaSeleccionado();
+    this.slotActivo.set({
+      fecha: d,
+      hora: slot.hora,
+      fechaDisplay: d.toLocaleDateString('es-MX', {
+        weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+      }),
+      diaIdx,
+      horaIdx: slot.horaIdx
+    });
+    this.mostrarModal.set(true);
+  }
+
+  cerrarModal() {
+    this.mostrarModal.set(false);
+    this.slotActivo.set(null);
+  }
+
+  // Procesar reserva desde el modal → llamada al servicio de reservas y manejo de respuesta
+  procesarReserva(datos: any) {
+    const slot = this.slotActivo();
+    if (!slot) return;
+
     const reservaFinal = {
-      laboratorio: 'Laboratorio de Redes', // Sera dinamico en el futuro, por ahora lo dejamos fijo
-      fecha: '2026-03-22',                // Fecha actual del dashboard
-      hora_inicio: datosDelModal.hora_inicio,
-      duracion: datosDelModal.duracion,
-      equipo: datosDelModal.equipo,
-      proposito: datosDelModal.proposito
+      laboratorio: datos.laboratorio,
+      fecha: this.formatearFecha(slot.fecha),
+      hora_inicio: slot.hora,
+      duracion: datos.duracion,
+      equipo: datos.equipo,
+      proposito: datos.proposito
     };
 
-    //Llamamos al servicio (ReservaService)
     this.reservaService.crearReserva(reservaFinal).subscribe({
       next: (respuesta) => {
-        // Si el backend responde con éxito:
-        console.log('¡Reserva confirmada en la DB!', respuesta);
-        
-        // Cerramos el modal inmediatamente
-        this.mostrarModal.set(false);
-
-        // Feedback al usuario
-        alert('¡Tu reserva ha sido confirmada con éxito!');
-
-        //ACTUALIZACIÓN REACTIVA (Cambio visual a "Ocupado")
-        this.horarioSlots.update(slots => 
-          slots.map(s => 
-            s.hora === datosDelModal.hora_inicio 
-              ? { ...s, disponible: false } 
-              : s
-          )
-        );
-      },
-      error: (err) => {
-        // El error ya se guarda en el signal 'errorApi' del servicio, 
-        // pero aquí podemos dar un aviso extra.
-        console.error('Error al intentar reservar:', err);
-        alert('Hubo un problema con el servidor. Revisa la consola.');
+        if (respuesta !== null) {
+          this.notifService.exito('¡Tu reserva ha sido confirmada con éxito!');
+          this.mostrarModal.set(false);
+          this.marcarSlotOcupado(slot.diaIdx, slot.horaIdx);
+          this.slotActivo.set(null);
+        } else {
+          const msg = this.errorApi() ?? 'Error al procesar la reserva. Intenta de nuevo.';
+          this.notifService.error(msg);
+        }
       }
     });
   }
-  private actualizarSlotlocal(hora: string) {
-    this.horarioSlots.update(slots => 
-      slots.map(slot => slot.hora === hora ? { ...slot, disponible: false } : slot)
-    );
+
+  // Sidebar y routing 
+  toggleSidebar() {
+    this.sidebarCollapsed.update(v => !v);
   }
-  
+
+  irADashboard() { this.router.navigate(['/student-dashboard']); }
+  irALanding()   { this.router.navigate(['/']); }
+
+  cerrarSesion() {
+    localStorage.removeItem('access_token');
+    this.router.navigate(['/']);
+  }
+
+  // Helpers
+  estaDisponible(diaIdx: number, horaIdx: number): boolean {
+    return this.disponibilidad()[diaIdx]?.[horaIdx] ?? true;
+  }
+
+  private marcarSlotOcupado(diaIdx: number, horaIdx: number) {
+    this.disponibilidad.update(disp => {
+      const copia = disp.map(dia => [...dia]);
+      copia[diaIdx][horaIdx] = false;
+      return copia;
+    });
+  }
+
+  private getLunes(fecha: Date): Date {
+    const d   = new Date(fecha);
+    const dia = d.getDay();
+    const diff = dia === 0 ? -6 : 1 - dia;
+    d.setDate(d.getDate() + diff);
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }
+
+  private formatearFecha(fecha: Date): string {
+    return fecha.toISOString().split('T')[0];
+  }
+
+  private getHoraFin(hora: string): string {
+    const [hh, mm] = hora.split(':').map(Number);
+    return `${String(hh + 1).padStart(2, '0')}:${String(mm).padStart(2, '0')}`;
+  }
 }
