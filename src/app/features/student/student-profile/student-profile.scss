@@ -1,0 +1,83 @@
+/* =========================================
+   Layout Principal
+   ========================================= */
+.layout-wrapper {
+  @apply flex min-h-screen bg-slate-50/50;
+}
+
+.main-content {
+  @apply flex-1 flex flex-col min-w-0 h-screen overflow-hidden;
+}
+
+.content-area {
+  @apply flex-1 overflow-y-auto p-6 lg:p-10;
+}
+
+/* =========================================
+   Tarjetas (Cards)
+   ========================================= */
+.profile-card {
+  @apply bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden;
+}
+
+.profile-card-centered {
+  @apply bg-white rounded-2xl border border-slate-100 shadow-sm p-8 text-center flex flex-col items-center;
+}
+
+.card-header {
+  @apply p-5 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center;
+}
+
+.card-header-simple {
+  @apply p-5 border-b border-slate-100 bg-slate-50/50;
+}
+
+.card-body {
+  @apply p-6;
+}
+
+/* =========================================
+   Tipografía
+   ========================================= */
+.page-title {
+  @apply text-3xl font-black text-slate-900 tracking-tight leading-tight;
+}
+
+.page-subtitle {
+  @apply text-slate-500 font-semibold italic;
+}
+
+.section-title {
+  @apply text-base font-bold text-slate-900;
+}
+
+.label-text {
+  @apply text-xs text-slate-400 font-bold uppercase tracking-wider mb-1;
+}
+
+.value-text {
+  @apply font-semibold text-slate-800;
+}
+
+/* =========================================
+   Elementos Visuales y Badges
+   ========================================= */
+.avatar-circle {
+  @apply w-28 h-28 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-4xl font-black mb-4 shadow-inner;
+}
+
+.skill-badge {
+  @apply px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg text-xs font-bold;
+}
+
+.status-badge {
+  @apply px-3 py-1 bg-slate-50 border border-slate-200 text-slate-500 rounded-lg text-xs font-bold mt-3;
+}
+
+.icon-box {
+  @apply w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center text-slate-500 border border-slate-200;
+}
+
+.edit-btn {
+  @apply text-blue-600 hover:text-blue-700 text-xs font-bold transition-colors;
+}

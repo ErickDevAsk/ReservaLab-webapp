@@ -1,5 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { SummaryCardComponent } from '../../../shared/ui/summary-card/summary-card';
 import { LabCatalogComponent } from '../../labs/lab-catalog/lab-catalog';
 //Definición de la interfaz para las reservas
@@ -23,7 +24,11 @@ export interface Prestamo{
 @Component({  
   selector: 'app-student-dashboard',
   standalone: true,
+<<<<<<< HEAD
   imports: [CommonModule, SummaryCardComponent, LabCatalogComponent],
+=======
+  imports: [CommonModule, SummaryCardComponent, RouterLink],
+>>>>>>> development
   templateUrl: './student-dashboard.component.html',
 })
 export class StudentDashboardComponent {
