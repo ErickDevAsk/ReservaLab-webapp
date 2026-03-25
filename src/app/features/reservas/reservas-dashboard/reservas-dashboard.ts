@@ -1,6 +1,7 @@
 import { Component, signal, computed, inject } from '@angular/core'; //agregamos inject y computed
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router'; //agregamos Router para navegación
+import { RouterLink } from '@angular/router';
 import { ReservaModal } from '../components/reserva-modal/reserva-modal'; //importamos el modal
 import { ReservaService } from '../../../core/services/reserva'; //importamos el servicio de reservas para manejar la lógica de backend
 import { NotificationService } from '../../../core/services/notification'; //importamos el servicio de notificaciones para mostrar mensajes visuales al usuario
@@ -33,7 +34,7 @@ export interface SlotDiario {
 @Component({
   selector: 'app-reservas-dashboard',
   standalone: true,
-  imports: [CommonModule, ReservaModal],
+  imports: [CommonModule, ReservaModal, RouterLink],
   templateUrl: './reservas-dashboard.html',
   styleUrl: './reservas-dashboard.scss',
 })
@@ -233,7 +234,7 @@ export class ReservasDashboard {
     });
   }
 
-  // Sidebar y routing 
+  // Sidebar y routing
   toggleSidebar() {
     this.sidebarCollapsed.update(v => !v);
   }

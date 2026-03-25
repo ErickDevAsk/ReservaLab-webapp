@@ -1,9 +1,9 @@
 <div class="flex min-h-screen bg-slate-50/50">
-  
-  <aside 
-    [class.hidden]="!isMobileMenuOpen()" 
+
+  <aside
+    [class.hidden]="!isMobileMenuOpen()"
     class="lg:flex flex-col w-72 bg-white border-r border-slate-100 h-screen sticky top-0 z-50 shrink-0 overflow-y-auto transition-all">
-    
+
     <div class="p-6 flex items-center justify-between">
       <div class="flex items-center gap-3 text-blue-600">
         <div class="bg-blue-600 p-2 rounded-lg shadow-sm">
@@ -47,7 +47,7 @@
         </svg>
         Préstamos
       </a>
-      <a href="#" class="flex items-center gap-4 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl font-bold transition-all group">
+      <a routerLink="/student-profile" class="flex items-center gap-4 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl font-bold transition-all group">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user group-hover:text-blue-600">
           <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
         </svg>
@@ -69,9 +69,9 @@
   </aside>
 
   <main class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
-    
+
     <header class="bg-white border-b border-slate-100 p-4 lg:px-10 flex items-center gap-3 text-xs font-bold text-slate-400 shrink-0">
-      <button 
+      <button
         (click)="toggleMenu()"
         class="lg:hidden p-2 -ml-2 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu">
@@ -87,7 +87,7 @@
     </header>
 
     <div class="flex-1 overflow-y-auto p-6 lg:p-10">
-      
+
       <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
         <div>
           <h1 class="text-3xl font-black text-slate-900 tracking-tight leading-tight">Mi Dashboard</h1>
@@ -101,28 +101,28 @@
       <div id="dashboard-content">
         <!-- Sección de resumen -->
         <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-          <app-summary-card 
-            title="Reservas Activas" 
+          <app-summary-card
+            title="Reservas Activas"
             value="3"
-            icon="calendar" 
-            iconBgClass="bg-blue-50" 
-            iconColorClass="text-blue-500" 
+            icon="calendar"
+            iconBgClass="bg-blue-50"
+            iconColorClass="text-blue-500"
           />
-            
-          <app-summary-card 
-            title="Préstamos Vigentes" 
-            value="2" 
-            icon="package" 
-            iconBgClass="bg-green-50" 
+
+          <app-summary-card
+            title="Préstamos Vigentes"
+            value="2"
+            icon="package"
+            iconBgClass="bg-green-50"
             iconColorClass="text-green-500"
           />
-            
-          <app-summary-card 
-            title="Horas Reservadas (mes)" 
-            value="12h" 
-            icon="clock" 
-            iconBgClass="bg-orange-50" 
-            iconColorClass="text-orange-500" 
+
+          <app-summary-card
+            title="Horas Reservadas (mes)"
+            value="12h"
+            icon="clock"
+            iconBgClass="bg-orange-50"
+            iconColorClass="text-orange-500"
           />
         </section>
 
@@ -131,7 +131,7 @@
           <div class="p-6 border-b border-slate-100 flex justify-between items-center">
             <h2 class="text-xl font-bold text-slate-900">Próximas Reservas</h2>
             <a routerLink="/reservas" class="text-blue-600 hover:text-blue-700 text-sm font-semibold flex items-center gap-1 transition-colors">
-                    Ver todas 
+                    Ver todas
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right w-4 h-4">
                 <path d="m9 18 6-6-6-6"></path>
               </svg>
@@ -152,7 +152,7 @@
                     <span class="flex items-center gap-1"><i class="far fa-clock"></i> {{ reserva.hora }}</span>
                   </div>
                 </div>
-                
+
                 <button class="border border-slate-200 text-slate-700 px-5 py-2 rounded-xl text-sm font-bold hover:bg-white hover:border-blue-300 hover:text-blue-600 hover:shadow-sm transition-all active:scale-95">
                   Detalles
                 </button>
@@ -168,7 +168,7 @@
           <div class="p-6 border-b border-slate-100 flex justify-between items-center">
             <h2 class="text-xl font-bold text-slate-900">Mis Préstamos Actuales</h2>
             <a href="#" class="text-blue-600 hover:text-blue-700 text-sm font-semibold flex items-center gap-1 transition-colors">
-              Ver inventario 
+              Ver inventario
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right w-4 h-4">
                 <path d="m9 18 6-6-6-6"></path>
               </svg>
@@ -183,14 +183,14 @@
                   <p class="text-sm text-slate-500">Código: <span class="font-mono">{{ item.codigo }}</span></p>
                   <p class="text-xs text-slate-400 italic">Vence: {{ item.vencimiento }}</p>
                 </div>
-                
+
                 <div class="flex items-center gap-3">
-                  <button 
+                  <button
                     (click)="devolverEquipo(item.id)"
                     class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl text-sm font-bold shadow-md shadow-blue-100 transition-all active:scale-95">
                     Devolver
                   </button>
-                  <button 
+                  <button
                     (click)="reportarIncidencia(item.id)"
                     class="border border-slate-200 text-slate-700 px-6 py-2 rounded-xl text-sm font-bold hover:bg-white hover:border-red-200 hover:text-red-600 transition-all active:scale-95">
                     Reportar

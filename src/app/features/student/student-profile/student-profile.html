@@ -1,0 +1,131 @@
+<div class="layout-wrapper">
+
+  <aside
+    [class.hidden]="!isMobileMenuOpen()"
+    class="lg:flex flex-col w-72 bg-white border-r border-slate-100 h-screen sticky top-0 z-50 shrink-0 overflow-y-auto transition-all">
+
+    <div class="p-6 flex items-center justify-between">
+      <div class="flex items-center gap-3 text-blue-600">
+        <div class="bg-blue-600 p-2 rounded-lg shadow-sm">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M14 2v6a2 2 0 0 0 .245.96l5.51 10.08A2 2 0 0 1 18 22H6a2 2 0 0 1-1.755-2.96l5.51-10.08A2 2 0 0 0 10 8V2"></path><path d="M6.453 15h11.094"></path><path d="M8.5 2h7"></path></svg>
+        </div>
+        <span class="text-xl font-black tracking-tight">ReservaLab</span>
+      </div>
+    </div>
+
+    <hr class="border-slate-100 mx-6 mb-6">
+
+    <nav class="flex-1 px-4 space-y-2">
+      <a routerLink="/student-dashboard" class="flex items-center gap-4 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl font-bold transition-all group">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:text-blue-600"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+        Dashboard
+      </a>
+      <a routerLink="/student-profile" class="flex items-center gap-4 px-4 py-3 bg-blue-600 text-white rounded-xl font-bold shadow-md shadow-blue-200 transition-all">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Mi Perfil
+      </a>
+    </nav>
+
+    <div class="p-4 mt-auto">
+      <hr class="border-slate-100 mb-4">
+      <a (click)="logout()" class="flex items-center gap-4 px-4 py-3 text-red-600 hover:bg-red-50 rounded-xl font-bold transition-all cursor-pointer">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+        Cerrar Sesión
+      </a>
+    </div>
+  </aside>
+
+  <main class="main-content">
+
+    <header class="bg-white border-b border-slate-100 p-4 lg:px-10 flex items-center gap-3 text-xs font-bold text-slate-400 shrink-0">
+      <button (click)="toggleMenu()" class="lg:hidden p-2 -ml-2 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+      </button>
+      <span class="hover:text-blue-600 cursor-pointer transition-colors">App</span>
+      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+      <span class="text-slate-900">Mi Perfil</span>
+    </header>
+
+    <div class="content-area">
+      <header class="mb-10">
+        <h1 class="page-title">Mi Perfil</h1>
+        <p class="page-subtitle">Información académica y configuración de cuenta</p>
+      </header>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        <div class="lg:col-span-1 space-y-6">
+          <div class="profile-card-centered">
+            <div class="avatar-circle">
+              {{ perfilData().nombre.charAt(0) }}
+            </div>
+            <h2 class="text-2xl font-black text-slate-900">{{ perfilData().nombre }}</h2>
+            <p class="text-blue-600 font-bold text-sm mb-1">{{ perfilData().matricula }}</p>
+            <span class="status-badge">Estudiante Activo</span>
+          </div>
+
+          <div class="profile-card p-6">
+            <h3 class="label-text mb-4">Intereses Técnicos</h3>
+            <div class="flex flex-wrap gap-2">
+              @for (skill of perfilData().habilidades; track skill) {
+                <span class="skill-badge">{{ skill }}</span>
+              }
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-2 space-y-6">
+
+          <div class="profile-card">
+            <div class="card-header-simple">
+              <h3 class="section-title">Información Académica</h3>
+            </div>
+            <div class="card-body grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <p class="label-text">Universidad</p>
+                <p class="value-text">{{ perfilData().universidad }}</p>
+              </div>
+              <div>
+                <p class="label-text">Programa Educativo</p>
+                <p class="value-text">{{ perfilData().carrera }}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-card">
+            <div class="card-header">
+              <h3 class="section-title">Contacto Institucional</h3>
+              <button class="edit-btn">Editar</button>
+            </div>
+            <div class="card-body grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <p class="label-text">Correo Electrónico</p>
+                <p class="value-text">{{ perfilData().correo }}</p>
+              </div>
+              <div>
+                <p class="label-text">Teléfono Móvil</p>
+                <p class="value-text">{{ perfilData().telefono }}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-card">
+            <div class="card-header-simple">
+              <h3 class="section-title">Equipo Personal Registrado</h3>
+            </div>
+            <div class="card-body flex items-center gap-4">
+              <div class="icon-box">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0 1.28 2.55a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45L4 16"/></svg>
+              </div>
+              <div>
+                <p class="font-bold text-slate-900">{{ perfilData().equipoRegistrado }}</p>
+                <p class="text-sm text-slate-500">Autorizado para acceso a la red de laboratorios</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
