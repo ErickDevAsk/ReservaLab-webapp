@@ -24,11 +24,7 @@ export interface Prestamo{
 @Component({  
   selector: 'app-student-dashboard',
   standalone: true,
-<<<<<<< HEAD
-  imports: [CommonModule, SummaryCardComponent, LabCatalogComponent],
-=======
-  imports: [CommonModule, SummaryCardComponent, RouterLink],
->>>>>>> development
+  imports: [CommonModule, SummaryCardComponent, LabCatalogComponent, RouterLink],
   templateUrl: './student-dashboard.component.html',
 })
 export class StudentDashboardComponent {
