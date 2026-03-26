@@ -53,7 +53,7 @@ export class ReservaModal implements OnInit {
 
   // NUEVO: Este método se ejecuta automáticamente en cuanto se abre el modal
   ngOnInit() {
-    this.labService.obtenerLaboratorios().subscribe({
+    this.labService.getLaboratorios().subscribe({
       next: (datosReales: any) => {
         // Llenamos la variable con la respuesta de Django
         this.laboratorios = datosReales;

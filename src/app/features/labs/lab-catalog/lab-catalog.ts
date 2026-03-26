@@ -27,11 +27,11 @@ export class LabCatalogComponent implements OnInit {
   cargarLaboratoriosDesdeDjango(): void {
     // Nos suscribimos para escuchar la respuesta del servidor
     this.laboratorioService.getLaboratorios().subscribe({
-      next: (datosQueLlegaron) => {
+      next: (datosQueLlegaron: any) => {
         this.laboratorios = datosQueLlegaron;
         console.log('¡Datos descargados de Django!', datosQueLlegaron);
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Hubo un error al conectar con Django:', error);
       }
     });
