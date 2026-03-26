@@ -1,0 +1,33 @@
+<!-- Notificaciones -->
+@if (notifService.notificaciones().length > 0) {
+  <div class="toast-container" role="region" aria-live="polite" aria-label="Notificaciones">
+
+    <!-- Itera sobre las notificaciones activas y muestra cada una -->
+    @for (notif of notifService.notificaciones(); track trackById($index, notif)) {
+      <div class="toast" [class]="clasesTipo(notif.tipo)">
+
+        <span class="toast__icon" [innerHTML]="icono(notif.tipo)"></span>
+
+        <p class="toast__mensaje">{{ notif.mensaje }}</p>
+
+        <!-- Botón de cerrar -->
+        <button
+          class="toast__cerrar"
+          (click)="notifService.cerrar(notif.id)"
+          aria-label="Cerrar notificación">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor" stroke-width="2.5"
+               stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+
+        <!-- Barra de progreso animada que indica el tiempo restante -->
+        <div class="toast__progress"></div>
+
+      </div>
+    }
+
+  </div>
+}

@@ -1,0 +1,102 @@
+<div class="auth-wrapper">
+  <div class="auth-card">
+
+    <div class="auth-header">
+      <div class="logo-box">RL</div>
+      <span class="logo-text">ReservaLab</span>
+    </div>
+
+    <h2 class="auth-title">Crear Cuenta</h2>
+    <p class="auth-subtitle">
+      ¿Ya tienes una cuenta? <a routerLink="/login">Inicia sesión aquí</a>
+    </p>
+
+    <form class="auth-form" (ngSubmit)="onSubmit()" #registerForm="ngForm">
+
+      <div class="form-group">
+        <label for="username">Nombre de Usuario</label>
+        <input type="text" id="username" name="username" required
+               [(ngModel)]="userData.username"
+               #username="ngModel"
+               pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ_]+"
+               placeholder="Ej. christian_pena">
+        @if (username.invalid && (username.dirty || username.touched)) {
+          <span class="text-xs text-red-500 mt-1">Solo letras y guiones bajos. Sin números ni espacios.</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="email">Correo Institucional</label>
+        <input type="email" id="email" name="email" required
+               [(ngModel)]="userData.email"
+               #email="ngModel"
+               pattern="[a-zA-Z0-9._%+-]+@alm\.buap\.mx$"
+               placeholder="alumno@alum.buap.mx">
+        @if (email.invalid && (email.dirty || email.touched)) {
+          <span class="text-xs text-red-500 mt-1">Ingresa un correo electrónico válido.</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <input type="password" id="password" name="password" required
+               [(ngModel)]="userData.password"
+               #password="ngModel"
+               minlength="8"
+               placeholder="Crea una contraseña segura">
+        @if (password.invalid && (password.dirty || password.touched)) {
+          <span class="text-xs text-red-500 mt-1">La contraseña debe tener al menos 8 caracteres.</span>
+        }
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="matricula_id">Matrícula</label>
+          <input type="text" id="matricula_id" name="matricula_id" required
+                 [(ngModel)]="userData.matricula_id"
+                 #matricula="ngModel"
+                 pattern="[0-9]{9}"
+                 maxlength="9"
+                 (keypress)="($event.charCode >= 48 && $event.charCode <= 57)"
+                 placeholder="Ej. 202145102">
+          @if (matricula.invalid && (matricula.dirty || matricula.touched)) {
+            <span class="text-xs text-red-500 mt-1">Debe contener exactamente 9 números.</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="carrera_departamento">Carrera</label>
+          <select id="carrera_departamento" name="carrera_departamento" required
+                  [(ngModel)]="userData.carrera_departamento"
+                  #carrera="ngModel">
+
+            <option value="" disabled selected>Selecciona tu carrera...</option>
+
+            <optgroup label="Facultad de Ciencias de la Computación">
+              <option value="Ingeniería en Tecnologías de la Información">Ingeniería en Tecnologías de la Información</option>
+              <option value="Ingeniería en Ciencias de la Computación">Ingeniería en Ciencias de la Computación</option>
+              <option value="Licenciatura en Ciencias de la Computación">Licenciatura en Ciencias de la Computación</option>
+            </optgroup>
+
+            <optgroup label="Facultad de Ingeniería Química">
+              <option value="Ingeniería Química">Ingeniería Química</option>
+              <option value="Ingeniería Ambiental">Ingeniería Ambiental</option>
+              <option value="Ingeniería en Alimentos">Ingeniería en Alimentos</option>
+              <option value="Ingeniería en Materiales">Ingeniería en Materiales</option>
+            </optgroup>
+          </select>
+
+          @if (carrera.invalid && (carrera.dirty || carrera.touched)) {
+            <span class="text-xs text-red-500 mt-1">Por favor, selecciona una carrera.</span>
+          }
+        </div>
+      </div>
+
+      <button type="submit" class="btn-primary" [disabled]="registerForm.invalid"
+              [class.opacity-50]="registerForm.invalid" [class.cursor-not-allowed]="registerForm.invalid">
+        Registrarse
+      </button>
+    </form>
+
+  </div>
+</div>

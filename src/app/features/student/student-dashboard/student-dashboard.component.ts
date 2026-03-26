@@ -1,7 +1,8 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { SummaryCardComponent } from '../../../shared/ui/summary-card/summary-card';
-
+import { LabCatalogComponent } from '../../labs/lab-catalog/lab-catalog';
 //Definición de la interfaz para las reservas
 export interface Reserva{
   id: number;
@@ -20,10 +21,10 @@ export interface Prestamo{
   vencimiento: string;
 }
 
-@Component({
+@Component({  
   selector: 'app-student-dashboard',
   standalone: true,
-  imports: [CommonModule, SummaryCardComponent],
+  imports: [CommonModule, SummaryCardComponent, LabCatalogComponent, RouterLink],
   templateUrl: './student-dashboard.component.html',
 })
 export class StudentDashboardComponent {
