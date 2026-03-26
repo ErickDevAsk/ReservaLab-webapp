@@ -1,9 +1,11 @@
 import { Component, AfterViewInit } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import Chart from 'chart.js/auto';
 
 @Component({
   selector: 'app-tecnico-dashboard',
-  imports: [],
+  standalone: true,
+  imports: [RouterModule],
   templateUrl: './tecnico-dashboard.html',
   styleUrl: './tecnico-dashboard.scss',
 })
@@ -11,7 +13,6 @@ export class TecnicoDashboard implements AfterViewInit {
 
   ngAfterViewInit(): void {
 
-    // 📊 Gráfica 1: Ocupación semanal
     const ocupacionCtx = document.getElementById('ocupacionChart') as HTMLCanvasElement;
 
     if (ocupacionCtx) {
@@ -34,7 +35,6 @@ export class TecnicoDashboard implements AfterViewInit {
       });
     }
 
-    // 📈 Gráfica 2: Tendencia de reservas
     const reservasCtx = document.getElementById('reservasChart') as HTMLCanvasElement;
 
     if (reservasCtx) {

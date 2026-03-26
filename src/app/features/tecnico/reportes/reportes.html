@@ -1,0 +1,84 @@
+<div class="space-y-6">
+
+  <!-- HEADER -->
+  <div class="flex justify-between items-center">
+    <div>
+      <h1 class="text-3xl font-bold">Reportes y Estadísticas</h1>
+      <p class="text-gray-500">
+        Analiza el rendimiento y uso de los laboratorios.
+      </p>
+    </div>
+
+    <div class="flex gap-2">
+      <select class="border p-2 rounded">
+        <option>Este Mes</option>
+      </select>
+
+      <button class="border px-4 py-2 rounded">
+        ⬇ Exportar
+      </button>
+    </div>
+  </div>
+
+  <!-- CARDS -->
+  <div class="grid grid-cols-4 gap-6">
+
+    <div class="bg-white p-5 rounded-xl shadow">
+      <p class="text-gray-500">Total Préstamos</p>
+      <h2 class="text-2xl font-bold">1,248</h2>
+      <span class="text-green-500 text-sm">+12.5%</span>
+    </div>
+
+    <div class="bg-white p-5 rounded-xl shadow">
+      <p class="text-gray-500">Nuevos Usuarios</p>
+      <h2 class="text-2xl font-bold">84</h2>
+      <span class="text-green-500 text-sm">+5.2%</span>
+    </div>
+
+    <div class="bg-white p-5 rounded-xl shadow">
+      <p class="text-gray-500">Tasa de Ocupación</p>
+      <h2 class="text-2xl font-bold">78%</h2>
+      <span class="text-red-500 text-sm">-2.1%</span>
+    </div>
+
+    <div class="bg-white p-5 rounded-xl shadow">
+      <p class="text-gray-500">Reservas Activas</p>
+      <h2 class="text-2xl font-bold">42</h2>
+      <span class="text-green-500 text-sm">+18.4%</span>
+    </div>
+
+  </div>
+
+  <!-- GRAFICAS -->
+  <div class="grid grid-cols-2 gap-6">
+
+    <!-- BARRAS -->
+    <div class="bg-white p-6 rounded-xl shadow">
+      <h3 class="font-semibold mb-2">Ocupación por Día</h3>
+      <p class="text-sm text-gray-500 mb-4">
+        Porcentaje de uso y número de reservas semanales.
+      </p>
+      <canvas id="barChart"></canvas>
+    </div>
+
+    <!-- DONA -->
+    <div class="bg-white p-6 rounded-xl shadow">
+      <h3 class="font-semibold mb-2">Distribución por Categoría</h3>
+      <p class="text-sm text-gray-500 mb-4">
+        Uso de equipos según el área académica.
+      </p>
+      <canvas id="pieChart"></canvas>
+    </div>
+
+  </div>
+
+  <!-- LINEA -->
+  <div class="bg-white p-6 rounded-xl shadow">
+    <h3 class="font-semibold mb-2">Tendencia de Uso Mensual</h3>
+    <p class="text-sm text-gray-500 mb-4">
+      Evolución de las solicitudes de préstamo.
+    </p>
+    <canvas id="lineChart"></canvas>
+  </div>
+
+</div>
