@@ -1,7 +1,10 @@
-import { Component, inject, input, output } from '@angular/core';
+// NUEVO: Importamos OnInit y tu nuevo servicio
+import { Component, inject, input, output, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NotificationService } from '../../../../core/services/notification';
+// NUEVO: Asegúrate de que esta ruta apunte bien a donde creaste tu servicio
+import { LaboratorioService } from '../../../../core/services/laboratorio';
 
 @Component({
   selector: 'app-reserva-modal',
@@ -9,35 +12,30 @@ import { NotificationService } from '../../../../core/services/notification';
   templateUrl: './reserva-modal.html',
   styleUrl: './reserva-modal.scss',
 })
-export class ReservaModal {
+// NUEVO: Le agregamos implements OnInit para que ejecute código al abrirse
+export class ReservaModal implements OnInit {
 
   private readonly notifService = inject(NotificationService);
+  private readonly labService = inject(LaboratorioService); // NUEVO: Inyectamos el gerente de laboratorios
 
-  //  Inputs desde el dashboard 
-  // Ej: "lunes, 16 de marzo de 2026"
+  // Inputs desde el dashboard
   fechaDisplay = input.required<string>();
-  // Ej: "08:00"
   hora = input.required<string>();
 
-  //  Outputs hacia el dashboard ─
+  // Outputs hacia el dashboard ─
   alCerrar    = output<void>();
   alConfirmar = output<any>();
 
-  //  Formulario (propiedades normales — no Signals, para compatibilidad con ngModel) 
+  // Formulario
   laboratorio = '';
   equipo      = '';
   duracion    = 1;
   proposito   = '';
 
-  // Opciones de laboratorios (se reemplazarán con datos del backend)
-  readonly laboratorios = [
-    'Laboratorio de Física',
-    'Laboratorio de Química',
-    'Laboratorio de Biología',
-    'Laboratorio de Computación',
-  ];
+  // NUEVO: Quitamos el readonly y los datos falsos. Ahora es un arreglo vacío que llenaremos.
+  laboratorios: any[] = [];
 
-  // Opciones de equipo (se reemplazarán con datos del backend)
+  // Opciones de equipo (Este lo dejamos igual por ahora hasta que hagan la tabla de equipos)
   readonly equipos = [
     'Microscopio Óptico',
     'Osciloscopio Digital',
@@ -46,7 +44,6 @@ export class ReservaModal {
     'Balanza Analítica',
   ];
 
-  // Normas de uso
   readonly normas = [
     'Llegar puntual a la reserva',
     'Devolver el equipo en las mismas condiciones',
@@ -54,9 +51,22 @@ export class ReservaModal {
     'Cancelar con al menos 24 horas de anticipación si no podrás asistir',
   ];
 
-  //  Métodos 
+  // NUEVO: Este método se ejecuta automáticamente en cuanto se abre el modal
+  ngOnInit() {
+    this.labService.obtenerLaboratorios().subscribe({
+      next: (datosReales: any) => {
+        // Llenamos la variable con la respuesta de Django
+        this.laboratorios = datosReales;
+      },
+      error: (err: any) => {
+        console.error('Error al traer laboratorios:', err);
+        this.notifService.advertencia('No se pudieron cargar los laboratorios. Verifica el backend.');
+      }
+    });
+  }
+
+  // Métodos
   confirmarReserva() {
-    // Validaciones con notificaciones visuales (reemplaza los alert() anteriores)
     if (!this.laboratorio) {
       this.notifService.advertencia('Por favor, selecciona un laboratorio.');
       return;
