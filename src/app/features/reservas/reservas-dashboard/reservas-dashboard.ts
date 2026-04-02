@@ -5,6 +5,7 @@ import { RouterLink } from '@angular/router';
 import { ReservaModal } from '../components/reserva-modal/reserva-modal'; //importamos el modal
 import { ReservaService } from '../../../core/services/reserva'; //importamos el servicio de reservas para manejar la lógica de backend
 import { NotificationService } from '../../../core/services/notification'; //importamos el servicio de notificaciones para mostrar mensajes visuales al usuario
+import { SidebarComponent } from '../../../shared/components/sidebar/sidebar'; // Ajusta la ruta si es necesario
 
 //Interfaces y tipos relacionados con la vista y selección de slots
 export type VistaCalendario = 'semanal' | 'diario';
@@ -34,7 +35,7 @@ export interface SlotDiario {
 @Component({
   selector: 'app-reservas-dashboard',
   standalone: true,
-  imports: [CommonModule, ReservaModal, RouterLink],
+  imports: [CommonModule, ReservaModal, RouterLink, SidebarComponent],
   templateUrl: './reservas-dashboard.html',
   styleUrl: './reservas-dashboard.scss',
 })
@@ -46,8 +47,6 @@ export class ReservasDashboard {
   private readonly reservaService = inject(ReservaService);
   private readonly notifService   = inject(NotificationService);
 
-  // Sidebar
-  sidebarCollapsed = signal(false);
 
   // Vista activa
   vista = signal<VistaCalendario>('semanal');
@@ -234,18 +233,6 @@ export class ReservasDashboard {
     });
   }
 
-  // Sidebar y routing
-  toggleSidebar() {
-    this.sidebarCollapsed.update(v => !v);
-  }
-
-  irADashboard() { this.router.navigate(['/student-dashboard']); }
-  irALanding()   { this.router.navigate(['/']); }
-
-  cerrarSesion() {
-    localStorage.removeItem('access_token');
-    this.router.navigate(['/']);
-  }
 
   // Helpers
   estaDisponible(diaIdx: number, horaIdx: number): boolean {
@@ -277,4 +264,6 @@ export class ReservasDashboard {
     const [hh, mm] = hora.split(':').map(Number);
     return `${String(hh + 1).padStart(2, '0')}:${String(mm).padStart(2, '0')}`;
   }
+  irADashboard() { this.router.navigate(['/student-dashboard']); }
+  irALanding()   { this.router.navigate(['/']); }
 }

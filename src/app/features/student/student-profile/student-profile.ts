@@ -1,11 +1,13 @@
 import { Component, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { SidebarComponent } from '../../../shared/components/sidebar/sidebar'; // Ajusta la ruta si es necesario
+
 
 @Component({
   selector: 'app-student-profile',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, SidebarComponent],
   templateUrl: './student-profile.html',
   styleUrl: './student-profile.scss' // 👇 AQUÍ ESTÁ LA CONEXIÓN VITAL AL SCSS
 })
