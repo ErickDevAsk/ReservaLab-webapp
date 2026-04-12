@@ -1,0 +1,154 @@
+<div class="p-8">
+
+  <!-- HEADER -->
+  <div class="flex justify-between items-center mb-6">
+    <div>
+      <h1 class="text-2xl font-bold">Gestión de Equipos</h1>
+      <p class="text-gray-500 text-sm">8 equipos en total</p>
+    </div>
+
+    <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2">
+      + Añadir Equipo
+    </button>
+  </div>
+
+  <!-- FILTROS -->
+  <div class="bg-white p-4 rounded-xl shadow mb-6">
+
+    <div class="grid grid-cols-3 gap-4 mb-4">
+
+      <!-- BUSCAR -->
+      <input
+        type="text"
+        placeholder="Buscar por nombre o código..."
+        class="p-2 border rounded w-full"
+      />
+
+      <!-- EDIFICIO -->
+      <select class="p-2 border rounded">
+        <option>Todos</option>
+        <option>Edificio A</option>
+        <option>Edificio B</option>
+      </select>
+
+      <!-- CATEGORIA -->
+      <select class="p-2 border rounded">
+        <option>Todas</option>
+        <option>Química</option>
+        <option>Biología</option>
+      </select>
+
+    </div>
+
+    <!-- TABS -->
+    <div class="flex gap-2">
+      <button class="px-3 py-1 bg-blue-600 text-white rounded">Todos</button>
+      <button class="px-3 py-1 bg-gray-100 rounded">Disponibles</button>
+      <button class="px-3 py-1 bg-gray-100 rounded">En Uso</button>
+      <button class="px-3 py-1 bg-gray-100 rounded">Mantenimiento</button>
+      <button class="px-3 py-1 bg-gray-100 rounded">Dañados</button>
+    </div>
+
+  </div>
+
+  <!-- TABLA -->
+  <div class="bg-white rounded-xl shadow overflow-hidden">
+
+    <table class="w-full text-sm">
+
+      <thead class="bg-gray-100 text-gray-600">
+        <tr>
+          <th class="p-3 text-left">Equipo</th>
+          <th class="p-3 text-left">Código</th>
+          <th class="p-3 text-left">Categoría</th>
+          <th class="p-3 text-left">Ubicación</th>
+          <th class="p-3 text-left">Stock</th>
+          <th class="p-3 text-left">Estado</th>
+          <th class="p-3 text-left">Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <!-- FILA -->
+        <tr class="border-t">
+          <td class="p-3">Microscopio Óptico</td>
+          <td>MIC-001</td>
+          <td>Óptica</td>
+          <td>Edificio A</td>
+          <td>8/10</td>
+
+          <td>
+            <span class="bg-green-100 text-green-600 px-2 py-1 rounded text-xs">
+              Disponible
+            </span>
+          </td>
+
+          <td class="space-x-2">
+            <button class="text-blue-500">👁</button>
+            <button class="text-gray-600">✏</button>
+            <button class="text-red-500">🗑</button>
+          </td>
+        </tr>
+
+        <tr class="border-t">
+          <td class="p-3">Osciloscopio Digital</td>
+          <td>OSC-001</td>
+          <td>Electrónica</td>
+          <td>Edificio B</td>
+          <td>3/5</td>
+
+          <td>
+            <span class="bg-blue-100 text-blue-600 px-2 py-1 rounded text-xs">
+              En Uso
+            </span>
+          </td>
+
+          <td class="space-x-2">
+            <button class="text-blue-500">👁</button>
+            <button class="text-gray-600">✏</button>
+            <button class="text-red-500">🗑</button>
+          </td>
+        </tr>
+
+        <tr class="border-t">
+          <td class="p-3">Espectrofotómetro</td>
+          <td>ESP-001</td>
+          <td>Química</td>
+          <td>Edificio B</td>
+          <td class="text-red-500">0/3</td>
+
+          <td>
+            <span class="bg-yellow-100 text-yellow-600 px-2 py-1 rounded text-xs">
+              Mantenimiento
+            </span>
+          </td>
+
+          <td class="space-x-2">
+            <button class="text-blue-500">👁</button>
+            <button class="text-gray-600">✏</button>
+            <button class="text-red-500">🗑</button>
+          </td>
+        </tr>
+
+      </tbody>
+
+    </table>
+
+    <!-- FOOTER -->
+    <div class="flex justify-between items-center p-4 text-sm text-gray-500">
+
+      <span>Mostrando 1 a 5 de 8 resultados</span>
+
+      <div class="flex gap-2">
+        <button class="px-3 py-1 border rounded">&lt;</button>
+        <button class="px-3 py-1 bg-blue-600 text-white rounded">1</button>
+        <button class="px-3 py-1 border rounded">2</button>
+        <button class="px-3 py-1 border rounded">&gt;</button>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

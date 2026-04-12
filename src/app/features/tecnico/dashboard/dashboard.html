@@ -1,0 +1,187 @@
+<div class="space-y-8">
+
+  <!-- HEADER -->
+  <div>
+    <h1 class="text-3xl font-bold">Panel de Control Técnico</h1>
+    <p class="text-gray-500">Monitoreo y gestión de laboratorios</p>
+  </div>
+
+  <!-- CARDS -->
+  <div class="grid grid-cols-4 gap-6">
+
+    <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
+      <p class="text-gray-500">Reservas Hoy</p>
+      <h2 class="text-3xl font-bold">24</h2>
+      <p class="text-green-500 text-sm mt-2">↑ 12% vs mes anterior</p>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
+      <p class="text-gray-500">Equipos Disponibles</p>
+      <h2 class="text-3xl font-bold">87</h2>
+      <p class="text-green-500 text-sm mt-2">↑ 5% vs mes anterior</p>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
+      <p class="text-gray-500">Devoluciones Pendientes</p>
+      <h2 class="text-3xl font-bold">12</h2>
+      <p class="text-red-500 text-sm mt-2">↓ 8% vs mes anterior</p>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
+      <p class="text-gray-500">Equipos en Mantenimiento</p>
+      <h2 class="text-3xl font-bold">5</h2>
+    </div>
+
+  </div>
+
+  <!-- GRAFICAS -->
+  <div class="grid grid-cols-2 gap-6">
+
+    <div class="bg-white p-6 rounded-xl shadow">
+      <h3 class="font-semibold mb-4">Ocupación Semanal (%)</h3>
+      <canvas id="ocupacionChart"></canvas>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl shadow">
+      <h3 class="font-semibold mb-4">Tendencia de Reservas</h3>
+      <canvas id="reservasChart"></canvas>
+    </div>
+
+  </div>
+
+  <!-- DEVOLUCIONES -->
+  <div class="bg-white p-6 rounded-xl shadow">
+
+    <div class="flex justify-between mb-4">
+      <h3 class="font-semibold">Devoluciones Pendientes</h3>
+      <span class="text-blue-500 text-sm cursor-pointer">Ver todas</span>
+    </div>
+
+    <table class="w-full text-sm">
+
+      <thead class="text-gray-500 border-b">
+        <tr>
+          <th class="text-left py-2">Estudiante</th>
+          <th class="text-left py-2">Equipo</th>
+          <th class="text-left py-2">Código</th>
+          <th class="text-left py-2">Fecha</th>
+          <th class="text-left py-2">Estado</th>
+          <th class="text-left py-2">Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <tr class="border-b">
+          <td class="py-2">María González</td>
+          <td>Microscopio</td>
+          <td>MIC-015</td>
+          <td>03/02/2026</td>
+          <td><span class="bg-red-100 text-red-600 px-2 py-1 rounded">Vencido</span></td>
+          <td class="text-blue-500 cursor-pointer">Contactar</td>
+        </tr>
+
+        <tr class="border-b">
+          <td class="py-2">Carlos Ramírez</td>
+          <td>Centrifugadora</td>
+          <td>CEN-008</td>
+          <td>04/02/2026</td>
+          <td><span class="bg-yellow-100 text-yellow-600 px-2 py-1 rounded">Vence pronto</span></td>
+          <td class="text-blue-500 cursor-pointer">Contactar</td>
+        </tr>
+
+        <tr>
+          <td class="py-2">Ana Martínez</td>
+          <td>Balanza</td>
+          <td>BAL-023</td>
+          <td>05/02/2026</td>
+          <td><span class="bg-green-100 text-green-600 px-2 py-1 rounded">Vigente</span></td>
+          <td class="text-blue-500 cursor-pointer">Contactar</td>
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+  <!-- ALERTAS -->
+  <div class="bg-white p-6 rounded-xl shadow">
+
+    <h3 class="text-red-600 font-semibold mb-4">
+      Alertas de Equipos Dañados
+    </h3>
+
+    <div class="border p-4 rounded mb-4 flex justify-between items-center">
+
+      <div>
+        <h4 class="font-semibold">Espectrofotómetro UV</h4>
+        <p class="text-sm text-gray-500">Falla en calibración</p>
+        <span class="bg-red-100 text-red-600 px-2 py-1 text-xs rounded">
+          Prioridad Alta
+        </span>
+      </div>
+
+      <button class="bg-blue-500 text-white px-4 py-2 rounded">
+        Asignar
+      </button>
+
+    </div>
+
+    <div class="border p-4 rounded flex justify-between items-center">
+
+      <div>
+        <h4 class="font-semibold">Agitador Magnético</h4>
+        <p class="text-sm text-gray-500">Motor dañado</p>
+        <span class="bg-yellow-100 text-yellow-600 px-2 py-1 text-xs rounded">
+          Prioridad Media
+        </span>
+      </div>
+
+      <button class="bg-blue-500 text-white px-4 py-2 rounded">
+        Asignar
+      </button>
+
+    </div>
+
+  </div>
+  <!-- ACCIONES RÁPIDAS -->
+<div class="grid grid-cols-3 gap-6">
+
+  <!-- Inventario -->
+  <div
+    routerLink="/tecnico-dashboard/gestion-equipos"
+    class="bg-white p-6 rounded-xl shadow hover:shadow-xl hover:-translate-y-1 transition cursor-pointer border border-blue-200"
+  >
+    <div class="text-blue-500 text-3xl mb-3">📦</div>
+    <h3 class="font-semibold text-lg">Gestionar Inventario</h3>
+    <p class="text-gray-500 text-sm">
+      Añadir, editar o eliminar equipos
+    </p>
+  </div>
+
+  <!-- Reservas -->
+  <div
+    class="bg-white p-6 rounded-xl shadow hover:shadow-xl hover:-translate-y-1 transition cursor-pointer"
+  >
+    <div class="text-gray-700 text-3xl mb-3">📈</div>
+    <h3 class="font-semibold text-lg">Ver Reservas</h3>
+    <p class="text-gray-500 text-sm">
+      Gestionar calendario de reservas
+    </p>
+  </div>
+
+  <!-- Reportes -->
+  <div
+    class="bg-white p-6 rounded-xl shadow hover:shadow-xl hover:-translate-y-1 transition cursor-pointer"
+  >
+    <div class="text-gray-700 text-3xl mb-3">✅</div>
+    <h3 class="font-semibold text-lg">Reportes</h3>
+    <p class="text-gray-500 text-sm">
+      Generar informes y estadísticas
+    </p>
+  </div>
+
+</div>
+
+</div>
