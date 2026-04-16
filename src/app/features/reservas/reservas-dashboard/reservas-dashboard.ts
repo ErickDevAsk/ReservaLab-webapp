@@ -1,7 +1,6 @@
 import { Component, signal, computed, inject } from '@angular/core'; //agregamos inject y computed
-import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router'; //agregamos Router para navegación
-import { RouterLink } from '@angular/router';
+//import { Router } from '@angular/router'; //agregamos Router para navegación
+//import { RouterLink } from '@angular/router';
 import { ReservaModal } from '../components/reserva-modal/reserva-modal'; //importamos el modal
 import { ReservaService } from '../../../core/services/reserva'; //importamos el servicio de reservas para manejar la lógica de backend
 import { NotificationService } from '../../../core/services/notification'; //importamos el servicio de notificaciones para mostrar mensajes visuales al usuario
@@ -34,7 +33,7 @@ export interface SlotDiario {
 @Component({
   selector: 'app-reservas-dashboard',
   standalone: true,
-  imports: [CommonModule, ReservaModal, RouterLink],
+  imports: [ReservaModal],
   templateUrl: './reservas-dashboard.html',
   styleUrl: './reservas-dashboard.scss',
 })
@@ -42,12 +41,11 @@ export interface SlotDiario {
 export class ReservasDashboard {
 
   // Servicios
-  private readonly router         = inject(Router);
   private readonly reservaService = inject(ReservaService);
   private readonly notifService   = inject(NotificationService);
 
   // Sidebar
-  sidebarCollapsed = signal(false);
+ // sidebarCollapsed = signal(false);
 
   // Vista activa
   vista = signal<VistaCalendario>('semanal');
@@ -235,7 +233,7 @@ export class ReservasDashboard {
   }
 
   // Sidebar y routing
-  toggleSidebar() {
+  /*toggleSidebar() {
     this.sidebarCollapsed.update(v => !v);
   }
 
@@ -246,6 +244,7 @@ export class ReservasDashboard {
     localStorage.removeItem('access_token');
     this.router.navigate(['/']);
   }
+  */
 
   // Helpers
   estaDisponible(diaIdx: number, horaIdx: number): boolean {

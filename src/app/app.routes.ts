@@ -3,55 +3,57 @@ import { LandingPage } from './features/landing/landing-page/landing-page';
 import { Register } from './features/auth/register/register';
 import { LoginComponent } from './features/auth/login/login.component';
 import { authGuard } from './core/guards/auth-guard';
-// Importamos el componente del dashboard del estudiante
+
+// Importamos el Layout y las vistas del estudiante
+import { StudentLayout } from './features/student/student-layout/student-layout';
 import { StudentDashboardComponent } from './features/student/student-dashboard/student-dashboard.component';
 import { StudentProfileComponent } from './features/student/student-profile/student-profile';
+import { ReservasDashboard } from './features/reservas/reservas-dashboard/reservas-dashboard';
+
 import { TecnicoDashboard } from './features/tecnico/tecnico-dashboard/tecnico-dashboard';
 import { Reglamento } from './features/landing/reglamento/reglamento';
-import { ReservasDashboard } from './features/reservas/reservas-dashboard/reservas-dashboard';
-export const routes: Routes = [
-  {
-    path: '',
-    component: LandingPage,
 
-  },
-  { path: 'register',
-    component: Register },
+export const routes: Routes = [
+  { path: '', component: LandingPage },
+  { path: 'register', component: Register },
+  { path: 'login-reserva', component: LoginComponent },
+  { path: 'reglamento', component: Reglamento },
+
+  // ==========================================
+  // 🎓 ZONA DEL ESTUDIANTE (CON LAYOUT)
+  // ==========================================
   {
-    path: 'login-reserva',
-    component: LoginComponent,
+    path: 'student',
+    component: StudentLayout, // 1. Cargamos el cascarón con la barra lateral
+    canActivate: [authGuard],          // 2. Protegemos TODA la zona del estudiante
+    data: { expectedRole: 'Estudiante' },
+    children: [                        // 3. Inyectamos los hijos en el <router-outlet>
+      { path: 'dashboard', component: StudentDashboardComponent },
+      { path: 'reservas', component: ReservasDashboard },
+      { path: 'perfil', component: StudentProfileComponent },
+      // Si escriben "/student" a secas, los mandamos al dashboard
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
+    ]
   },
-  {
-    path: 'student-dashboard',
-    component: StudentDashboardComponent,
-    canActivate: [authGuard],
-    // Le decimos al Guard que esta ruta es exclusiva para estudiantes
-    data: { expectedRole: 'Estudiante' }
-  },
-  {
-    path: 'student-profile',
-    component: StudentProfileComponent,
-    canActivate: [authGuard], // Le ponemos el candado también
-    data: { expectedRole: 'Estudiante' } // Exclusivo para estudiantes
-  },
+
+  // ==========================================
+  // 🛠️ ZONA DEL TÉCNICO
+  // ==========================================
   {
     path: 'tecnico-dashboard',
     component: TecnicoDashboard,
     canActivate: [authGuard],
-    // Le decimos al Guard que esta ruta es exclusiva para tecnicos
     data: { expectedRole: 'tecnico' }
   },
-  {
-    path: 'reglamento',
-    component: Reglamento
-  },
-  {
-    path: 'reservas',
-    component: ReservasDashboard
-  },
-  // Ruta comodín (si escriben una URL a lo loco, los manda al inicio)
-  {
-    path: '**',
-    redirectTo: ''
-  }
+
+  // ==========================================
+  // 🛟 RUTAS DE RESCATE (REDIRECCIONES)
+  // ==========================================
+  // Si tu Login o código viejo apunta a las rutas anteriores, esto las corrige en automático
+  { path: 'student-dashboard', redirectTo: 'student/dashboard', pathMatch: 'full' },
+  { path: 'student-profile', redirectTo: 'student/perfil', pathMatch: 'full' },
+  { path: 'reservas', redirectTo: 'student/reservas', pathMatch: 'full' },
+
+  // Ruta comodín (Si escriben una ruta que no existe, van al inicio)
+  { path: '**', redirectTo: '' }
 ];
