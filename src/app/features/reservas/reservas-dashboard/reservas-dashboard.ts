@@ -1,5 +1,4 @@
 import { Component, signal, computed, inject } from '@angular/core'; //agregamos inject y computed
-import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router'; //agregamos Router para navegación
 import { RouterLink } from '@angular/router';
 import { ReservaModal } from '../components/reserva-modal/reserva-modal'; //importamos el modal
@@ -35,7 +34,7 @@ export interface SlotDiario {
 @Component({
   selector: 'app-reservas-dashboard',
   standalone: true,
-  imports: [CommonModule, ReservaModal, RouterLink, SidebarComponent],
+  imports: [ReservaModal],
   templateUrl: './reservas-dashboard.html',
   styleUrl: './reservas-dashboard.scss',
 })
@@ -43,10 +42,11 @@ export interface SlotDiario {
 export class ReservasDashboard {
 
   // Servicios
-  private readonly router         = inject(Router);
   private readonly reservaService = inject(ReservaService);
   private readonly notifService   = inject(NotificationService);
 
+  // Sidebar
+ // sidebarCollapsed = signal(false);
 
   // Vista activa
   vista = signal<VistaCalendario>('semanal');
@@ -233,6 +233,19 @@ export class ReservasDashboard {
     });
   }
 
+  // Sidebar y routing
+  /*toggleSidebar() {
+    this.sidebarCollapsed.update(v => !v);
+  }
+
+  irADashboard() { this.router.navigate(['/student-dashboard']); }
+  irALanding()   { this.router.navigate(['/']); }
+
+  cerrarSesion() {
+    localStorage.removeItem('access_token');
+    this.router.navigate(['/']);
+  }
+  */
 
   // Helpers
   estaDisponible(diaIdx: number, horaIdx: number): boolean {
@@ -264,6 +277,5 @@ export class ReservasDashboard {
     const [hh, mm] = hora.split(':').map(Number);
     return `${String(hh + 1).padStart(2, '0')}:${String(mm).padStart(2, '0')}`;
   }
-  irADashboard() { this.router.navigate(['/student-dashboard']); }
-  irALanding()   { this.router.navigate(['/']); }
+
 }
