@@ -1,6 +1,5 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { LabCatalogComponent } from '../../labs/lab-catalog/lab-catalog';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar'; // Ajusta la ruta si es necesario
 
@@ -25,11 +24,7 @@ export interface Prestamo{
 @Component({
   selector: 'app-student-dashboard',
   standalone: true,
-<<<<<<< HEAD
-  imports: [CommonModule, SummaryCardComponent, LabCatalogComponent, RouterLink, SidebarComponent],
-=======
-  imports: [CommonModule, LabCatalogComponent, RouterLink],
->>>>>>> dev_eduardo
+  imports: [CommonModule, LabCatalogComponent],
   templateUrl: './student-dashboard.component.html',
 })
 export class StudentDashboardComponent {

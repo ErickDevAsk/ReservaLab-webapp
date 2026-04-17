@@ -1,6 +1,7 @@
 import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterOutlet, RouterLinkActive } from '@angular/router';
+import { SidebarComponent } from '../../../shared/components/sidebar/sidebar';
 
 @Component({
   selector: 'app-student-layout',
@@ -8,7 +9,7 @@ import { Router, RouterLink, RouterOutlet, RouterLinkActive } from '@angular/rou
     CommonModule,
     RouterOutlet,
     RouterLink,
-    RouterLinkActive],
+    SidebarComponent],
   templateUrl: './student-layout.html',
   styleUrl: './student-layout.scss',
 })

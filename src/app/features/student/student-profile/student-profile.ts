@@ -7,7 +7,7 @@ import { SidebarComponent } from '../../../shared/components/sidebar/sidebar'; /
 @Component({
   selector: 'app-student-profile',
   standalone: true,
-  imports: [CommonModule, RouterLink, SidebarComponent],
+  imports: [CommonModule],
   templateUrl: './student-profile.html',
   styleUrl: './student-profile.scss' // 👇 AQUÍ ESTÁ LA CONEXIÓN VITAL AL SCSS
 })
