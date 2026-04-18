@@ -1,10 +1,18 @@
-// NUEVO: Importamos OnInit y tu nuevo servicio
+//Refactorización completa del componente de reserva-modal.ts para integrar la selección de equipos desde el inventario. 
+// Se agregan validaciones, manejo de estado y mejoras en la UX.
+
 import { Component, inject, input, output, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NotificationService } from '../../../../core/services/notification';
-// NUEVO: Asegúrate de que esta ruta apunte bien a donde creaste tu servicio
 import { LaboratorioService } from '../../../../core/services/laboratorio';
+// NUEVO: Importamos el servicio y la interfaz de equipos
+import { EquipoService, Equipo } from '../../../../core/services/equipo';
+// Interfaz para manejar el estado de selección de cada equipo en la UI
+export interface EquipoSeleccionado extends Equipo {
+  seleccionado: boolean;
+  cantidadRequerida: number;
+}
 
 @Component({
   selector: 'app-reserva-modal',
@@ -12,69 +20,156 @@ import { LaboratorioService } from '../../../../core/services/laboratorio';
   templateUrl: './reserva-modal.html',
   styleUrl: './reserva-modal.scss',
 })
-// NUEVO: Le agregamos implements OnInit para que ejecute código al abrirse
 export class ReservaModal implements OnInit {
 
-  private readonly notifService = inject(NotificationService);
-  private readonly labService = inject(LaboratorioService); // NUEVO: Inyectamos el gerente de laboratorios
+  // Servicios 
+  private readonly notifService  = inject(NotificationService);
+  private readonly labService    = inject(LaboratorioService);
+  private readonly equipoService = inject(EquipoService);
 
-  // Inputs desde el dashboard
+  // Inputs desde el dashboard 
   fechaDisplay = input.required<string>();
-  hora = input.required<string>();
+  hora         = input.required<string>();
 
-  // Outputs hacia el dashboard ─
+  // Outputs hacia el dashboard 
   alCerrar    = output<void>();
   alConfirmar = output<any>();
 
-  // Formulario
+  // Estado del formulario
   laboratorio = '';
-  equipo      = '';
   duracion    = 1;
   proposito   = '';
 
-  // NUEVO: Quitamos el readonly y los datos falsos. Ahora es un arreglo vacío que llenaremos.
-  laboratorios: any[] = [];
+  // Estado de carga 
+  cargandoLabs    = false;
+  cargandoEquipos = false;
 
-  // Opciones de equipo (Este lo dejamos igual por ahora hasta que hagan la tabla de equipos)
-  readonly equipos = [
-    'Microscopio Óptico',
-    'Osciloscopio Digital',
-    'Centrifugadora',
-    'Espectrofotómetro',
-    'Balanza Analítica',
-  ];
+  // Listas de datos 
+  laboratorios: any[]               = [];
+  equiposDisponibles: EquipoSeleccionado[] = [];
 
-  readonly normas = [
-    'Llegar puntual a la reserva',
-    'Devolver el equipo en las mismas condiciones',
-    'Reportar cualquier daño o incidencia inmediatamente',
-    'Cancelar con al menos 24 horas de anticipación si no podrás asistir',
-  ];
+  // Computed: equipos que el usuario marcó 
+  get equiposSeleccionados(): EquipoSeleccionado[] {
+    return this.equiposDisponibles.filter(eq => eq.seleccionado);
+  }
 
-  // NUEVO: Este método se ejecuta automáticamente en cuanto se abre el modal
-  ngOnInit() {
+  get hayEquiposSeleccionados(): boolean {
+    return this.equiposSeleccionados.length > 0;
+  }
+
+  // Lifecycle
+  ngOnInit(): void {
+    this.cargarLaboratorios();
+    this.cargarEquipos();
+  }
+
+  //Carga de datos 
+
+  cargarLaboratorios(): void {
+    this.cargandoLabs = true;
+
     this.labService.getLaboratorios().subscribe({
-      next: (datosReales: any) => {
-        // Llenamos la variable con la respuesta de Django
-        this.laboratorios = datosReales;
+      next: (datos: any) => {
+        this.laboratorios = datos;
+        this.cargandoLabs = false;
       },
-      error: (err: any) => {
-        console.error('Error al traer laboratorios:', err);
-        this.notifService.advertencia('No se pudieron cargar los laboratorios. Verifica el backend.');
-      }
+      error: () => {
+        this.notifService.advertencia(
+          'No se pudieron cargar los laboratorios. Verifica el backend.'
+        );
+        this.cargandoLabs = false;
+      },
     });
   }
 
-  // Métodos
-  confirmarReserva() {
+  cargarEquipos(): void {
+    this.cargandoEquipos = true;
+
+    this.equipoService.getEquipos().subscribe({
+      next: (equipos: Equipo[]) => {
+        // Mapeamos cada equipo agregando las propiedades de UI
+        this.equiposDisponibles = equipos.map(eq => ({
+          ...eq,
+          seleccionado:      false,
+          cantidadRequerida: 1,
+        }));
+        this.cargandoEquipos = false;
+      },
+      error: () => {
+        this.notifService.advertencia(
+          'No se pudieron cargar los equipos del inventario.'
+        );
+        this.cargandoEquipos = false;
+      },
+    });
+  }
+
+  // Interacciones del usuario 
+
+   // Alterna la selección de un equipo. Si no hay stock disponible, bloquea la selección e informa al usuario.
+  toggleEquipo(equipo: EquipoSeleccionado): void {
+    if (equipo.cantidad_disponible === 0 && !equipo.seleccionado) {
+      this.notifService.advertencia(
+        `"${equipo.nombre}" no tiene unidades disponibles actualmente.`
+      );
+      return;
+    }
+    equipo.seleccionado = !equipo.seleccionado;
+
+    // Si se deselecciona, reseteamos la cantidad requerida
+    if (!equipo.seleccionado) {
+      equipo.cantidadRequerida = 1;
+    }
+  }
+
+   // Valida que la cantidad requerida no supere el stock disponible.
+  validarCantidad(equipo: EquipoSeleccionado): void {
+    if (equipo.cantidadRequerida < 1) {
+      equipo.cantidadRequerida = 1;
+    }
+    if (equipo.cantidadRequerida > equipo.cantidad_disponible) {
+      equipo.cantidadRequerida = equipo.cantidad_disponible;
+      this.notifService.advertencia(
+        `Solo hay ${equipo.cantidad_disponible} unidades de "${equipo.nombre}" disponibles.`
+      );
+    }
+  }
+
+   // Retorna la clase CSS del badge de estado del equipo.
+  getBadgeClase(equipo: Equipo): string {
+    if (equipo.cantidad_disponible === 0) {
+      return 'bg-red-100 text-red-600';
+    }
+    if (equipo.cantidad_disponible <= 2) {
+      return 'bg-yellow-100 text-yellow-600';
+    }
+    return 'bg-green-100 text-green-700';
+  }
+
+  getBadgeTexto(equipo: Equipo): string {
+    if (equipo.cantidad_disponible === 0) return 'Sin stock';
+    if (equipo.cantidad_disponible <= 2) return `Últimas ${equipo.cantidad_disponible}`;
+    return `${equipo.cantidad_disponible} disponibles`;
+  }
+
+  // Validación y envío de la reserva al dashboard
+
+  confirmarReserva(): void {
+    // Validación: laboratorio
     if (!this.laboratorio) {
       this.notifService.advertencia('Por favor, selecciona un laboratorio.');
       return;
     }
-    if (!this.equipo) {
-      this.notifService.advertencia('Por favor, selecciona el equipo necesario.');
+
+    // Validación: al menos un equipo seleccionado
+    if (!this.hayEquiposSeleccionados) {
+      this.notifService.advertencia(
+        'Selecciona al menos un equipo para tu reserva.'
+      );
       return;
     }
+
+    // Validación: propósito mínimo
     if (this.proposito.trim().length < 10) {
       this.notifService.advertencia(
         'El propósito debe tener al menos 10 caracteres.'
@@ -82,15 +177,24 @@ export class ReservaModal implements OnInit {
       return;
     }
 
+    // Armamos el payload con los equipos seleccionados
+    const equiposPayload = this.equiposSeleccionados.map(eq => ({
+      id:               eq.id,
+      nombre:           eq.nombre,
+      cantidadRequerida: eq.cantidadRequerida,
+    }));
+
     this.alConfirmar.emit({
       laboratorio: this.laboratorio,
-      equipo:      this.equipo,
+      equipos:     equiposPayload,
+      // Mantenemos compatibilidad con el campo "equipo" que espera el backend
+      equipo:      equiposPayload.map(e => e.nombre).join(', '),
       duracion:    this.duracion,
       proposito:   this.proposito.trim(),
     });
   }
 
-  cerrar() {
+  cerrar(): void {
     this.alCerrar.emit();
   }
 }
