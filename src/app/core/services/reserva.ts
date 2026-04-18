@@ -1,51 +1,58 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { catchError, finalize, of, tap } from 'rxjs';
 
-// Estructura JSON para la reserva de laboratorio
-export interface Reserva{
-  laboratorio: string;    // Nombre del lab
-  fecha: string;          // YYYY-MM-DD
-  hora_inicio: string;    // HH:MM:SS
-  duracion: number;       // 1 a 4
-  equipo: string;         // Nombre del equipo
-  proposito: string;      // Mínimo 10 caracteres
+export interface Reserva {
+  laboratorio: string;
+  fecha: string;
+  hora_inicio: string;
+  duracion: number;
+  equipo: string;
+  proposito: string;
 }
 
 @Injectable({
   providedIn: 'root',
 })
-
 export class ReservaService {
   private readonly http = inject(HttpClient);
-  private readonly API_URL = 'http://localhost:8000/api/reservas'; // URL base de Django
 
-  // Signals para manejar el estado en Angular 20
+  // URL corregida con slash final para evitar redirección
+  private readonly API_URL = 'http://localhost:8000/api/reservas';
+
   public loading = signal<boolean>(false);
   public error = signal<string | null>(null);
   public success = signal<boolean>(false);
 
-  /**
-   * Envía la solicitud de reserva al backend
-   */
   crearReserva(datos: any) {
     this.loading.set(true);
     this.error.set(null);
     this.success.set(false);
 
-    // 1. Sacamos el token usando la llave exacta que encontraste
-    const token = localStorage.getItem('access_token');
-
-    // 2. Armamos el header de autorización
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
-
-    // 3. Enviamos la petición con los headers incluidos
-    return this.http.post(`${this.API_URL}/crear/`, datos, { headers }).pipe(
+    // Eliminamos los headers manuales. El authInterceptor los inyecta automáticamente en TODAS las peticiones.
+    return this.http.post(`${this.API_URL}/crear/`, datos).pipe(
       tap(() => this.success.set(true)),
       catchError((err) => {
-        const mensajeError = err.error?.mensaje || 'Error al procesar la reserva';
+        // Leemos correctamente los errores de DRF
+        // DRF puede retornar errores como objeto o como string
+        let mensajeError = 'Error al procesar la reserva. Intenta de nuevo.';
+
+        if (err.error) {
+          if (typeof err.error === 'string') {
+            mensajeError = err.error;
+          } else if (err.error.detail) {
+            // Error estándar de DRF (ej: 401, 403)
+            mensajeError = err.error.detail;
+          } else if (err.error.non_field_errors) {
+            // Errores de validación general del serializer
+            mensajeError = err.error.non_field_errors[0];
+          } else {
+            // Tomamos el primer campo con error
+            const primerCampo = Object.keys(err.error)[0];
+            mensajeError = `${primerCampo}: ${err.error[primerCampo][0]}`;
+          }
+        }
+
         this.error.set(mensajeError);
         return of(null);
       }),
@@ -53,12 +60,9 @@ export class ReservaService {
     );
   }
 
-  /**
-   * Consulta disponibilidad (Misión: Validaciones en tiempo real) [cite: 27]
-   */
   consultarDisponibilidad(lab: string, fecha: string) {
     return this.http.get<any>(`${this.API_URL}/disponibilidad/`, {
-      params: { lab, fecha }
+      params: { lab, fecha },
     });
   }
 }
