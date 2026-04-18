@@ -19,17 +19,17 @@ export const authGuard: CanActivateFn = (route, state) => {
 
       // 4. Si la ruta exige un rol específico y el usuario NO lo tiene...
       if (expectedRole && expectedRole !== userRole) {
-        console.warn('Acceso denegado: Rol incorrecto');
+        console.warn(`Acceso denegado: Tienes rol '${userRole}', se requiere '${expectedRole}'`);
 
         // Lo pateamos a su dashboard correspondiente según su verdadero rol
         if (userRole === 'Estudiante') {
-          router.navigate(['/student-dashboard']);
+          router.navigate(['/student/dashboard']);
         } else if (userRole === 'tecnico') {
-          router.navigate(['/tecnico-dashboard']);
+          router.navigate(['/tecnico/dashboard']);
         } else if (userRole === 'Administrador') {
-          router.navigate(['/admin-dashboard']);
+          router.navigate(['/admin/dashboard']);
         } else {
-          router.navigate(['/']); // Fallback por si acaso
+          router.navigate(['/']); // Fallback
         }
         return false;
       }
@@ -38,15 +38,15 @@ export const authGuard: CanActivateFn = (route, state) => {
       return true;
 
     } catch (error) {
-      // Si el token está corrupto o alterado, lo borramos y lo mandamos al login
+      // Token corrupto o expirado
       console.error('Token inválido', error);
       localStorage.removeItem('access_token');
       router.navigate(['/login-reserva']);
       return false;
     }
+  } else {
+    // Si no hay token en lo absoluto, bloqueamos y mandamos al login
+    router.navigate(['/login-reserva']);
+    return false;
   }
-
-  // Si de plano no hay token, a la pantalla de login
-  router.navigate(['/login-reserva']);
-  return false;
 };

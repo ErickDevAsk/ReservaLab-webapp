@@ -10,6 +10,7 @@ import { StudentDashboardComponent } from './features/student/student-dashboard/
 import { StudentProfileComponent } from './features/student/student-profile/student-profile';
 import { ReservasDashboard } from './features/reservas/reservas-dashboard/reservas-dashboard';
 
+// Importamos el Layout y las vistas del técnico
 import { TecnicoDashboard } from './features/tecnico/tecnico-dashboard/tecnico-dashboard';
 import { GestionEquipos } from './features/tecnico/gestion-equipos/gestion-equipos';
 import { Dashboard } from './features/tecnico/dashboard/dashboard';
@@ -19,43 +20,58 @@ import { Reportes } from './features/tecnico/reportes/reportes';
 import { Perfil } from './features/tecnico/perfil/perfil';
 
 import { Reglamento } from './features/landing/reglamento/reglamento';
+
 export const routes: Routes = [
+  // 🌍 RUTAS PÚBLICAS
   { path: '', component: LandingPage },
-  { path: 'register', component: Register },
   { path: 'login-reserva', component: LoginComponent },
+  { path: 'registro-estudiante', component: Register },
   { path: 'reglamento', component: Reglamento },
 
-  // ==========================================
   // 🎓 ZONA DEL ESTUDIANTE (CON LAYOUT)
-  // ==========================================
   {
     path: 'student',
-    component: StudentLayout, // 1. Cargamos el cascarón con la barra lateral
-    canActivate: [authGuard],          // 2. Protegemos TODA la zona del estudiante
+    component: StudentLayout,
+    canActivate: [authGuard],
     data: { expectedRole: 'Estudiante' },
-    children: [                        // 3. Inyectamos los hijos en el <router-outlet>
+    children: [
       { path: 'dashboard', component: StudentDashboardComponent },
       { path: 'reservas', component: ReservasDashboard },
       { path: 'perfil', component: StudentProfileComponent },
-      // Si escriben "/student" a secas, los mandamos al dashboard
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },
+
+  // 🔧 ZONA DEL TÉCNICO (CON LAYOUT)
   {
-    path: 'tecnico-dashboard',
-    component: TecnicoDashboard,
+    path: 'tecnico',
+    component: TecnicoDashboard, // Actúa como el cascarón (Sidebar + Navbar)
     canActivate: [authGuard],
-    data: { expectedRole: 'tecnico' }
+    data: { expectedRole: 'tecnico' },
+    children: [
+      { path: 'dashboard', component: Dashboard },
+      { path: 'perfil', component: Perfil }, // <-- ¡Aquí está tu componente!
+      { path: 'gestion-equipos', component: GestionEquipos },
+      { path: 'gestion-labs', component: GestionLabs },
+      { path: 'aprobaciones', component: Aprobaciones },
+      { path: 'reportes', component: Reportes },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
+    ]
   },
 
-  // ==========================================
   // 🛟 RUTAS DE RESCATE (REDIRECCIONES)
-  // ==========================================
-  // Si tu Login o código viejo apunta a las rutas anteriores, esto las corrige en automático
-  { path: 'student-dashboard', redirectTo: 'student/dashboard', pathMatch: 'full' },
-  { path: 'student-profile', redirectTo: 'student/perfil', pathMatch: 'full' },
-  { path: 'reservas', redirectTo: 'student/reservas', pathMatch: 'full' },
+  { path: 'student-dashboard',  redirectTo: 'student/dashboard',  pathMatch: 'full' },
+  { path: 'student-profile',    redirectTo: 'student/perfil',     pathMatch: 'full' },
 
-  // Ruta comodín (Si escriben una ruta que no existe, van al inicio)
+  // FIX: Agregamos redirecciones para TODAS las rutas antiguas del técnico
+  { path: 'tecnico-dashboard',                 redirectTo: 'tecnico/dashboard',       pathMatch: 'full' },
+  { path: 'tecnico-dashboard/dashboard',       redirectTo: 'tecnico/dashboard',       pathMatch: 'full' },
+  { path: 'tecnico-dashboard/perfil',          redirectTo: 'tecnico/perfil',          pathMatch: 'full' },
+  { path: 'tecnico-dashboard/gestion-equipos', redirectTo: 'tecnico/gestion-equipos', pathMatch: 'full' },
+  { path: 'tecnico-dashboard/gestion-labs',    redirectTo: 'tecnico/gestion-labs',    pathMatch: 'full' },
+  { path: 'tecnico-dashboard/aprobaciones',    redirectTo: 'tecnico/aprobaciones',    pathMatch: 'full' },
+  { path: 'tecnico-dashboard/reportes',        redirectTo: 'tecnico/reportes',        pathMatch: 'full' },
+
+  // Redirección por defecto a la landing si la ruta no existe
   { path: '**', redirectTo: '' }
 ];
