@@ -1,0 +1,58 @@
+<div class="admin-container">
+  <header class="admin-header">
+    <h1>Gestión de Personal Técnico</h1>
+    <p>Alta segura de staff. Solo el Administrador puede crear cuentas con estos privilegios.</p>
+  </header>
+
+  <div class="gestion-grid">
+    <section class="form-section card">
+      <h3>➕ Nuevo Técnico</h3>
+      
+      <form (ngSubmit)="registrarTecnico()">
+        <div class="form-group">
+          <label>Nombre Completo</label>
+          <input type="text" name="nombre" [(ngModel)]="nuevoTecnico.nombre" required placeholder="Ej. Roberto Torres">
+        </div>
+        
+        <div class="form-group">
+          <label>Correo Institucional</label>
+          <input type="email" name="correo" [(ngModel)]="nuevoTecnico.correo" required placeholder="roberto@buap.mx">
+        </div>
+        
+        <div class="form-group">
+          <label>Contraseña Temporal</label>
+          <input type="password" name="password" [(ngModel)]="nuevoTecnico.password" required placeholder="********">
+        </div>
+        
+        <button type="submit" class="btn-primary">Registrar Usuario</button>
+      </form>
+    </section>
+
+    <section class="table-section card">
+      <h3>👥 Staff de Laboratorios</h3>
+      
+      <div class="table-responsive">
+        <table class="tecnicos-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Correo</th>
+              <th>Estado</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let tecnico of tecnicos">
+              <td>#00{{ tecnico.id }}</td>
+              <td>{{ tecnico.nombre }}</td>
+              <td>{{ tecnico.correo }}</td>
+              <td><span class="badge active">{{ tecnico.estado }}</span></td>
+              <td><button class="btn-danger">Baja</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</div>

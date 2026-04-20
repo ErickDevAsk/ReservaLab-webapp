@@ -10,6 +10,9 @@ import { StudentDashboardComponent } from './features/student/student-dashboard/
 import { StudentProfileComponent } from './features/student/student-profile/student-profile';
 import { ReservasDashboard } from './features/reservas/reservas-dashboard/reservas-dashboard';
 
+// Importamos tu Centro de Mando (Sin el .ts)
+import { AdminProfileComponent } from './features/admin/admin-profile/admin-profile';
+import { GestionUsuariosComponent } from './features/admin/gestion-usuarios/gestion-usuarios';
 import { TecnicoDashboard } from './features/tecnico/tecnico-dashboard/tecnico-dashboard';
 import { GestionEquipos } from './features/tecnico/gestion-equipos/gestion-equipos';
 import { Dashboard } from './features/tecnico/dashboard/dashboard';
@@ -19,12 +22,18 @@ import { Reportes } from './features/tecnico/reportes/reportes';
 import { Perfil } from './features/tecnico/perfil/perfil';
 
 import { Reglamento } from './features/landing/reglamento/reglamento';
+
 export const routes: Routes = [
   { path: '', component: LandingPage },
   { path: 'register', component: Register },
   { path: 'login-reserva', component: LoginComponent },
   { path: 'reglamento', component: Reglamento },
 
+  // ==========================================
+  // 👑 ZONA DEL ADMINISTRADOR (Tú)
+  // ==========================================
+  { path: 'admin-profile', component: AdminProfileComponent },
+{ path: 'gestion-usuarios', component: GestionUsuariosComponent },
   // ==========================================
   // 🎓 ZONA DEL ESTUDIANTE (CON LAYOUT)
   // ==========================================
@@ -41,6 +50,10 @@ export const routes: Routes = [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },
+  
+  // ==========================================
+  // 🛠️ ZONA DEL TÉCNICO
+  // ==========================================
   {
     path: 'tecnico-dashboard',
     component: TecnicoDashboard,

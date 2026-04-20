@@ -1,43 +1,53 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-// 1. Importamos tu nuevo servicio y la interfaz
-import { LaboratorioService, Laboratorio } from '../../../core/services/laboratorio';
+// Ocultamos temporalmente la importación de la base de datos
+// import { LaboratorioService, Laboratorio } from '../../../core/services/laboratorio';
 
 @Component({
   selector: 'app-lab-catalog',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './lab-catalog.html'
+  templateUrl: './lab-catalog.html',
+  styleUrls: ['./lab-catalog.scss']
 })
 export class LabCatalogComponent implements OnInit {
   filtroActual: string = 'Todos';
+  
+  // 🔥 Le metemos datos "falsos" temporalmente para ver el diseño
+  laboratorios: any[] = [
+    { 
+      nombre: 'Laboratorio de Software', 
+      edificio: 'CCO4', 
+      facultad: 'FCC', 
+      capacidad: 40, 
+      imagen: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=800&q=80', 
+      estado: 'Libre' 
+    },
+    { 
+      nombre: 'Laboratorio de Redes', 
+      edificio: 'CCO3', 
+      facultad: 'FCC', 
+      capacidad: 30, 
+      imagen: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80', 
+      estado: 'Ocupado' 
+    },
+    { 
+      nombre: 'Laboratorio de Química Analítica', 
+      edificio: 'QUM1', 
+      facultad: 'FIQ', 
+      capacidad: 25, 
+      imagen: 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=800&q=80', 
+      estado: 'Libre' 
+    }
+  ];
 
-  // 2. Ahora nuestro arreglo empieza vacío, esperando los datos de Django
-  laboratorios: Laboratorio[] = [];
+  constructor() {}
 
-  // 3. Inyectamos al "repartidor" en el constructor
-  constructor(private laboratorioService: LaboratorioService) {}
-
-  // 4. ngOnInit se ejecuta automáticamente en cuanto la pantalla carga
   ngOnInit(): void {
-    this.cargarLaboratoriosDesdeDjango();
+    // Comentamos la llamada real a Django hasta que haya datos
+    // this.cargarLaboratoriosDesdeDjango();
   }
 
-  // 5. La función que hace la llamada a la base de datos
-  cargarLaboratoriosDesdeDjango(): void {
-    // Nos suscribimos para escuchar la respuesta del servidor
-    this.laboratorioService.getLaboratorios().subscribe({
-      next: (datosQueLlegaron: any) => {
-        this.laboratorios = datosQueLlegaron;
-        console.log('¡Datos descargados de Django!', datosQueLlegaron);
-      },
-      error: (error: any) => {
-        console.error('Hubo un error al conectar con Django:', error);
-      }
-    });
-  }
-
-  // ¡TUS FILTROS MAGISTRALES SE QUEDAN INTACTOS!
   get laboratoriosFiltrados() {
     if (this.filtroActual === 'Todos') {
       return this.laboratorios;
