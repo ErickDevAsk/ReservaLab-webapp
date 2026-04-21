@@ -31,11 +31,20 @@ export const routes: Routes = [
   { path: 'registro-estudiante', component: Register },
   { path: 'reglamento', component: Reglamento },
 
-  // ==========================================
+// ==========================================
   // 👑 ZONA DEL ADMINISTRADOR (Tú)
   // ==========================================
-  { path: 'admin-profile', component: AdminProfileComponent },
-{ path: 'gestion-usuarios', component: GestionUsuariosComponent },
+  {
+    path: 'admin',
+    canActivate: [authGuard],
+    data: { expectedRole: 'Administrador' },
+    children: [
+      { path: 'perfil', component: AdminProfileComponent },
+      { path: 'gestion-usuarios', component: GestionUsuariosComponent },
+      // Redirige por defecto al perfil si solo ponen /admin
+      { path: '', redirectTo: 'perfil', pathMatch: 'full' }
+    ]
+  },
   // ==========================================
   // 🎓 ZONA DEL ESTUDIANTE (CON LAYOUT)
   {
@@ -50,7 +59,7 @@ export const routes: Routes = [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },
-  
+
   // ==========================================
   // 🛠️ ZONA DEL TÉCNICO
   // ==========================================
@@ -60,7 +69,7 @@ export const routes: Routes = [
     path: 'tecnico',
     component: TecnicoDashboard, // Actúa como el cascarón (Sidebar + Navbar)
     canActivate: [authGuard],
-    data: { expectedRole: 'tecnico' },
+    data: { expectedRole: 'Tecnico' },
     children: [
       { path: 'dashboard', component: Dashboard },
       { path: 'perfil', component: Perfil }, // <-- ¡Aquí está tu componente!

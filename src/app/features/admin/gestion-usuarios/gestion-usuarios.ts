@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core'; // Usamos signal
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; // ¡Clave para el formulario!
+import { FormsModule } from '@angular/forms';
+import { AdminTecnicosService } from '../../../core/services/admin-tecnicos';
 
 @Component({
   selector: 'app-gestion-usuarios',
@@ -9,31 +10,90 @@ import { FormsModule } from '@angular/forms'; // ¡Clave para el formulario!
   templateUrl: './gestion-usuarios.html',
   styleUrls: ['./gestion-usuarios.scss']
 })
-export class GestionUsuariosComponent {
-  // Lista temporal de técnicos (Luego vendrá del backend de Erick)
-  tecnicos = [
-    { id: 1, nombre: 'Luis Ortiz', correo: 'luis.ortiz@buap.mx', estado: 'Activo' },
-    { id: 2, nombre: 'Christian', correo: 'christian@buap.mx', estado: 'Activo' },
-    { id: 3, nombre: 'Ángel', correo: 'angel.inv@buap.mx', estado: 'En Turno' }
-  ];
+export class GestionUsuariosComponent implements OnInit {
+  private readonly adminService = inject(AdminTecnicosService);
 
-  // Variables donde se guardará lo que escribas en el formulario
+  // Usamos un Signal para que Angular detecte el cambio instantáneamente
+  public tecnicos = signal<any[]>([]);
+  public cargando = signal<boolean>(false);
+
   nuevoTecnico = {
-    nombre: '',
-    correo: '',
-    password: ''
+    username: '',
+    password: '',
+    first_name: '',
+    last_name: '',
+    email: '',
+    matricula_id: '',
+    carrera_departamento: '',
+    rol: 'Tecnico'
   };
 
-  // Función que se ejecuta al darle click al botón de guardar
-  registrarTecnico() {
-    if(this.nuevoTecnico.nombre && this.nuevoTecnico.correo) {
-      alert(`¡Técnico ${this.nuevoTecnico.nombre} registrado correctamente!`);
-      // Aquí más adelante haremos el POST a la API de Erick
-      
-      // Limpiamos el formulario después de guardar
-      this.nuevoTecnico = { nombre: '', correo: '', password: '' };
-    } else {
-      alert('Por favor llena los campos requeridos.');
-    }
+  ngOnInit(): void {
+    this.cargarTecnicos();
   }
+
+  cargarTecnicos(): void {
+    this.cargando.set(true);
+    this.adminService.obtenerStaff().subscribe({
+      next: (data: any) => {
+        console.log('Datos brutos de Django:', data);
+
+        // --- LA CIRUGÍA ---
+        // 1. Extraemos de 'results' si Django está paginando
+        let temp = data.results ? data.results : data;
+
+        // 2. APLANADO AGRESIVO: Rompe cualquier nivel de arreglos anidados
+        // Esto convierte [[[ {obj} ]]] en simplemente [ {obj} ]
+        if (Array.isArray(temp)) {
+          temp = temp.flat(Infinity);
+        } else {
+          temp = [temp];
+        }
+
+        // 3. Guardamos en el signal
+        this.tecnicos.set(temp);
+
+        console.log('Datos aplanados y listos:', this.tecnicos());
+        this.cargando.set(false);
+      },
+      error: (err) => {
+        console.error('Error al cargar staff:', err);
+        this.cargando.set(false);
+      }
+    });
+  }
+
+  registrarTecnico(): void {
+    this.adminService.registrarNuevoTecnico(this.nuevoTecnico).subscribe({
+      next: () => {
+        alert('¡Técnico registrado!');
+        this.cargarTecnicos();
+        this.limpiarForm();
+      },
+      error: (err) => alert('Error al guardar. Revisa la consola.')
+    });
+  }
+  darDeBaja(id: number): void {
+  if (confirm('¿Estás seguro de que deseas eliminar a este técnico del sistema?')) {
+    this.adminService.eliminarTecnico(id).subscribe({
+      next: () => {
+        alert('Técnico eliminado correctamente.');
+        // Refrescamos la tabla para que desaparezca el que borramos
+        this.cargarTecnicos();
+      },
+      error: (err) => {
+        console.error('Error al eliminar:', err);
+        alert('No se pudo eliminar. Revisa si el técnico tiene registros asociados.');
+      }
+    });
+  }
+}
+
+  private limpiarForm() {
+    this.nuevoTecnico = {
+      username: '', password: '', first_name: '', last_name: '',
+      email: '', matricula_id: '', carrera_departamento: '', rol: 'Tecnico'
+    };
+  }
+
 }

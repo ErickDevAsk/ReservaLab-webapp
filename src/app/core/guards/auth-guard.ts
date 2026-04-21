@@ -24,7 +24,7 @@ export const authGuard: CanActivateFn = (route, state) => {
         // Lo pateamos a su dashboard correspondiente según su verdadero rol
         if (userRole === 'Estudiante') {
           router.navigate(['/student/dashboard']);
-        } else if (userRole === 'tecnico') {
+        } else if (userRole === 'Tecnico') {
           router.navigate(['/tecnico/dashboard']);
         } else if (userRole === 'Administrador') {
           router.navigate(['/admin/dashboard']);

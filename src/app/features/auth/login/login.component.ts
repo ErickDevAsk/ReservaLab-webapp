@@ -41,11 +41,11 @@ export class LoginComponent {
 
           // Redirigimos según el rol
           switch(rolUsuario) {
-            case 'tecnico':
+            case 'Tecnico':
               this.router.navigate(['/tecnico-dashboard']);
               break;
             case 'Administrador':
-              this.router.navigate(['/admin-dashboard']);
+              this.router.navigate(['/admin']);
               break;
             case 'Estudiante':
               this.router.navigate(['/student-dashboard']);
