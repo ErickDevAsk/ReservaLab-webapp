@@ -1,0 +1,169 @@
+/* Contenedor Principal */
+.admin-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+  .admin-header {
+    margin-bottom: 2.5rem;
+    h1 {
+      font-size: 2.2rem;
+      color: #1e293b;
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+    }
+    p {
+      color: #64748b;
+      font-size: 1.1rem;
+    }
+  }
+
+  /* Grid para Formulario y Tabla */
+  .gestion-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr; /* 1 parte formulario, 2 partes tabla */
+    gap: 2rem;
+
+    @media (max-width: 992px) {
+      grid-template-columns: 1fr; /* En pantallas pequeñas, uno abajo del otro */
+    }
+  }
+}
+
+/* Estilo general para las tarjetas */
+.card {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
+  border: 1px solid #f1f5f9;
+
+  h3 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: #0f172a;
+    font-size: 1.3rem;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 0.8rem;
+  }
+}
+
+/* 📝 Estilos del Formulario */
+.form-section {
+  .form-group {
+    margin-bottom: 1.5rem;
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #475569;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 1rem;
+      color: #1e293b;
+      box-sizing: border-box; /* Para que no se salga del contenedor */
+      transition: all 0.2s ease;
+
+      &:focus {
+        outline: none;
+        border-color: #0D8ABC;
+        box-shadow: 0 0 0 3px rgba(13, 138, 188, 0.15);
+      }
+    }
+  }
+
+  .btn-primary {
+    width: 100%;
+    padding: 0.85rem;
+    background-color: #0D8ABC;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: #0b729c;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(13, 138, 188, 0.3);
+    }
+  }
+}
+
+/* 👥 Estilos de la Tabla */
+.table-section {
+  .table-responsive {
+    overflow-x: auto;
+  }
+
+  .tecnicos-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+
+    th, td {
+      padding: 1rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    th {
+      background-color: #f8fafc;
+      color: #475569;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    td {
+      color: #1e293b;
+      font-size: 1rem;
+    }
+
+    tbody tr {
+      transition: background-color 0.2s ease;
+      &:hover {
+        background-color: #f1f5f9;
+      }
+    }
+  }
+
+  .badge {
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    
+    &.active {
+      background-color: #dcfce7;
+      color: #166534;
+    }
+  }
+
+  .btn-danger {
+    padding: 0.5rem 1rem;
+    background-color: #fee2e2;
+    color: #b91c1c;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: #fca5a5;
+    }
+  }
+}

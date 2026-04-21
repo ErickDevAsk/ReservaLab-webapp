@@ -1,0 +1,49 @@
+<div class="admin-container">
+  <header class="admin-header">
+    <h1>Centro de Mando - Administrador</h1>
+    <p>Bienvenido al panel de control principal del sistema ReservaLab.</p>
+  </header>
+
+  <div class="dashboard-grid">
+    <section class="profile-card">
+      <div class="profile-avatar">
+        <img src="https://ui-avatars.com/api/?name=Oscar+Tomas&background=0D8ABC&color=fff&size=128" alt="Avatar">
+      </div>
+      <div class="profile-info">
+        <h2>{{ admin.nombre }}</h2>
+        <span class="badge admin-badge">{{ admin.rol }}</span>
+        
+        <div class="contact-details">
+          <p><strong>Correo:</strong> {{ admin.correo }}</p>
+          <p><strong>Dpto:</strong> {{ admin.departamento }}</p>
+        </div>
+        <button class="btn-primary">Editar Perfil</button>
+      </div>
+    </section>
+
+    <section class="stats-container">
+      <h3>Estadísticas Globales en Tiempo Real</h3>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-number">{{ stats.usuariosTotales }}</span>
+          <span class="stat-label">Usuarios Registrados</span>
+        </div>
+        
+        <div class="stat-card">
+          <span class="stat-number">{{ stats.tecnicosActivos }}</span>
+          <span class="stat-label">Técnicos Activos</span>
+        </div>
+        
+        <div class="stat-card">
+          <span class="stat-number">{{ stats.laboratorios }}</span>
+          <span class="stat-label">Laboratorios en Red</span>
+        </div>
+        
+        <div class="stat-card highlight">
+          <span class="stat-number">{{ stats.reservasHoy }}</span>
+          <span class="stat-label">Reservas de Hoy</span>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
