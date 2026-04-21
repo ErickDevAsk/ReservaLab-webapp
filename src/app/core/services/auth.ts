@@ -19,4 +19,16 @@ export class AuthService {
   login(credentials: any): Observable<any> {
     return this.http.post(`${this.apiTokenUrl}/`, credentials);
   }
+
+  obtenerPerfil(): Observable<any> {
+    // Esta ruta debe coincidir con tu ViewSet de Django para obtener el perfil del usuario autenticado
+    return this.http.get(`${this.apiAccountsUrl}/perfil/`);
+  }
+
+  //FUNCIÓN PARA ACTUALIZAR EL PERFIL
+  actualizarPerfil(datosNuevos: any): Observable<any> {
+    // Usamos PATCH para actualizar solo los campos enviados.
+    // Nota: Revisa con tu equipo si la URL termina en '/perfil/', '/update/' o similar en Django.
+    return this.http.patch(`${this.apiAccountsUrl}/perfil/`, datosNuevos);
+  }
 }
