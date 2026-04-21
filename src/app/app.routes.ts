@@ -67,16 +67,28 @@ export const routes: Routes = [
   // 🔧 ZONA DEL TÉCNICO (CON LAYOUT)
   {
     path: 'tecnico',
+
     component: TecnicoDashboard, // Actúa como el cascarón (Sidebar + Navbar)
+
     canActivate: [authGuard],
     data: { expectedRole: 'Tecnico' },
     children: [
       { path: 'dashboard', component: Dashboard },
+
       { path: 'perfil', component: Perfil }, // <-- ¡Aquí está tu componente!
       { path: 'gestion-equipos', component: GestionEquipos },
       { path: 'gestion-labs', component: GestionLabs },
       { path: 'aprobaciones', component: Aprobaciones },
       { path: 'reportes', component: Reportes },
+
+      { path: 'equipos', component: GestionEquipos },
+      { path: 'labs', component: GestionLabs },
+      { path: 'aprobaciones', component: Aprobaciones },
+      { path: 'reportes', component: Reportes },
+      { path: 'perfil', component: Perfil },
+
+      // default
+
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },

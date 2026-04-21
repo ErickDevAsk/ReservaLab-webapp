@@ -10,7 +10,7 @@
     </div>
 
     <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm">
-      3 Pendientes
+      {{ solicitudes.length }} Pendientes
     </span>
   </div>
 
@@ -41,52 +41,27 @@
 
       <tbody>
 
-        <!-- ROW -->
-        <tr class="border-b hover:bg-gray-50">
+        <tr *ngFor="let s of solicitudes" class="border-b hover:bg-gray-50">
           <td class="py-3">
-            <div class="font-medium">Juan Pérez</div>
-            <span class="text-xs text-gray-400">REQ-001</span>
+            <div class="font-medium">{{ s.usuario_nombre }}</div>
+            <span class="text-xs text-gray-400">REQ-{{ s.id }}</span>
           </td>
 
-          <td>Osciloscopio Digital</td>
-
+          <td>{{ s.equipo_nombre }}</td>
           <td>
             <span class="bg-purple-100 text-purple-600 px-2 py-1 rounded text-xs">
               Préstamo
             </span>
           </td>
 
-          <td>2026-02-03</td>
+          <td>{{ s.fecha_devolucion }}</td>
 
           <td class="space-x-2">
             <button class="bg-green-100 text-green-600 px-2 py-1 rounded">✔</button>
             <button class="bg-red-100 text-red-600 px-2 py-1 rounded">✖</button>
             <button class="bg-gray-100 px-2 py-1 rounded">👁</button>
           </td>
-        </tr>
 
-        <!-- ROW -->
-        <tr class="border-b hover:bg-gray-50">
-          <td class="py-3">
-            <div class="font-medium">María García</div>
-            <span class="text-xs text-gray-400">REQ-002</span>
-          </td>
-
-          <td>Laboratorio de Electrónica</td>
-
-          <td>
-            <span class="bg-blue-100 text-blue-600 px-2 py-1 rounded text-xs">
-              Reserva
-            </span>
-          </td>
-
-          <td>2026-02-05</td>
-
-          <td class="space-x-2">
-            <button class="bg-green-100 text-green-600 px-2 py-1 rounded">✔</button>
-            <button class="bg-red-100 text-red-600 px-2 py-1 rounded">✖</button>
-            <button class="bg-gray-100 px-2 py-1 rounded">👁</button>
-          </td>
         </tr>
 
       </tbody>
@@ -106,29 +81,21 @@
       </h3>
 
       <p class="text-gray-500 text-sm mb-4">
-        Equipos que deben ser entregados hoy.
+        Equipos que deben ser entregados.
       </p>
 
-      <div class="border p-3 rounded flex justify-between items-center mb-3">
+      <div *ngFor="let d of devoluciones"
+           class="border p-3 rounded flex justify-between items-center mb-3">
+
         <div>
-          <p class="font-medium">Multímetro Digital</p>
-          <p class="text-xs text-gray-400">Prestado a Roberto Silva</p>
+          <p class="font-medium">{{ d.equipo_nombre }}</p>
+          <p class="text-xs text-gray-400">{{ d.usuario_nombre }}</p>
         </div>
 
         <button class="bg-blue-500 text-white px-3 py-1 rounded">
           Recibir
         </button>
-      </div>
 
-      <div class="border p-3 rounded flex justify-between items-center">
-        <div>
-          <p class="font-medium">Multímetro Digital</p>
-          <p class="text-xs text-gray-400">Prestado a Roberto Silva</p>
-        </div>
-
-        <button class="bg-blue-500 text-white px-3 py-1 rounded">
-          Recibir
-        </button>
       </div>
 
     </div>
@@ -144,11 +111,12 @@
         Equipos con retraso en la entrega.
       </p>
 
-      <div class="border p-3 rounded flex justify-between items-center bg-red-50">
+      <div *ngFor="let v of vencidos"
+           class="border p-3 rounded flex justify-between items-center bg-red-50 mb-2">
 
         <div>
-          <p class="font-medium">Cautín Pro</p>
-          <p class="text-xs text-red-500">Venció hace 2 días</p>
+          <p class="font-medium">{{ v.equipo_nombre }}</p>
+          <p class="text-xs text-red-500">{{ v.usuario_nombre }}</p>
         </div>
 
         <button class="bg-red-500 text-white px-3 py-1 rounded">

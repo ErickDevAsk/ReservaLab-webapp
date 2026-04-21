@@ -21,7 +21,7 @@ export class LoginComponent {
 
   onLogin() {
     console.log('Enviando a Django:', this.loginData);
-    const url = `${environment.apiUrl}token/`;
+    const url = `${environment.apiUrl}accounts/token/`;
 
     this.http.post(url, this.loginData).subscribe({
       next: (res: any) => {
@@ -31,11 +31,13 @@ export class LoginComponent {
           // 1. Decodificamos el token
           const decodedToken: any = jwtDecode(res.access);
 
+          console.log(decodedToken);
+
 
           console.log('📦 GAFETE DESENCRIPTADO:', decodedToken);
 
           // 3. Extraemos el rol
-          const rolUsuario = decodedToken.rol;
+          const rolUsuario = decodedToken.role || decodedToken.rol || decodedToken.tipo_usuario;
 
           console.log('Rol detectado:', rolUsuario);
 
