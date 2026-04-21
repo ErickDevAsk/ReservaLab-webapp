@@ -33,4 +33,8 @@ export class EquiposService {
   eliminarEquipo(id: number) {
     return this.http.delete(`${this.apiUrl}${id}/`);
   }
+
+  actualizarEquipo(id: number, equipo: Equipo) {
+    return this.http.put(`${this.apiUrl}${id}/`, equipo);
+  }
 }

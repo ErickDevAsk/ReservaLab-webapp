@@ -7,9 +7,50 @@
       <p class="text-gray-500 text-sm">8 equipos en total</p>
     </div>
 
-    <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2">
-      + Añadir Equipo
-    </button>
+    <div *ngIf="mostrarFormulario" class="bg-white p-4 rounded-xl shadow mb-6">
+
+      <h2 class="text-lg font-bold mb-4">
+        {{ modoEdicion ? 'Editar Equipo' : 'Nuevo Equipo' }}
+      </h2>
+
+      <div class="grid grid-cols-2 gap-4">
+
+        <input [(ngModel)]="nuevoEquipo.nombre" placeholder="Nombre" class="p-2 border rounded" />
+
+        <input [(ngModel)]="nuevoEquipo.numero_inventario" placeholder="Código" class="p-2 border rounded" />
+
+        <input [(ngModel)]="nuevoEquipo.descripcion" placeholder="Descripción" class="p-2 border rounded col-span-2" />
+
+        <input type="number" [(ngModel)]="nuevoEquipo.cantidad_total" placeholder="Stock total" class="p-2 border rounded" />
+
+        <input type="number" [(ngModel)]="nuevoEquipo.cantidad_disponible" placeholder="Stock disponible" class="p-2 border rounded" />
+
+      </div>
+
+      <div class="mt-4 flex gap-2">
+        <button
+          (click)="guardarEquipo()"
+          class="bg-green-600 text-white px-4 py-2 rounded"
+        >
+          Guardar
+        </button>
+
+        <button
+          (click)="toggleFormulario()"
+          class="bg-gray-400 text-white px-4 py-2 rounded"
+        >
+          Cancelar
+        </button>
+      </div>
+
+    </div>
+
+    <button
+  (click)="toggleFormulario()"
+  class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2"
+>
+  + Añadir Equipo
+</button>
   </div>
 
   <!-- FILTROS -->
@@ -72,57 +113,47 @@
 
         <tr *ngFor="let equipo of equipos" class="border-t">
 
-          <!-- NOMBRE -->
-          <td class="p-3 font-medium">
-            {{ equipo.nombre }}
-          </td>
+          <td class="p-3">{{ equipo.nombre }}</td>
 
-          <!-- CODIGO -->
-          <td>
-            {{ equipo.numero_inventario }}
-          </td>
+          <td>{{ equipo.numero_inventario }}</td>
 
-          <!-- CATEGORIA (temporal) -->
-          <td>
-            General
-          </td>
+          <td>{{ equipo.descripcion || 'N/A' }}</td>
 
-          <!-- UBICACION -->
-          <td>
-            {{ equipo.laboratorio ? equipo.laboratorio : 'Sin asignar' }}
-          </td>
+          <td>{{ equipo.laboratorio || 'Sin asignar' }}</td>
 
-          <!-- STOCK -->
-          <td [ngClass]="{
-              'text-red-500': equipo.cantidad_disponible === 0
-            }">
-            {{ equipo.cantidad_disponible }}/{{ equipo.cantidad_total }}
-          </td>
+          <td
+  [ngClass]="{
+    'text-green-600 font-semibold': equipo.cantidad_disponible > 3,
+    'text-yellow-500 font-semibold': equipo.cantidad_disponible <= 3 && equipo.cantidad_disponible > 0,
+    'text-red-600 font-semibold': equipo.cantidad_disponible === 0
+  }"
+>
+  {{ equipo.cantidad_disponible }}/{{ equipo.cantidad_total }}
+</td>
 
-          <!-- ESTADO -->
           <td>
             <span
-              class="px-2 py-1 rounded text-xs"
+              class="px-2 py-1 rounded text-xs font-semibold"
               [ngClass]="{
-                'bg-green-100 text-green-600': equipo.estado === 'Disponible',
-                'bg-blue-100 text-blue-600': equipo.estado === 'En uso',
-                'bg-yellow-100 text-yellow-600': equipo.estado === 'Mantenimiento'
+                'bg-green-100 text-green-700': equipo.cantidad_disponible > 3,
+                'bg-yellow-100 text-yellow-700': equipo.cantidad_disponible <= 3 && equipo.cantidad_disponible > 0,
+                'bg-red-100 text-red-700': equipo.cantidad_disponible === 0
               }"
             >
-              {{ equipo.estado }}
+              {{
+                equipo.cantidad_disponible > 3
+                  ? 'Disponible'
+                  : equipo.cantidad_disponible > 0
+                  ? 'Bajo stock'
+                  : 'Sin stock'
+              }}
             </span>
           </td>
 
-          <!-- ACCIONES -->
           <td class="space-x-2">
             <button class="text-blue-500">👁</button>
-            <button class="text-gray-600">✏</button>
-            <button
-              class="text-red-500"
-              (click)="eliminar(equipo.id!)"
-            >
-              🗑
-            </button>
+            <button (click)="editarEquipo(equipo)" class="text-gray-600">✏</button>
+            <button (click)="eliminar(equipo.id!)" class="text-red-500">🗑</button>
           </td>
 
         </tr>

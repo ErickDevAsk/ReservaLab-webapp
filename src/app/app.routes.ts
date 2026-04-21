@@ -42,10 +42,21 @@ export const routes: Routes = [
     ]
   },
   {
-    path: 'tecnico-dashboard',
+    path: 'tecnico',
     component: TecnicoDashboard,
     canActivate: [authGuard],
-    data: { expectedRole: 'tecnico' }
+    data: { expectedRole: 'tecnico' },
+    children: [
+      { path: 'dashboard', component: Dashboard },
+      { path: 'equipos', component: GestionEquipos },
+      { path: 'labs', component: GestionLabs },
+      { path: 'aprobaciones', component: Aprobaciones },
+      { path: 'reportes', component: Reportes },
+      { path: 'perfil', component: Perfil },
+
+      // default
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
+    ]
   },
 
   // ==========================================

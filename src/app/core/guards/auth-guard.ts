@@ -12,10 +12,13 @@ export const authGuard: CanActivateFn = (route, state) => {
     try {
       // 2. Desencriptamos el gafete para ver quién es
       const decodedToken: any = jwtDecode(token);
-      const userRole = decodedToken.rol; // Leemos el rol que viene de Django
+      const userRole = decodedToken?.rol?.toString().toLowerCase(); // Leemos el rol que viene de Django
 
       // 3. Revisamos qué rol exige la ruta a la que quiere entrar
-      const expectedRole = route.data['expectedRole'];
+      const expectedRole = (
+        route.data['expectedRole'] ||
+        route.parent?.data['expectedRole']
+      )?.toString().toLowerCase();
 
       // 4. Si la ruta exige un rol específico y el usuario NO lo tiene...
       if (expectedRole && expectedRole !== userRole) {
@@ -25,7 +28,7 @@ export const authGuard: CanActivateFn = (route, state) => {
         if (userRole === 'Estudiante') {
           router.navigate(['/student-dashboard']);
         } else if (userRole === 'tecnico') {
-          router.navigate(['/tecnico-dashboard']);
+          router.navigate(['/tecnico/dashboard']);
         } else if (userRole === 'Administrador') {
           router.navigate(['/admin-dashboard']);
         } else {
