@@ -1,6 +1,5 @@
 <div class="flex min-h-screen bg-gray-100">
 
-  <!-- SIDEBAR -->
   <aside class="w-64 bg-white shadow-lg p-4">
 
     <h2 class="text-xl font-bold mb-6 text-blue-600">
@@ -9,41 +8,39 @@
 
     <nav class="space-y-3">
 
-      <a
-        routerLink="/tecnico-dashboard/dashboard"
-        class="block p-2 rounded hover:bg-gray-100"
-      >
+      <a routerLink="/tecnico/dashboard"
+         routerLinkActive="bg-blue-50 text-blue-600 font-bold"
+         class="block p-2 rounded hover:bg-gray-100 transition-colors">
         Dashboard
       </a>
 
-      <a
-        routerLink="/tecnico-dashboard/gestion-equipos"
-        class="block p-2 hover:bg-gray-100 rounded"
-      >
+      <a routerLink="/tecnico/gestion-equipos"
+         routerLinkActive="bg-blue-50 text-blue-600 font-bold"
+         class="block p-2 hover:bg-gray-100 rounded transition-colors">
         Gestión Equipos
       </a>
 
-      <a routerLink="/tecnico-dashboard/gestion-labs"
-      class="block p-2 hover:bg-gray-100 rounded"
-      >
+      <a routerLink="/tecnico/gestion-labs"
+         routerLinkActive="bg-blue-50 text-blue-600 font-bold"
+         class="block p-2 hover:bg-gray-100 rounded transition-colors">
         Gestión Labs
       </a>
 
-      <a routerLink="/tecnico-dashboard/aprobaciones"
-      class="block p-2 hover:bg-gray-100 rounded"
-      >
+      <a routerLink="/tecnico/aprobaciones"
+         routerLinkActive="bg-blue-50 text-blue-600 font-bold"
+         class="block p-2 hover:bg-gray-100 rounded transition-colors">
         Aprobaciones
       </a>
 
-      <a routerLink="/tecnico-dashboard/reportes"
-      class="block p-2 hover:bg-gray-100 rounded"
-      >
+      <a routerLink="/tecnico/reportes"
+         routerLinkActive="bg-blue-50 text-blue-600 font-bold"
+         class="block p-2 hover:bg-gray-100 rounded transition-colors">
         Reportes
       </a>
 
-      <a routerLink="/tecnico-dashboard/perfil"
-      class="block p-2 hover:bg-gray-100 rounded"
-      >
+      <a routerLink="/tecnico/perfil"
+         routerLinkActive="bg-blue-50 text-blue-600 font-bold"
+         class="block p-2 hover:bg-gray-100 rounded transition-colors">
         Mi Perfil
       </a>
 
@@ -51,7 +48,6 @@
 
   </aside>
 
-  <!-- CONTENIDO DINÁMICO -->
   <main class="flex-1 p-8">
     <router-outlet></router-outlet>
   </main>

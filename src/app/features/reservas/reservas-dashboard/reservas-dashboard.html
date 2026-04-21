@@ -1,8 +1,14 @@
 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
   <div>
-    <h1 class="text-3xl font-black text-slate-900 tracking-tight">Gestión de Reservas</h1>
-    <p class="text-slate-500 font-semibold">Reserva equipos y espacios de laboratorio</p>
+    <h1 class="text-3xl font-black text-slate-900 tracking-tight">
+      Gestión de Reservas
+    </h1>
+    <p class="text-slate-500 font-semibold">
+      Reserva equipos y espacios de laboratorio
+    </p>
   </div>
+
+  <!-- Toggle de vista -->
   <div class="flex items-center gap-2 bg-slate-100 p-1 rounded-xl">
     <button
       (click)="cambiarVista('semanal')"
@@ -25,53 +31,100 @@
   </div>
 </div>
 
+<!-- ── Banners de estado ────────────────────────────────────────── -->
+
+<!-- Cargando -->
+@if (cargando()) {
+  <div class="mb-4 p-4 bg-blue-50 border border-blue-200 text-blue-700
+              rounded-xl flex items-center gap-3 animate-pulse">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+      viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" class="animate-spin shrink-0">
+      <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+    </svg>
+    <div>
+      <p class="font-bold text-sm">Procesando tu reserva...</p>
+      <p class="text-xs text-blue-500 font-medium">
+        Conectando con el servidor, por favor espera
+      </p>
+    </div>
+  </div>
+}
+
+<!-- Error de API -->
+@if (errorApi() && !cargando()) {
+  <div class="mb-4 p-4 rounded-xl border flex items-start gap-3"
+    [class.bg-red-50]="!errorApi()!.includes('sesión')"
+    [class.border-red-200]="!errorApi()!.includes('sesión')"
+    [class.text-red-700]="!errorApi()!.includes('sesión')"
+    [class.bg-yellow-50]="errorApi()!.includes('sesión')"
+    [class.border-yellow-200]="errorApi()!.includes('sesión')"
+    [class.text-yellow-700]="errorApi()!.includes('sesión')">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+      viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" class="shrink-0 mt-0.5">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="12" y1="8" x2="12" y2="12"/>
+      <line x1="12" y1="16" x2="12.01" y2="16"/>
+    </svg>
+    <div>
+      <p class="font-bold text-sm">{{ errorApi() }}</p>
+      @if (errorApi()!.includes('sesión') || errorApi()!.includes('expirad')) {
+        <p class="text-xs font-medium mt-0.5 opacity-80">
+          Serás redirigido al login en unos segundos...
+        </p>
+      }
+    </div>
+  </div>
+}
+
+<!-- ── Calendario ────────────────────────────────────────────────── -->
 <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 mb-4">
 
+  <!-- Header del calendario -->
   <div class="flex items-center justify-between mb-6">
     <button
       (click)="irAnterior()"
-      class="px-4 py-2 border border-slate-200 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-all active:scale-95">
+      class="px-4 py-2 border border-slate-200 rounded-xl text-sm font-bold
+             text-slate-600 hover:bg-slate-50 hover:border-slate-300
+             transition-all active:scale-95">
       ← Anterior
     </button>
-    <h2 class="text-lg font-bold text-slate-900 capitalize">{{ mesAnioLabel() }}</h2>
+    <h2 class="text-lg font-bold text-slate-900 capitalize">
+      {{ mesAnioLabel() }}
+    </h2>
     <button
       (click)="irSiguiente()"
-      class="px-4 py-2 border border-slate-200 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-all active:scale-95">
+      class="px-4 py-2 border border-slate-200 rounded-xl text-sm font-bold
+             text-slate-600 hover:bg-slate-50 hover:border-slate-300
+             transition-all active:scale-95">
       Siguiente →
     </button>
   </div>
 
-  @if (cargando()) {
-    <div class="mb-4 p-4 bg-blue-50 border border-blue-200 text-blue-700 rounded-xl flex items-center gap-3">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="animate-spin shrink-0">
-        <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
-      </svg>
-      <span class="font-semibold">Procesando tu reserva...</span>
-    </div>
-  }
-
-  @if (errorApi()) {
-    <div class="mb-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl flex items-center gap-3">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0">
-        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-      </svg>
-      <span class="font-semibold">{{ errorApi() }}</span>
-    </div>
-  }
-
+  <!-- ── Vista Semanal ─────────────────────────────────────── -->
   @if (vista() === 'semanal') {
     <div class="overflow-x-auto">
       <table class="w-full border-collapse">
         <thead>
           <tr>
-            <th class="w-20 py-3 text-xs font-bold text-slate-400 text-left pl-2">Hora</th>
+            <th class="w-20 py-3 text-xs font-bold text-slate-400 text-left pl-2">
+              Hora
+            </th>
             @for (dia of diasSemana(); track dia.numero; let di = $index) {
               <th class="py-3 px-2">
                 <button
                   (click)="seleccionarDiaParaDiario(di)"
-                  class="w-full flex flex-col items-center hover:text-blue-600 transition-colors group">
-                  <span class="text-xs font-bold text-slate-400 group-hover:text-blue-500">{{ dia.nombre }}</span>
-                  <span class="text-lg font-black text-slate-800 group-hover:text-blue-600">{{ dia.numero }}</span>
+                  class="w-full flex flex-col items-center
+                         hover:text-blue-600 transition-colors group">
+                  <span class="text-xs font-bold text-slate-400
+                               group-hover:text-blue-500">
+                    {{ dia.nombre }}
+                  </span>
+                  <span class="text-lg font-black text-slate-800
+                               group-hover:text-blue-600">
+                    {{ dia.numero }}
+                  </span>
                 </button>
               </th>
             }
@@ -81,20 +134,27 @@
         <tbody>
           @for (hora of horas; track hora; let hi = $index) {
             <tr class="border-t border-slate-50">
-              <td class="py-2 pl-2 text-xs font-bold text-slate-400 whitespace-nowrap">{{ hora }}</td>
+              <td class="py-2 pl-2 text-xs font-bold text-slate-400 whitespace-nowrap">
+                {{ hora }}
+              </td>
               @for (dia of diasSemana(); track dia.numero; let di = $index) {
                 <td class="py-1.5 px-1.5">
                   @if (estaDisponible(di, hi)) {
                     <button
                       (click)="seleccionarSlotSemanal(di, hi)"
-                      class="w-full py-2 px-1 text-xs font-bold rounded-lg border transition-all active:scale-95
-                             bg-green-50 text-green-700 border-green-200 hover:bg-green-100 hover:border-green-300 hover:shadow-sm">
+                      [disabled]="cargando()"
+                      class="w-full py-2 px-1 text-xs font-bold rounded-lg
+                             border transition-all active:scale-95
+                             bg-green-50 text-green-700 border-green-200
+                             hover:bg-green-100 hover:border-green-300
+                             hover:shadow-sm disabled:opacity-50
+                             disabled:cursor-not-allowed">
                       Disponible
                     </button>
-                  }
-                  @if (!estaDisponible(di, hi)) {
-                    <div class="w-full py-2 px-1 text-xs font-bold rounded-lg border
-                                bg-red-50 text-red-400 border-red-100 opacity-60 text-center cursor-not-allowed">
+                  } @else {
+                    <div class="w-full py-2 px-1 text-xs font-bold rounded-lg
+                                border bg-red-50 text-red-400 border-red-100
+                                opacity-60 text-center cursor-not-allowed">
                       Ocupado
                     </div>
                   }
@@ -107,6 +167,7 @@
     </div>
   }
 
+  <!-- ── Vista Diaria ──────────────────────────────────────── -->
   @if (vista() === 'diario') {
     <div>
       <p class="text-center text-lg font-bold text-slate-800 mb-5 capitalize">
@@ -117,8 +178,9 @@
         @for (slot of horariosDelDia(); track slot.hora) {
           <button
             (click)="seleccionarSlotDiario(slot)"
-            [disabled]="!slot.disponible"
-            class="w-full p-4 rounded-xl border text-left transition-all flex items-center justify-between group"
+            [disabled]="!slot.disponible || cargando()"
+            class="w-full p-4 rounded-xl border text-left transition-all
+                   flex items-center justify-between group"
             [class.bg-green-50]="slot.disponible"
             [class.border-green-200]="slot.disponible"
             [class.hover:bg-green-100]="slot.disponible"
@@ -128,30 +190,36 @@
             [class.bg-red-50]="!slot.disponible"
             [class.border-red-100]="!slot.disponible"
             [class.opacity-60]="!slot.disponible"
-            [class.cursor-not-allowed]="!slot.disponible">
+            [class.cursor-not-allowed]="!slot.disponible || cargando()">
 
             <div class="flex items-center gap-3">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                   [class.text-green-500]="slot.disponible"
-                   [class.text-red-300]="!slot.disponible">
-                <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                [class.text-green-500]="slot.disponible"
+                [class.text-red-300]="!slot.disponible">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
               </svg>
               <div>
                 <p class="font-bold text-slate-800">{{ slot.rango }}</p>
                 <p class="text-sm font-semibold"
-                   [class.text-green-600]="slot.disponible"
-                   [class.text-red-400]="!slot.disponible">
+                  [class.text-green-600]="slot.disponible"
+                  [class.text-red-400]="!slot.disponible">
                   {{ slot.disponible ? 'Disponible' : 'Ocupado' }}
                 </p>
               </div>
             </div>
 
             @if (slot.disponible) {
-              <div class="w-8 h-8 rounded-full flex items-center justify-center text-blue-600 border border-blue-200 bg-white group-hover:bg-blue-600 group-hover:text-white group-hover:border-blue-600 transition-all font-bold text-lg">
+              <div class="w-8 h-8 rounded-full flex items-center justify-center
+                          text-blue-600 border border-blue-200 bg-white
+                          group-hover:bg-blue-600 group-hover:text-white
+                          group-hover:border-blue-600 transition-all
+                          font-bold text-lg">
                 +
               </div>
             }
-
           </button>
         }
       </div>
@@ -160,6 +228,7 @@
 
 </div>
 
+<!-- ── Leyenda ────────────────────────────────────────────────────── -->
 <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-4">
   <div class="flex flex-wrap items-center gap-6">
     <div class="flex items-center gap-2">
@@ -170,9 +239,22 @@
       <div class="w-4 h-4 bg-red-100 border border-red-200 rounded-md"></div>
       <span class="text-sm font-semibold text-slate-500">Ocupado</span>
     </div>
+    @if (cargando()) {
+      <div class="flex items-center gap-2 ml-auto">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+          viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2" class="animate-spin text-blue-500">
+          <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+        </svg>
+        <span class="text-sm font-semibold text-blue-500">
+          Enviando reserva...
+        </span>
+      </div>
+    }
   </div>
 </div>
 
+<!-- ── Modal ─────────────────────────────────────────────────────── -->
 @if (mostrarModal() && slotActivo()) {
   <app-reserva-modal
     [fechaDisplay]="slotActivo()!.fechaDisplay"

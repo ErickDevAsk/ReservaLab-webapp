@@ -1,88 +1,557 @@
-<div class="grid grid-cols-3 gap-6">
-
-  <!-- PERFIL IZQUIERDA -->
-  <div class="col-span-1 space-y-6">
-
-    <!-- TARJETA PERFIL -->
-    <div class="bg-white p-6 rounded-xl shadow text-center">
-
-      <div class="w-24 h-24 mx-auto bg-gray-200 rounded-full flex items-center justify-center text-3xl">
-        👤
-      </div>
-
-      <h2 class="text-xl font-bold mt-4">tecnico</h2>
-      <p class="text-gray-500 text-sm">PERSONAL TÉCNICO</p>
-
-      <span class="text-xs bg-gray-100 px-3 py-1 rounded mt-2 inline-block">
-        ID: 20241056
-      </span>
-
-    </div>
-
-    <!-- ACCESO RAPIDO -->
-    <div class="bg-white p-6 rounded-xl shadow">
-
-      <h3 class="font-semibold mb-4">Acceso Rápido</h3>
-
-      <button class="w-full border p-2 rounded mb-3 hover:bg-gray-50">
-        🔑 Cambiar Contraseña
-      </button>
-
-      <button class="w-full border p-2 rounded hover:bg-gray-50">
-        🛡 Privacidad
-      </button>
-
-    </div>
-
+<!-- ── Estado de carga inicial ──────────────────────────────────── -->
+@if (cargandoPerfil()) {
+  <div class="flex flex-col items-center justify-center py-20 gap-4">
+    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"
+      viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" class="animate-spin text-blue-500">
+      <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+    </svg>
+    <p class="text-slate-500 font-semibold">Cargando perfil...</p>
   </div>
 
-  <!-- DERECHA -->
-  <div class="col-span-2">
-
-    <!-- TABS -->
-    <div class="flex gap-4 mb-4">
-      <button class="bg-gray-100 px-4 py-2 rounded">Información Personal</button>
-      <button class="text-gray-500">Notificaciones</button>
-    </div>
-
-    <!-- FORM -->
-    <div class="bg-white p-6 rounded-xl shadow">
-
-      <h3 class="font-semibold mb-2">Detalles de la Cuenta</h3>
-      <p class="text-gray-500 text-sm mb-6">
-        Esta información es necesaria para la gestión de préstamos y reservas.
-      </p>
-
-      <div class="grid grid-cols-2 gap-4">
-
-        <div>
-          <label class="text-sm text-gray-500">Nombre Completo</label>
-          <input class="w-full border p-2 rounded mt-1" value="tecnico">
-        </div>
-
-        <div>
-          <label class="text-sm text-gray-500">Correo Institucional</label>
-          <input class="w-full border p-2 rounded mt-1" value="tecnico@uni.edu">
-        </div>
-
-        <div>
-          <label class="text-sm text-gray-500">Carrera / Departamento</label>
-          <input class="w-full border p-2 rounded mt-1" value="Ingeniería Mecatrónica">
-        </div>
-
-        <div>
-          <label class="text-sm text-gray-500">Facultad</label>
-          <input class="w-full border p-2 rounded mt-1" value="Facultad de Ingeniería">
-        </div>
-
-      </div>
-
-      <button class="mt-6 bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700">
-        💾 Guardar Cambios
-      </button>
-
-    </div>
-
+} @else if (errorPerfil() && !perfil()) {
+  <!-- ── Error de carga ─────────────────────────────────────────── -->
+  <div class="max-w-md mx-auto mt-12 p-6 bg-red-50 border border-red-100
+              rounded-2xl text-center">
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+      viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" class="text-red-400 mx-auto mb-3">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="12" y1="8" x2="12" y2="12"/>
+      <line x1="12" y1="16" x2="12.01" y2="16"/>
+    </svg>
+    <p class="font-bold text-red-700 mb-1">No se pudo cargar el perfil</p>
+    <p class="text-sm text-red-500 mb-4">{{ errorPerfil() }}</p>
+    <button (click)="cargarPerfil()"
+      class="px-4 py-2 bg-red-600 text-white rounded-xl text-sm
+             font-bold hover:bg-red-700 transition-all active:scale-95">
+      Reintentar
+    </button>
   </div>
 
-</div>
+} @else {
+  <!-- ── Vista principal del perfil ────────────────────────────── -->
+
+  <!-- Header de sección -->
+  <div class="mb-6">
+    <h1 class="text-3xl font-black text-slate-900 tracking-tight">
+      Mi Perfil
+    </h1>
+    <p class="text-slate-500 font-semibold">
+      Gestiona tu información personal y revisa tu historial de actividad
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+    <!-- ── Columna izquierda ──────────────────────────────────── -->
+    <div class="lg:col-span-1 space-y-5">
+
+      <!-- Tarjeta de identidad -->
+      <div class="bg-white rounded-2xl border border-slate-100 shadow-sm
+                  overflow-hidden">
+
+        <!-- Banner superior -->
+        <div class="h-20 bg-gradient-to-r from-blue-600 to-indigo-600"></div>
+
+        <div class="px-6 pb-6">
+          <!-- Avatar con iniciales -->
+          <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500
+                      to-indigo-600 flex items-center justify-center
+                      -mt-10 mb-4 border-4 border-white shadow-lg">
+            <span class="text-2xl font-black text-white">
+              {{ inicialesAvatar() }}
+            </span>
+          </div>
+
+          <h2 class="text-xl font-black text-slate-900">
+            {{ nombreCompleto() }}
+          </h2>
+          <p class="text-sm font-bold text-blue-600 mb-1">
+            Personal Técnico
+          </p>
+          <p class="text-xs font-semibold text-slate-400 mb-4">
+            {{ perfil()?.email }}
+          </p>
+
+          <!-- Badge de ID -->
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="text-xs font-bold px-3 py-1.5 bg-slate-100
+                         text-slate-600 rounded-lg border border-slate-200">
+              ID: {{ perfil()?.matricula_id }}
+            </span>
+            <span class="text-xs font-bold px-3 py-1.5 bg-blue-50
+                         text-blue-600 rounded-lg border border-blue-100">
+              {{ perfil()?.rol | uppercase }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Estadísticas rápidas -->
+      <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
+        <h3 class="text-sm font-black text-slate-700 mb-4">
+          Resumen de Actividad
+        </h3>
+
+        <div class="space-y-3">
+          <div class="flex items-center justify-between p-3 bg-green-50
+                      rounded-xl border border-green-100">
+            <div class="flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2.5" class="text-green-500">
+                <path d="M20 6 9 17l-5-5"/>
+              </svg>
+              <span class="text-sm font-bold text-green-700">
+                Aprobaciones
+              </span>
+            </div>
+            <span class="text-lg font-black text-green-600">
+              {{ totalAprobaciones() }}
+            </span>
+          </div>
+
+          <div class="flex items-center justify-between p-3 bg-red-50
+                      rounded-xl border border-red-100">
+            <div class="flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2.5" class="text-red-400">
+                <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+              </svg>
+              <span class="text-sm font-bold text-red-600">
+                Incidencias
+              </span>
+            </div>
+            <span class="text-lg font-black text-red-500">
+              {{ totalIncidencias() }}
+            </span>
+          </div>
+
+          <div class="flex items-center justify-between p-3 bg-slate-50
+                      rounded-xl border border-slate-200">
+            <div class="flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" class="text-slate-500">
+                <path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>
+              </svg>
+              <span class="text-sm font-bold text-slate-600">
+                Total acciones
+              </span>
+            </div>
+            <span class="text-lg font-black text-slate-700">
+              {{ actividad().length }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Datos laborales -->
+      <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
+        <h3 class="text-sm font-black text-slate-700 mb-4">
+          Datos Laborales
+        </h3>
+
+        <div class="space-y-3">
+          <div>
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-wide">
+              Departamento
+            </p>
+            <p class="text-sm font-bold text-slate-700 mt-0.5">
+              {{ perfil()?.carrera_departamento ?? '—' }}
+            </p>
+          </div>
+          <div class="border-t border-slate-50 pt-3">
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-wide">
+              Usuario del sistema
+            </p>
+            <p class="text-sm font-bold text-slate-700 mt-0.5">
+              @{{ perfil()?.username }}
+            </p>
+          </div>
+          <div class="border-t border-slate-50 pt-3">
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-wide">
+              Rol asignado
+            </p>
+            <span class="inline-block mt-0.5 text-xs font-bold px-2.5 py-1
+                         bg-blue-50 text-blue-700 rounded-lg border border-blue-100">
+              {{ perfil()?.rol | titlecase }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Columna derecha ───────────────────────────────────── -->
+    <div class="lg:col-span-2 space-y-5">
+
+      <!-- Tabs de navegación -->
+      <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-xl w-fit">
+        <button (click)="cambiarTab('info')"
+          class="px-5 py-2 rounded-lg text-sm font-bold transition-all"
+          [class.bg-white]="tabActivo() === 'info'"
+          [class.text-slate-900]="tabActivo() === 'info'"
+          [class.shadow-sm]="tabActivo() === 'info'"
+          [class.text-slate-500]="tabActivo() !== 'info'">
+          Información Personal
+        </button>
+        <button (click)="cambiarTab('historial')"
+          class="px-5 py-2 rounded-lg text-sm font-bold transition-all"
+          [class.bg-white]="tabActivo() === 'historial'"
+          [class.text-slate-900]="tabActivo() === 'historial'"
+          [class.shadow-sm]="tabActivo() === 'historial'"
+          [class.text-slate-500]="tabActivo() !== 'historial'">
+          Historial de Actividades
+          @if (actividad().length > 0) {
+            <span class="ml-1.5 text-xs font-black px-1.5 py-0.5 rounded-full"
+              [class.bg-blue-100]="tabActivo() === 'historial'"
+              [class.text-blue-600]="tabActivo() === 'historial'"
+              [class.bg-slate-200]="tabActivo() !== 'historial'"
+              [class.text-slate-500]="tabActivo() !== 'historial'">
+              {{ actividad().length }}
+            </span>
+          }
+        </button>
+      </div>
+
+      <!-- ── TAB: Información Personal ────────────────────── -->
+      @if (tabActivo() === 'info') {
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h3 class="text-lg font-black text-slate-900">
+                Detalles de la Cuenta
+              </h3>
+              <p class="text-sm text-slate-500 font-medium">
+                Información necesaria para la gestión de préstamos y reservas
+              </p>
+            </div>
+
+            @if (!modoEdicion()) {
+              <button (click)="activarEdicion()"
+                class="flex items-center gap-2 px-4 py-2 border border-slate-200
+                       rounded-xl text-sm font-bold text-slate-700
+                       hover:bg-slate-50 hover:border-slate-300
+                       transition-all active:scale-95">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                  viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2.5">
+                  <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                </svg>
+                Editar
+              </button>
+            }
+          </div>
+
+          <!-- Campos de información -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+            <!-- Nombre -->
+            <div>
+              <label class="block text-xs font-bold text-slate-500
+                            uppercase tracking-wide mb-1.5">
+                Nombre(s)
+              </label>
+              @if (modoEdicion()) {
+                <input
+                  [value]="formData().first_name ?? ''"
+                  (input)="actualizarCampo('first_name', $any($event.target).value)"
+                  type="text"
+                  class="w-full px-3 py-2.5 border border-slate-200 rounded-xl
+                         bg-white text-slate-800 font-medium focus:outline-none
+                         focus:border-blue-500 focus:ring-2 focus:ring-blue-100
+                         transition-all">
+              } @else {
+                <p class="px-3 py-2.5 bg-slate-50 rounded-xl text-slate-800
+                          font-semibold border border-slate-100">
+                  {{ perfil()?.first_name || '—' }}
+                </p>
+              }
+            </div>
+
+            <!-- Apellidos -->
+            <div>
+              <label class="block text-xs font-bold text-slate-500
+                            uppercase tracking-wide mb-1.5">
+                Apellidos
+              </label>
+              @if (modoEdicion()) {
+                <input
+                  [value]="formData().last_name ?? ''"
+                  (input)="actualizarCampo('last_name', $any($event.target).value)"
+                  type="text"
+                  class="w-full px-3 py-2.5 border border-slate-200 rounded-xl
+                         bg-white text-slate-800 font-medium focus:outline-none
+                         focus:border-blue-500 focus:ring-2 focus:ring-blue-100
+                         transition-all">
+              } @else {
+                <p class="px-3 py-2.5 bg-slate-50 rounded-xl text-slate-800
+                          font-semibold border border-slate-100">
+                  {{ perfil()?.last_name || '—' }}
+                </p>
+              }
+            </div>
+
+            <!-- Correo institucional -->
+            <div>
+              <label class="block text-xs font-bold text-slate-500
+                            uppercase tracking-wide mb-1.5">
+                Correo Institucional
+              </label>
+              @if (modoEdicion()) {
+                <input
+                  [value]="formData().email ?? ''"
+                  (input)="actualizarCampo('email', $any($event.target).value)"
+                  type="email"
+                  class="w-full px-3 py-2.5 border border-slate-200 rounded-xl
+                         bg-white text-slate-800 font-medium focus:outline-none
+                         focus:border-blue-500 focus:ring-2 focus:ring-blue-100
+                         transition-all">
+              } @else {
+                <p class="px-3 py-2.5 bg-slate-50 rounded-xl text-slate-800
+                          font-semibold border border-slate-100">
+                  {{ perfil()?.email || '—' }}
+                </p>
+              }
+            </div>
+
+            <!-- Departamento -->
+            <div>
+              <label class="block text-xs font-bold text-slate-500
+                            uppercase tracking-wide mb-1.5">
+                Carrera / Departamento
+              </label>
+              @if (modoEdicion()) {
+                <input
+                  [value]="formData().carrera_departamento ?? ''"
+                  (input)="actualizarCampo('carrera_departamento', $any($event.target).value)"
+                  type="text"
+                  class="w-full px-3 py-2.5 border border-slate-200 rounded-xl
+                         bg-white text-slate-800 font-medium focus:outline-none
+                         focus:border-blue-500 focus:ring-2 focus:ring-blue-100
+                         transition-all">
+              } @else {
+                <p class="px-3 py-2.5 bg-slate-50 rounded-xl text-slate-800
+                          font-semibold border border-slate-100">
+                  {{ perfil()?.carrera_departamento || '—' }}
+                </p>
+              }
+            </div>
+
+            <!-- Matrícula (solo lectura siempre) -->
+            <div>
+              <label class="block text-xs font-bold text-slate-500
+                            uppercase tracking-wide mb-1.5">
+                Matrícula / ID
+              </label>
+              <p class="px-3 py-2.5 bg-slate-50 rounded-xl text-slate-800
+                        font-semibold border border-slate-100 flex items-center gap-2">
+                {{ perfil()?.matricula_id || '—' }}
+                <span class="text-xs text-slate-400 font-medium">(no editable)</span>
+              </p>
+            </div>
+
+            <!-- Usuario (solo lectura siempre) -->
+            <div>
+              <label class="block text-xs font-bold text-slate-500
+                            uppercase tracking-wide mb-1.5">
+                Nombre de usuario
+              </label>
+              <p class="px-3 py-2.5 bg-slate-50 rounded-xl text-slate-800
+                        font-semibold border border-slate-100 flex items-center gap-2">
+                @{{ perfil()?.username || '—' }}
+                <span class="text-xs text-slate-400 font-medium">(no editable)</span>
+              </p>
+            </div>
+
+          </div>
+
+          <!-- Botones de acción del formulario -->
+          @if (modoEdicion()) {
+            <div class="flex items-center gap-3 mt-6 pt-5 border-t border-slate-100">
+              <button (click)="cancelarEdicion()"
+                [disabled]="guardando()"
+                class="px-5 py-2.5 border border-slate-200 rounded-xl text-sm
+                       font-bold text-slate-700 hover:bg-slate-50 transition-all
+                       active:scale-95 disabled:opacity-50">
+                Cancelar
+              </button>
+              <button (click)="guardarCambios()"
+                [disabled]="guardando()"
+                class="flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white
+                       rounded-xl text-sm font-bold hover:bg-blue-700 shadow-sm
+                       shadow-blue-200 transition-all active:scale-95
+                       disabled:opacity-60 disabled:cursor-not-allowed">
+                @if (guardando()) {
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" class="animate-spin">
+                    <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+                  </svg>
+                  Guardando...
+                } @else {
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2.5">
+                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                    <polyline points="17 21 17 13 7 13 7 21"/>
+                    <polyline points="7 3 7 8 15 8"/>
+                  </svg>
+                  Guardar Cambios
+                }
+              </button>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- ── TAB: Historial de Actividades ─────────────────── -->
+      @if (tabActivo() === 'historial') {
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h3 class="text-lg font-black text-slate-900">
+                Historial de Actividades
+              </h3>
+              <p class="text-sm text-slate-500 font-medium">
+                Registro de acciones recientes en el sistema
+              </p>
+            </div>
+            <button (click)="cargarHistorial()"
+              [disabled]="cargandoHistorial()"
+              class="flex items-center gap-1.5 px-3 py-2 border border-slate-200
+                     rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-50
+                     transition-all active:scale-95 disabled:opacity-50">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2.5"
+                [class.animate-spin]="cargandoHistorial()">
+                <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+                <path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+                <path d="M8 16H3v5"/>
+              </svg>
+              Actualizar
+            </button>
+          </div>
+
+          <!-- Estado de carga del historial -->
+          @if (cargandoHistorial()) {
+            <div class="flex flex-col items-center justify-center py-12 gap-3">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" class="animate-spin text-blue-400">
+                <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+              </svg>
+              <p class="text-slate-400 font-semibold text-sm">
+                Cargando historial...
+              </p>
+            </div>
+
+          } @else if (actividad().length === 0) {
+            <div class="flex flex-col items-center justify-center py-12 gap-3">
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="1.5" class="text-slate-200">
+                <path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7.5 20.5 2 22l1.5-5.5Z"/>
+              </svg>
+              <p class="text-slate-500 font-bold">Sin actividad reciente</p>
+              <p class="text-slate-400 text-sm font-medium text-center max-w-xs">
+                Las acciones que realices en el sistema aparecerán aquí
+              </p>
+            </div>
+
+          } @else {
+            <!-- Lista de actividades -->
+            <div class="space-y-3">
+              @for (item of actividad(); track item.id) {
+                <div class="flex items-start gap-4 p-4 rounded-xl border
+                            border-slate-100 bg-slate-50 hover:bg-white
+                            hover:border-slate-200 hover:shadow-sm
+                            transition-all duration-150">
+
+                  <!-- Ícono del tipo -->
+                  <div class="w-10 h-10 rounded-xl flex items-center justify-center
+                              shrink-0" [class]="getIconoClase(item.tipo)">
+                    @switch (item.tipo) {
+                      @case ('aprobacion') {
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                          viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M20 6 9 17l-5-5"/>
+                        </svg>
+                      }
+                      @case ('devolucion') {
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                          viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+                          <path d="M21 3v5h-5"/>
+                          <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+                          <path d="M8 16H3v5"/>
+                        </svg>
+                      }
+                      @case ('rechazo') {
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                          viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2.5">
+                          <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+                        </svg>
+                      }
+                      @case ('incidencia') {
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                          viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2.5">
+                          <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+                          <path d="M12 9v4"/><path d="M12 17h.01"/>
+                        </svg>
+                      }
+                    }
+                  </div>
+
+                  <!-- Contenido -->
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 flex-wrap mb-1">
+                      <span class="text-xs font-bold px-2 py-0.5 rounded-full border"
+                        [class]="getBadgeClase(item.tipo)">
+                        {{ getTipoLabel(item.tipo) }}
+                      </span>
+                      @if (item.usuario) {
+                        <span class="text-xs text-slate-400 font-medium">
+                          · {{ item.usuario }}
+                        </span>
+                      }
+                    </div>
+
+                    <p class="text-sm font-bold text-slate-800 leading-snug">
+                      {{ item.descripcion }}
+                    </p>
+
+                    @if (item.equipo) {
+                      <p class="text-xs text-slate-500 font-semibold mt-0.5">
+                        Equipo: {{ item.equipo }}
+                      </p>
+                    }
+                  </div>
+
+                  <!-- Fecha -->
+                  <div class="text-right shrink-0">
+                    <p class="text-xs font-bold text-slate-400 whitespace-nowrap">
+                      {{ formatearFecha(item.fecha) }}
+                    </p>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+
+        </div>
+      }
+
+    </div>
+  </div>
+}

@@ -1,80 +1,197 @@
+<!-- Refactorización completa del componente de reserva-modal.html para integrar la selección de equipos desde el inventario. -->
 <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col max-h-[90vh]">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh]">
 
-    <!-- Header del modal -->
+    <!--  Header  -->
     <div class="flex items-center justify-between px-6 py-5 border-b border-slate-100 shrink-0">
       <h3 class="text-xl font-black text-slate-900">Confirmar Reserva</h3>
       <button (click)="cerrar()"
         class="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M18 6 6 18" />
-          <path d="m6 6 12 12" />
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2.5"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
         </svg>
       </button>
     </div>
 
-    <!-- Cuerpo con scroll -->
+    <!--  Body con scroll  -->
     <div class="overflow-y-auto flex-1">
-      <div class="px-6 pt-5 space-y-4">
+      <div class="px-6 pt-5 space-y-5">
 
-        <!-- Resumen de fecha y hora -->
+        <!-- Resumen fecha y hora -->
         <div class="bg-blue-50 border border-blue-100 rounded-xl p-4 space-y-2">
           <div class="flex items-center gap-2 text-blue-700">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M8 2v4" />
-              <path d="M16 2v4" />
-              <rect width="18" height="18" x="3" y="4" rx="2" />
-              <path d="M3 10h18" />
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 2v4"/><path d="M16 2v4"/>
+              <rect width="18" height="18" x="3" y="4" rx="2"/>
+              <path d="M3 10h18"/>
             </svg>
             <span class="font-bold text-sm capitalize">{{ fechaDisplay() }}</span>
           </div>
           <div class="flex items-center gap-2 text-blue-700">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10" />
-              <polyline points="12 6 12 12 16 14" />
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
             </svg>
             <span class="font-bold text-lg">{{ hora() }}</span>
           </div>
         </div>
 
+        <!-- Laboratorio -->
         <div>
           <label class="block text-sm font-bold text-slate-700 mb-1.5">
             Laboratorio <span class="text-red-500">*</span>
           </label>
-          <select [(ngModel)]="laboratorio" name="laboratorio"
-            class="w-full px-3 py-2.5 border border-slate-200 rounded-xl bg-slate-50 text-slate-800 font-medium focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all">
-            <option value="">Selecciona un laboratorio</option>
 
-            @for (lab of laboratorios; track lab.id) {
-            <option [value]="lab.nombre">
-              {{ lab.nombre }} ({{ lab.edificio }})
-            </option>
-            }
-          </select>
+          @if (cargandoLabs) {
+            <div class="w-full px-3 py-2.5 border border-slate-200 rounded-xl bg-slate-50
+                        flex items-center gap-2 text-slate-400 text-sm font-medium">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" class="animate-spin">
+                <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+              </svg>
+              Cargando laboratorios...
+            </div>
+          } @else {
+            <select [(ngModel)]="laboratorio" name="laboratorio"
+              class="w-full px-3 py-2.5 border border-slate-200 rounded-xl bg-slate-50
+                     text-slate-800 font-medium focus:outline-none focus:border-blue-500
+                     focus:ring-2 focus:ring-blue-100 transition-all">
+              <option value="">Selecciona un laboratorio</option>
+              @for (lab of laboratorios; track lab.id) {
+                <option [value]="lab.nombre">
+                  {{ lab.nombre }} ({{ lab.edificio }})
+                </option>
+              }
+            </select>
+          }
         </div>
 
-        <!-- Equipo -->
+        <!--  Sección de equipos con checkboxes  -->
         <div>
-          <label class="block text-sm font-bold text-slate-700 mb-1.5">
-            Equipo <span class="text-red-500">*</span>
-          </label>
-          <select [(ngModel)]="equipo" name="equipo"
-            class="w-full px-3 py-2.5 border border-slate-200 rounded-xl bg-slate-50 text-slate-800 font-medium focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all">
-            <option value="">Selecciona un equipo</option>
-            @for (eq of equipos; track eq) {
-            <option [value]="eq">{{ eq }}</option>
+          <div class="flex items-center justify-between mb-2">
+            <label class="text-sm font-bold text-slate-700">
+              Equipos a utilizar <span class="text-red-500">*</span>
+            </label>
+
+            <!-- Contador de seleccionados -->
+            @if (hayEquiposSeleccionados) {
+              <span class="text-xs font-bold text-blue-600 bg-blue-50
+                           px-2 py-0.5 rounded-full border border-blue-100">
+                {{ equiposSeleccionados.length }}
+                {{ equiposSeleccionados.length === 1 ? 'equipo' : 'equipos' }}
+                seleccionado{{ equiposSeleccionados.length === 1 ? '' : 's' }}
+              </span>
             }
-          </select>
+          </div>
+
+          <!-- Estado de carga de equipos -->
+          @if (cargandoEquipos) {
+            <div class="flex items-center justify-center gap-2 py-8
+                        text-slate-400 text-sm font-medium border border-slate-100
+                        rounded-xl bg-slate-50">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" class="animate-spin">
+                <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+              </svg>
+              Cargando inventario de equipos...
+            </div>
+
+          } @else {
+
+            <!-- Lista de checkboxes -->
+            <div class="space-y-2 max-h-52 overflow-y-auto pr-1
+                        scrollbar-thin scrollbar-thumb-slate-200">
+
+              @for (equipo of equiposDisponibles; track equipo.id) {
+                <div
+                  (click)="toggleEquipo(equipo)"
+                  class="flex items-center gap-3 p-3 rounded-xl border cursor-pointer
+                         transition-all duration-150 select-none"
+                  [class.border-blue-300]="equipo.seleccionado"
+                  [class.bg-blue-50]="equipo.seleccionado"
+                  [class.border-slate-200]="!equipo.seleccionado"
+                  [class.bg-white]="!equipo.seleccionado && equipo.cantidad_disponible > 0"
+                  [class.bg-slate-50]="equipo.cantidad_disponible === 0"
+                  [class.opacity-60]="equipo.cantidad_disponible === 0"
+                  [class.cursor-not-allowed]="equipo.cantidad_disponible === 0"
+                  [class.hover:border-slate-300]="!equipo.seleccionado && equipo.cantidad_disponible > 0"
+                  [class.hover:bg-slate-50]="!equipo.seleccionado && equipo.cantidad_disponible > 0">
+
+                  <!-- Checkbox visual personalizado -->
+                  <div class="w-5 h-5 rounded-md border-2 flex items-center justify-center
+                              shrink-0 transition-all"
+                    [class.border-blue-500]="equipo.seleccionado"
+                    [class.bg-blue-500]="equipo.seleccionado"
+                    [class.border-slate-300]="!equipo.seleccionado">
+                    @if (equipo.seleccionado) {
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
+                        viewBox="0 0 24 24" fill="none" stroke="white"
+                        stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 6 9 17l-5-5"/>
+                      </svg>
+                    }
+                  </div>
+
+                  <!-- Información del equipo -->
+                  <div class="flex-1 min-w-0">
+                    <p class="font-bold text-slate-800 text-sm truncate">
+                      {{ equipo.nombre }}
+                    </p>
+                    <p class="text-xs text-slate-400 font-medium">
+                      {{ equipo.numero_inventario }}
+                    </p>
+                  </div>
+
+                  <!-- Badge de disponibilidad -->
+                  <span class="text-xs font-bold px-2 py-0.5 rounded-full shrink-0"
+                    [class]="getBadgeClase(equipo)">
+                    {{ getBadgeTexto(equipo) }}
+                  </span>
+                </div>
+
+                <!-- Input de cantidad (solo visible si está seleccionado) -->
+                @if (equipo.seleccionado) {
+                  <div class="ml-8 flex items-center gap-2 px-3 pb-2"
+                    (click)="$event.stopPropagation()">
+                    <label class="text-xs font-bold text-slate-500">
+                      Cantidad:
+                    </label>
+                    <input
+                      type="number"
+                      [(ngModel)]="equipo.cantidadRequerida"
+                      [name]="'cantidad_' + equipo.id"
+                      [min]="1"
+                      [max]="equipo.cantidad_disponible"
+                      (change)="validarCantidad(equipo)"
+                      class="w-16 px-2 py-1 border border-blue-200 rounded-lg text-sm
+                             font-bold text-center text-blue-700 bg-blue-50
+                             focus:outline-none focus:border-blue-400
+                             focus:ring-1 focus:ring-blue-200">
+                    <span class="text-xs text-slate-400 font-medium">
+                      / {{ equipo.cantidad_disponible }} disp.
+                    </span>
+                  </div>
+                }
+              }
+            </div>
+          }
         </div>
 
         <!-- Duración -->
         <div>
           <label class="block text-sm font-bold text-slate-700 mb-1.5">Duración</label>
           <select [(ngModel)]="duracion" name="duracion"
-            class="w-full px-3 py-2.5 border border-slate-200 rounded-xl bg-slate-50 text-slate-800 font-medium focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all">
+            class="w-full px-3 py-2.5 border border-slate-200 rounded-xl bg-slate-50
+                   text-slate-800 font-medium focus:outline-none focus:border-blue-500
+                   focus:ring-2 focus:ring-blue-100 transition-all">
             <option [ngValue]="1">1 hora</option>
             <option [ngValue]="2">2 horas</option>
             <option [ngValue]="3">3 horas</option>
@@ -89,42 +206,97 @@
           </label>
           <textarea [(ngModel)]="proposito" name="proposito" rows="3"
             placeholder="Describe el motivo de tu reserva (mínimo 10 caracteres)..."
-            class="w-full px-3 py-2.5 border border-slate-200 rounded-xl bg-slate-50 text-slate-800 font-medium resize-none focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all placeholder:text-slate-400">
+            class="w-full px-3 py-2.5 border border-slate-200 rounded-xl bg-slate-50
+                   text-slate-800 font-medium resize-none focus:outline-none
+                   focus:border-blue-500 focus:ring-2 focus:ring-blue-100
+                   transition-all placeholder:text-slate-400">
           </textarea>
-          <!-- Contador de caracteres -->
           <p class="text-xs mt-1 text-right font-medium"
             [class.text-red-500]="proposito.length > 0 && proposito.length < 10"
-            [class.text-green-600]="proposito.length >= 10" [class.text-slate-400]="proposito.length === 0">
+            [class.text-green-600]="proposito.length >= 10"
+            [class.text-slate-400]="proposito.length === 0">
             {{ proposito.length }} / mín. 10 caracteres
           </p>
         </div>
+
+        <!-- Resumen de equipos seleccionados -->
+        @if (hayEquiposSeleccionados) {
+          <div class="bg-green-50 border border-green-100 rounded-xl p-4">
+            <p class="text-sm font-black text-green-700 mb-2 flex items-center gap-1.5">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 6 9 17l-5-5"/>
+              </svg>
+              Equipos en tu reserva
+            </p>
+            <ul class="space-y-1">
+              @for (eq of equiposSeleccionados; track eq.id) {
+                <li class="flex justify-between items-center text-sm
+                           text-green-700 font-medium">
+                  <span>• {{ eq.nombre }}</span>
+                  <span class="text-xs font-bold bg-green-100 px-2 py-0.5 rounded-full">
+                    x{{ eq.cantidadRequerida }}
+                  </span>
+                </li>
+              }
+            </ul>
+          </div>
+        }
 
         <!-- Normas de Uso -->
         <div class="bg-slate-50 rounded-xl p-4">
           <p class="text-sm font-black text-slate-700 mb-3">Normas de Uso</p>
           <ul class="space-y-2">
-            @for (norma of normas; track norma) {
             <li class="flex items-start gap-2 text-sm text-slate-600 font-medium">
               <span class="text-blue-500 mt-0.5 shrink-0">•</span>
-              {{ norma }}
+              Llegar puntual a la reserva
             </li>
-            }
+            <li class="flex items-start gap-2 text-sm text-slate-600 font-medium">
+              <span class="text-blue-500 mt-0.5 shrink-0">•</span>
+              Devolver el equipo en las mismas condiciones
+            </li>
+            <li class="flex items-start gap-2 text-sm text-slate-600 font-medium">
+              <span class="text-blue-500 mt-0.5 shrink-0">•</span>
+              Reportar cualquier daño o incidencia inmediatamente
+            </li>
+            <li class="flex items-start gap-2 text-sm text-slate-600 font-medium">
+              <span class="text-blue-500 mt-0.5 shrink-0">•</span>
+              Cancelar con al menos 24 horas de anticipación
+            </li>
           </ul>
         </div>
 
       </div>
     </div>
 
-    <!-- Footer con botones -->
+    <!--  Footer con botones  -->
     <div class="px-6 py-5 border-t border-slate-100 flex gap-3 shrink-0">
       <button (click)="cerrar()"
-        class="flex-1 py-3 px-4 border border-slate-200 rounded-xl font-bold text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-all active:scale-95">
+        class="flex-1 py-3 px-4 border border-slate-200 rounded-xl font-bold
+               text-slate-700 hover:bg-slate-50 hover:border-slate-300
+               transition-all active:scale-95">
         Cancelar
       </button>
       <button (click)="confirmarReserva()"
-        class="flex-1 py-3 px-4 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-200 active:scale-95">
+        class="flex-1 py-3 px-4 rounded-xl font-bold transition-all active:scale-95"
+        [class.bg-blue-600]="hayEquiposSeleccionados"
+        [class.text-white]="hayEquiposSeleccionados"
+        [class.hover:bg-blue-700]="hayEquiposSeleccionados"
+        [class.shadow-lg]="hayEquiposSeleccionados"
+        [class.shadow-blue-200]="hayEquiposSeleccionados"
+        [class.bg-slate-100]="!hayEquiposSeleccionados"
+        [class.text-slate-400]="!hayEquiposSeleccionados"
+        [class.cursor-not-allowed]="!hayEquiposSeleccionados"
+        [disabled]="!hayEquiposSeleccionados">
         Confirmar Reserva
+        @if (hayEquiposSeleccionados) {
+          <span class="ml-1 text-blue-200 font-black">
+            ({{ equiposSeleccionados.length }})
+          </span>
+        }
       </button>
     </div>
+
   </div>
 </div>
