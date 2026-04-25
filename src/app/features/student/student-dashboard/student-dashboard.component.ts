@@ -1,9 +1,9 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router'; // ✅ IMPORT FALTANTE
+
 
 import { LabCatalogComponent } from '../../labs/lab-catalog/lab-catalog';
-import { SidebarComponent } from '../../../shared/components/sidebar/sidebar';
+
 
 // Interfaces
 export interface Reserva {
@@ -27,7 +27,7 @@ export interface Prestamo {
   standalone: true,
 
   // ✅ SOLO UN imports
-  imports: [CommonModule, LabCatalogComponent, RouterLink, SidebarComponent],
+  imports: [CommonModule, LabCatalogComponent],
 
   templateUrl: './student-dashboard.component.html',
 })

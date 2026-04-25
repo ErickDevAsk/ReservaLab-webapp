@@ -3,7 +3,7 @@ import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, finalize, of, tap } from 'rxjs';
 
-// Interfaces de payload                                                     
+// Interfaces de payload
 
 export interface EquipoReservado {
   id: number;
@@ -28,7 +28,7 @@ export interface ReservaResponse {
   reserva_id: number;
 }
 
-// Servicio                                                                  
+// Servicio
 
 @Injectable({
   providedIn: 'root',
@@ -39,7 +39,7 @@ export class ReservaService {
   // URL base con slash final para evitar redirección 301 de Django
   private readonly API_URL = 'http://localhost:8000/api/reservas';
 
-  //     Signals de estado público                              
+  //     Signals de estado público
   public loading  = signal<boolean>(false);
   public error    = signal<string | null>(null);
   public success  = signal<boolean>(false);
@@ -69,7 +69,7 @@ export class ReservaService {
       );
   }
 
-  
+
   // Verifica si el usuario tiene un token activo antes de intentar cualquier operación de reserva.
   verificarAutenticacion(): boolean {
     const token = localStorage.getItem('access_token');
@@ -80,12 +80,27 @@ export class ReservaService {
     return true;
   }
 
-  
+
   // Consulta disponibilidad de un laboratorio en una fecha específica.
   consultarDisponibilidad(lab: string, fecha: string) {
     return this.http.get<any>(`${this.API_URL}/disponibilidad/`, {
       params: { lab, fecha },
     });
+  }
+
+  // ==========================================
+  //Consulta las reservas reales de un laboratorio específico
+  // ==========================================
+  obtenerReservasPorLaboratorio(labId: number) {
+    // Esto construirá: http://localhost:8000/api/reservas/laboratorio/1/
+    return this.http.get<any[]>(`${this.API_URL}/laboratorio/${labId}/`).pipe(
+      catchError((err) => {
+        // Aprovechamos tu excelente parseador de errores
+        this.error.set(this.parsearErrorDjango(err));
+        // Retornamos un array vacío para que el calendario no se rompa si hay error
+        return of([]);
+      })
+    );
   }
 
   /**

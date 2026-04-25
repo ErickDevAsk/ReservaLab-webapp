@@ -6,10 +6,10 @@ export interface Laboratorio {
   id?: number;
   nombre: string;
   edificio: string;
-  // NUEVO: Le decimos explícitamente a TypeScript que estos campos existen
   imagen?: string;
   facultad?: string;
   capacidad?: number;
+  estado?: string; // <--- ¡Solo agrega esta línea!
   [key: string]: any;
 }
 

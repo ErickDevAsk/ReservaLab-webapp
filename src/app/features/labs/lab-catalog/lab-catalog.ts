@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-// Ocultamos temporalmente la importación de la base de datos
-// import { LaboratorioService, Laboratorio } from '../../../core/services/laboratorio';
+import { Router } from '@angular/router';
+// Importamos el servicio y la interfaz que ya tienes en tu core
+import { LaboratorioService, Laboratorio } from '../../../core/services/laboratorio';
 
 @Component({
   selector: 'app-lab-catalog',
@@ -11,51 +12,57 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./lab-catalog.scss']
 })
 export class LabCatalogComponent implements OnInit {
-  filtroActual: string = 'Todos';
-  
-  // 🔥 Le metemos datos "falsos" temporalmente para ver el diseño
-  laboratorios: any[] = [
-    { 
-      nombre: 'Laboratorio de Software', 
-      edificio: 'CCO4', 
-      facultad: 'FCC', 
-      capacidad: 40, 
-      imagen: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=800&q=80', 
-      estado: 'Libre' 
-    },
-    { 
-      nombre: 'Laboratorio de Redes', 
-      edificio: 'CCO3', 
-      facultad: 'FCC', 
-      capacidad: 30, 
-      imagen: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80', 
-      estado: 'Ocupado' 
-    },
-    { 
-      nombre: 'Laboratorio de Química Analítica', 
-      edificio: 'QUM1', 
-      facultad: 'FIQ', 
-      capacidad: 25, 
-      imagen: 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=800&q=80', 
-      estado: 'Libre' 
-    }
-  ];
+  // Inyectamos el servicio
+  private labService = inject(LaboratorioService);
+  private router = inject(Router);
 
-  constructor() {}
+  // Usamos Signals para los datos y el estado de la carga
+  laboratorios = signal<Laboratorio[]>([]);
+  filtroActual = signal<string>('Todos');
+  cargando = signal<boolean>(true);
+  error = signal<string | null>(null);
+
+  // Un computed signal para los laboratorios filtrados
+  // Se actualiza automáticamente cuando cambia laboratorios() o filtroActual()
+  laboratoriosFiltrados = computed(() => {
+    const actual = this.filtroActual();
+    const todos = this.laboratorios();
+
+    if (actual === 'Todos') {
+      return todos;
+    }
+    // Asumimos que el modelo Laboratorio tiene el campo facultad
+    return todos.filter(lab => lab.facultad === actual);
+  });
 
   ngOnInit(): void {
-    // Comentamos la llamada real a Django hasta que haya datos
-    // this.cargarLaboratoriosDesdeDjango();
+    this.cargarLaboratoriosDesdeDjango();
   }
 
-  get laboratoriosFiltrados() {
-    if (this.filtroActual === 'Todos') {
-      return this.laboratorios;
-    }
-    return this.laboratorios.filter(lab => lab.facultad === this.filtroActual);
+  cargarLaboratoriosDesdeDjango() {
+    this.cargando.set(true);
+    this.labService.getLaboratorios().subscribe({
+      next: (data) => {
+        this.laboratorios.set(data);
+        this.cargando.set(false);
+      },
+      error: (err) => {
+        console.error('Error al conectar con Django:', err);
+        this.error.set('No se pudo establecer conexión con el servidor.');
+        this.cargando.set(false);
+      }
+    });
   }
 
   setFiltro(facultad: string) {
-    this.filtroActual = facultad;
+    this.filtroActual.set(facultad);
+  }
+
+  // La función que ejecutará el botón
+  irADetalle(id: number | undefined) {
+    if (id) {
+      // Navegamos a la ruta del estudiante y le pasamos el ID en la URL
+      this.router.navigate(['/student/reservas'], { queryParams: { labId: id } });
+    }
   }
 }

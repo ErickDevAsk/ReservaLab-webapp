@@ -1,12 +1,12 @@
 // Mejora general del componente de reservas, con enfoque en claridad, mantenibilidad y experiencia de usuario.
 // Se agregan validaciones de autenticación, manejo de errores más robusto y una mejor estructura de datos para las reservas.
-import { Component, signal, computed, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, signal, computed, inject, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ReservaModal } from '../components/reserva-modal/reserva-modal';
 import { ReservaService, ReservaPayload } from '../../../core/services/reserva';
 import { NotificationService } from '../../../core/services/notification';
 
-//  Tipos e interfaces 
+//  Tipos e interfaces
 
 export type VistaCalendario = 'semanal' | 'diario';
 
@@ -31,7 +31,7 @@ export interface SlotDiario {
   horaIdx: number;
 }
 
-//  Componente 
+//  Componente
 
 @Component({
   selector: 'app-reservas-dashboard',
@@ -40,27 +40,43 @@ export interface SlotDiario {
   templateUrl: './reservas-dashboard.html',
   styleUrl: './reservas-dashboard.scss',
 })
-export class ReservasDashboard {
+export class ReservasDashboard implements OnInit {
 
-  //  Servicios 
+  //  Servicios
   private readonly reservaService = inject(ReservaService);
   private readonly notifService   = inject(NotificationService);
   private readonly router         = inject(Router); // Para redirección en caso de error de autenticación
+  private readonly route          = inject(ActivatedRoute); // Para leer parámetros de la URL (como el ID del laboratorio)
 
-  //  Estado del calendario 
+  //  Estado del calendario
   vista       = signal<VistaCalendario>('semanal');
   semanaBase  = signal<Date>(this.getLunes(new Date()));
   diaSeleccionado = signal<Date>(new Date());
+  laboratorioIdSeleccionado = signal<number | null>(null);
 
-  //  Estado del modal 
+  //  Estado del modal
   mostrarModal = signal(false);
   slotActivo   = signal<SlotActivo | null>(null);
 
-  //  Estado del servicio (reactivo) 
+  //  Estado del servicio (reactivo)
   cargando = this.reservaService.loading;
   errorApi = this.reservaService.error;
 
-  //  Constantes 
+  ngOnInit(): void {
+    // Escuchamos los parámetros de la URL
+    this.route.queryParams.subscribe(params => {
+      const id = params['labId'];
+      if (id) {
+        this.laboratorioIdSeleccionado.set(Number(id));
+        console.log('Filtro de calendario activado para el Lab ID:', this.laboratorioIdSeleccionado());
+
+        // 🔥 AQUÍ ES DONDE PASA LA MAGIA FUTURA:
+        // this.cargarDisponibilidadReal(this.laboratorioIdSeleccionado());
+      }
+    });
+  }
+
+  //  Constantes
   readonly horas = [
     '08:00', '09:00', '10:00', '11:00', '12:00',
     '13:00', '14:00', '15:00', '16:00', '17:00', '18:00',
@@ -73,7 +89,7 @@ export class ReservasDashboard {
     Array.from({ length: 7 }, () => Array(11).fill(true))
   );
 
-  //  Computeds del calendario 
+  //  Computeds del calendario
 
   diasSemana = computed<DiaCalendario[]>(() => {
     const lunes = this.semanaBase();
@@ -117,13 +133,13 @@ export class ReservasDashboard {
     const disp   = this.disponibilidad();
     return this.horas.map((hora, horaIdx) => ({
       hora,
-      rango:      `${hora} - ${this.getHoraFin(hora)}`, 
+      rango:      `${hora} - ${this.getHoraFin(hora)}`,
       disponible: diaIdx >= 0 ? (disp[diaIdx]?.[horaIdx] ?? true) : true,
       horaIdx,
     }));
   });
 
-  //  Navegación del calendario 
+  //  Navegación del calendario
 
   irAnterior(): void {
     if (this.vista() === 'semanal') {
@@ -165,7 +181,7 @@ export class ReservasDashboard {
     }
   }
 
-  cambiarVista(v: VistaCalendario): void { // Cambia entre vista semanal y diaria. 
+  cambiarVista(v: VistaCalendario): void { // Cambia entre vista semanal y diaria.
     this.vista.set(v);
   }
 
@@ -175,7 +191,7 @@ export class ReservasDashboard {
     this.vista.set('diario');
   }
 
-  //  Selección de slots 
+  //  Selección de slots
 
   seleccionarSlotSemanal(diaIdx: number, horaIdx: number): void {
     if (!this.estaDisponible(diaIdx, horaIdx)) return;
@@ -244,9 +260,9 @@ export class ReservasDashboard {
     this.slotActivo.set(null);
   }
 
-  //  Procesamiento de reserva 
+  //  Procesamiento de reserva
 
-  
+
   // Recibe los datos del modal, construye el payload tipado y lo envía al backend a través del ReservaService.
   procesarReserva(datosModal: any): void {
     const slot = this.slotActivo();
@@ -254,7 +270,8 @@ export class ReservasDashboard {
 
     // Construimos el payload con tipado fuerte
     const payload: ReservaPayload = {
-      laboratorio: datosModal.laboratorio,
+      // Si tenemos un ID en la URL, lo usamos; si no, usamos el del modal
+      laboratorio: this.laboratorioIdSeleccionado() ?? datosModal.laboratorio,
       fecha:       this.formatearFecha(slot.fecha),
       hora_inicio: slot.hora,
       duracion:    datosModal.duracion,
@@ -293,7 +310,7 @@ export class ReservasDashboard {
     });
   }
 
-  //  Helpers 
+  //  Helpers
 
   estaDisponible(diaIdx: number, horaIdx: number): boolean {
     return this.disponibilidad()[diaIdx]?.[horaIdx] ?? true;
