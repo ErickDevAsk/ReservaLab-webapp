@@ -1,0 +1,128 @@
+<div class="p-6">
+
+  <!-- HEADER -->
+  <div class="flex justify-between items-center mb-2">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-800">Gestión de Equipos</h1>
+      <p class="text-sm text-gray-400">{{ equipos.length }} equipos en total</p>
+    </div>
+    <button
+      (click)="openModal()"
+      class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2 transition"
+    >
+      + Añadir Equipo
+    </button>
+  </div>
+
+  <!-- FILTROS -->
+  <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6">
+    <div class="grid grid-cols-3 gap-4 mb-4">
+
+      <input
+        type="text"
+        placeholder="Buscar por nombre o código..."
+        class="col-span-1 p-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
+      />
+
+      <select class="p-2 border border-gray-200 rounded-lg text-sm text-gray-600">
+        <option>Todos los laboratorios</option>
+      </select>
+
+      <select class="p-2 border border-gray-200 rounded-lg text-sm text-gray-600">
+        <option>Todos los estados</option>
+        <option>Disponible</option>
+        <option>En Uso</option>
+        <option>Mantenimiento</option>
+        <option>Dañado</option>
+      </select>
+
+    </div>
+
+    <!-- TABS -->
+    <div class="flex gap-2">
+      <button class="px-3 py-1 bg-blue-600 text-white rounded-lg text-sm">Todos</button>
+      <button class="px-3 py-1 bg-gray-100 text-gray-600 rounded-lg text-sm hover:bg-gray-200">Disponibles</button>
+      <button class="px-3 py-1 bg-gray-100 text-gray-600 rounded-lg text-sm hover:bg-gray-200">En Uso</button>
+      <button class="px-3 py-1 bg-gray-100 text-gray-600 rounded-lg text-sm hover:bg-gray-200">Mantenimiento</button>
+      <button class="px-3 py-1 bg-gray-100 text-gray-600 rounded-lg text-sm hover:bg-gray-200">Dañados</button>
+    </div>
+  </div>
+
+  <!-- TABLA -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <table class="w-full text-left text-sm">
+
+      <thead class="bg-gray-50 border-b border-gray-100">
+        <tr>
+          <th class="px-6 py-4 text-xs font-medium text-gray-500 uppercase">Equipo</th>
+          <th class="px-6 py-4 text-xs font-medium text-gray-500 uppercase">N° Inventario</th>
+          <th class="px-6 py-4 text-xs font-medium text-gray-500 uppercase">Laboratorio</th>
+          <th class="px-6 py-4 text-xs font-medium text-gray-500 uppercase">Stock</th>
+          <th class="px-6 py-4 text-xs font-medium text-gray-500 uppercase">Estado</th>
+          <th class="px-6 py-4 text-xs font-medium text-gray-500 uppercase">Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody class="divide-y divide-gray-100">
+        @for (equipo of equipos; track equipo.id) {
+          <tr class="hover:bg-gray-50 transition">
+
+            <td class="px-6 py-4">
+              <div class="font-medium text-gray-900">{{ equipo.nombre }}</div>
+              <div class="text-xs text-gray-400">{{ equipo.descripcion }}</div>
+            </td>
+
+            <td class="px-6 py-4 font-mono text-gray-600">
+              {{ equipo.numero_inventario }}
+            </td>
+
+            <td class="px-6 py-4 text-gray-600">
+              {{ equipo.laboratorio_nombre ?? 'General' }}
+            </td>
+
+            <td class="px-6 py-4">
+              <span [class]="getStockClass(equipo)">
+                {{ equipo.cantidad_disponible }}/{{ equipo.cantidad_total }}
+              </span>
+            </td>
+
+            <td class="px-6 py-4">
+              <span [class]="getStatusClass(equipo.estado)" class="px-2.5 py-1 rounded-full text-xs font-medium">
+                {{ equipo.estado }}
+              </span>
+            </td>
+
+            <td class="px-6 py-4 space-x-3">
+              <button (click)="editarEquipo(equipo)" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                Editar
+              </button>
+              <button (click)="eliminar(equipo.id!)" class="text-red-500 hover:text-red-700 text-sm font-medium">
+                Eliminar
+              </button>
+            </td>
+
+          </tr>
+        }
+      </tbody>
+
+    </table>
+
+    <!-- FOOTER paginación -->
+    <div class="flex justify-between items-center px-6 py-4 text-sm text-gray-500 border-t border-gray-100">
+      <span>Mostrando {{ equipos.length }} equipos</span>
+      <div class="flex gap-2">
+        <button class="px-3 py-1 border border-gray-200 rounded-lg hover:bg-gray-50">&lt;</button>
+        <button class="px-3 py-1 bg-blue-600 text-white rounded-lg">1</button>
+        <button class="px-3 py-1 border border-gray-200 rounded-lg hover:bg-gray-50">&gt;</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+@if (modalAbierto) {
+  <app-equipo-modal
+    [equipo]="equipoSeleccionado"
+    (cerrar)="onCerrarModal()"
+    (guardado)="onGuardado($event)"
+  />
+}

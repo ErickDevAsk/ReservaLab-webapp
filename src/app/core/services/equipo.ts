@@ -1,62 +1,57 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, of } from 'rxjs';
+import { catchError, Observable, of } from 'rxjs';
 
-// Interfaz que modela un equipo del inventario de laboratorio
 export interface Equipo {
-  id: number;
+  id?: number;                    // opcional para crear
   nombre: string;
   descripcion?: string;
   numero_inventario: string;
   cantidad_total: number;
   cantidad_disponible: number;
-  estado: 'Disponible' | 'En Uso' | 'Mantenimiento' | string;
+  estado: 'Disponible' | 'En Uso' | 'Mantenimiento' | 'Dañado' | string;
   laboratorio?: number | null;
+  laboratorio_nombre?: string;    // solo para mostrar en tabla
 }
+
+export type EquipoPayload = Omit<Equipo, 'id' | 'laboratorio_nombre'>;
 
 @Injectable({
   providedIn: 'root',
 })
 export class EquipoService {
   private readonly http = inject(HttpClient);
-
-  // URL base del endpoint de equipos (backend de Ángel)
   private readonly API_URL = 'http://localhost:8000/api/equipos/';
 
-  // Signal para manejar estado de carga
   public loading = signal<boolean>(false);
 
-  /**
-    Obtiene todos los equipos disponibles del inventario.
-    Si el backend aún no está listo, retorna datos mock como fallback.
-   */
-  getEquipos() {
+  getEquipos(): Observable<Equipo[]> {
     this.loading.set(true);
-
     return this.http.get<Equipo[]>(this.API_URL).pipe(
       catchError((err) => {
-        console.warn(
-          'Backend de equipos no disponible, usando datos mock:',
-          err.message
-        );
-        // Fallback con datos mock mientras Ángel expone el endpoint
+        console.warn('Backend no disponible, usando mock:', err.message);
         return of(this.getMockEquipos());
       })
     );
   }
 
-  /**
-   Obtiene solo los equipos con unidades disponibles.
-   Sirve para filtrar en el modal de reserva.
-   */
-  getEquiposDisponibles() {
+  getEquiposDisponibles(): Observable<Equipo[]> {
     return this.http.get<Equipo[]>(`${this.API_URL}?estado=Disponible`).pipe(
-      catchError(() => of(this.getMockEquipos().filter(
-        (eq) => eq.cantidad_disponible > 0
-      )))
+      catchError(() => of(this.getMockEquipos().filter(eq => eq.cantidad_disponible > 0)))
     );
   }
 
+  crearEquipo(payload: EquipoPayload): Observable<Equipo> {
+    return this.http.post<Equipo>(this.API_URL, payload);
+  }
+
+  actualizarEquipo(id: number, payload: EquipoPayload): Observable<Equipo> {
+    return this.http.put<Equipo>(`${this.API_URL}${id}/`, payload);
+  }
+
+  eliminarEquipo(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.API_URL}${id}/`);
+  }
   /**
    Datos mock como fallback mientras el endpoint de inventario
    es implementado por el equipo de backend.

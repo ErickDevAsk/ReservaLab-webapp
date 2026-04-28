@@ -15,7 +15,6 @@ import { AdminProfileComponent } from './features/admin/admin-profile/admin-prof
 import { GestionUsuariosComponent } from './features/admin/gestion-usuarios/gestion-usuarios';
 // Importamos el Layout y las vistas del técnico
 import { TecnicoDashboard } from './features/tecnico/tecnico-dashboard/tecnico-dashboard';
-import { GestionEquipos } from './features/tecnico/gestion-equipos/gestion-equipos';
 import { Dashboard } from './features/tecnico/dashboard/dashboard';
 import { GestionLabs } from './features/tecnico/gestion-labs/gestion-labs';
 import { Aprobaciones } from './features/tecnico/aprobaciones/aprobaciones';
@@ -23,6 +22,7 @@ import { Reportes } from './features/tecnico/reportes/reportes';
 import { Perfil } from './features/tecnico/perfil/perfil';
 
 import { Reglamento } from './features/landing/reglamento/reglamento';
+import { AdminGestionEquipos } from './features/admin/admin-gestion-equipos/admin-gestion-equipos';
 
 export const routes: Routes = [
   // 🌍 RUTAS PÚBLICAS
@@ -41,6 +41,7 @@ export const routes: Routes = [
     children: [
       { path: 'perfil', component: AdminProfileComponent },
       { path: 'gestion-usuarios', component: GestionUsuariosComponent },
+      { path: 'gestion-equipos', component: AdminGestionEquipos },
       // Redirige por defecto al perfil si solo ponen /admin
       { path: '', redirectTo: 'perfil', pathMatch: 'full' }
     ]
@@ -76,12 +77,10 @@ export const routes: Routes = [
       { path: 'dashboard', component: Dashboard },
 
       { path: 'perfil', component: Perfil }, // <-- ¡Aquí está tu componente!
-      { path: 'gestion-equipos', component: GestionEquipos },
       { path: 'gestion-labs', component: GestionLabs },
       { path: 'aprobaciones', component: Aprobaciones },
       { path: 'reportes', component: Reportes },
 
-      { path: 'equipos', component: GestionEquipos },
       { path: 'labs', component: GestionLabs },
       { path: 'aprobaciones', component: Aprobaciones },
       { path: 'reportes', component: Reportes },
