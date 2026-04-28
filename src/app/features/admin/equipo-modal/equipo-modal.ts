@@ -91,6 +91,17 @@ export class EquipoModalComponent implements OnInit {
       });
     }
   }
+  eliminar(id: number | undefined) {
+    if (!id) return;
+    if (confirm("¿Estás seguro de que deseas eliminar este laboratorio? Esta acción no se puede deshacer.")) {
+      this.equipoService.eliminarEquipo(id).subscribe({
+        next: () => {
+          this.cargarLabs();
+        },
+        error: (err) => console.error('Error al eliminar', err)
+      });
+    }
+  }
 
   onCerrar(): void {
     this.cerrar.emit();

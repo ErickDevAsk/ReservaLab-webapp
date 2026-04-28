@@ -23,6 +23,7 @@ import { Perfil } from './features/tecnico/perfil/perfil';
 
 import { Reglamento } from './features/landing/reglamento/reglamento';
 import { AdminGestionEquipos } from './features/admin/admin-gestion-equipos/admin-gestion-equipos';
+import { GestionLabsComponent } from './features/admin/gestion-labs/gestion-labs';
 
 export const routes: Routes = [
   // 🌍 RUTAS PÚBLICAS
@@ -42,6 +43,7 @@ export const routes: Routes = [
       { path: 'perfil', component: AdminProfileComponent },
       { path: 'gestion-usuarios', component: GestionUsuariosComponent },
       { path: 'gestion-equipos', component: AdminGestionEquipos },
+      { path: 'gestion-labs', component: GestionLabsComponent },
       // Redirige por defecto al perfil si solo ponen /admin
       { path: '', redirectTo: 'perfil', pathMatch: 'full' }
     ]

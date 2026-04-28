@@ -9,7 +9,7 @@ export interface Laboratorio {
   imagen?: string;
   facultad?: string;
   capacidad?: number;
-  estado?: string; // <--- ¡Solo agrega esta línea!
+  estado?: string;
   [key: string]: any;
 }
 
@@ -28,5 +28,18 @@ export class LaboratorioService {
   // NUEVO: El método que tu compañero inventó para que su componente no explote
   getLaboratorios() {
     return this.http.get<Laboratorio[]>(this.API_URL);
+  }
+  crearLaboratorio(lab: Laboratorio) {
+    return this.http.post<Laboratorio>(this.API_URL, lab);
+  }
+
+  actualizarLaboratorio(id: number, lab: Laboratorio) {
+    // IMPORTANTE: Nota la barra diagonal extra al final de la URL
+    return this.http.put<Laboratorio>(`${this.API_URL}${id}/`, lab);
+  }
+
+  eliminarLaboratorio(id: number) {
+    // IMPORTANTE: La barra diagonal al final es obligatoria en Django
+    return this.http.delete(`${this.API_URL}${id}/`);
   }
 }
