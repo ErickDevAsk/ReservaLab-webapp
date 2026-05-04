@@ -24,6 +24,7 @@ import { Perfil } from './features/tecnico/perfil/perfil';
 import { Reglamento } from './features/landing/reglamento/reglamento';
 import { AdminGestionEquipos } from './features/admin/admin-gestion-equipos/admin-gestion-equipos';
 import { GestionLabsComponent } from './features/admin/gestion-labs/gestion-labs';
+import { StudentLoansComponent } from './features/student/student-loans/student-loans';
 
 export const routes: Routes = [
   // 🌍 RUTAS PÚBLICAS
@@ -58,6 +59,7 @@ export const routes: Routes = [
     children: [
       { path: 'dashboard', component: StudentDashboardComponent },
       { path: 'reservas', component: ReservasDashboard },
+      { path: 'equipos', component: StudentLoansComponent },
       { path: 'perfil', component: StudentProfileComponent },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]

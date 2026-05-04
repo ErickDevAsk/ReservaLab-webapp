@@ -1,0 +1,106 @@
+<div class="p-8 max-w-[1200px] text-gray-800 font-sans">
+
+  <header class="mb-6">
+    <h1 class="text-3xl font-bold text-gray-900 mb-2">Préstamos de Equipos</h1>
+    <p class="text-gray-500">Gestiona tus préstamos y explora el catálogo disponible en ReservaLab.</p>
+  </header>
+
+  <div class="mb-8">
+    <div class="inline-flex bg-gray-100 rounded-lg p-1">
+      <button
+        [ngClass]="activeTab() === 'catalogo' ? 'bg-white text-gray-900 shadow' : 'text-gray-500 hover:text-gray-700'"
+        class="px-4 py-2 rounded-md text-sm font-medium transition-all" (click)="setTab('catalogo')">
+        <i class="icon-box mr-2"></i> Catálogo
+      </button>
+      <button
+        [ngClass]="activeTab() === 'mis-prestamos' ? 'bg-white text-gray-900 shadow' : 'text-gray-500 hover:text-gray-700'"
+        class="px-4 py-2 rounded-md text-sm font-medium transition-all" (click)="setTab('mis-prestamos')">
+        <i class="icon-history mr-2"></i> Mis Préstamos
+      </button>
+    </div>
+  </div>
+
+  @if (activeTab() === 'catalogo') {
+
+  @if (isLoading()) {
+  <div class="flex justify-center items-center py-20 text-gray-500">
+    <i class="icon-spinner animate-spin text-3xl mr-3"></i> Cargando catálogo...
+  </div>
+  } @else if (error()) {
+  <div class="bg-red-50 text-red-600 p-4 rounded-lg text-center font-medium border border-red-200">
+    {{ error() }}
+  </div>
+  } @else {
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+
+    @for (equipo of equipos(); track equipo.id) {
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+
+      @for (equipo of equipos(); track equipo.id) {
+      <div
+        class="border border-gray-200 rounded-xl overflow-hidden bg-white hover:shadow-md transition-shadow flex flex-col">
+
+        <div class="h-40 bg-gray-50 border-b border-gray-100 flex items-center justify-center">
+          <i class="icon-box text-4xl text-gray-300"></i>
+        </div>
+
+        <div class="p-5 flex flex-col flex-1">
+          <div class="flex justify-between items-center mb-3">
+
+            @if (equipo.laboratorio_nombre) {
+            <span
+              class="text-xs border border-gray-200 text-gray-600 px-2 py-1 rounded font-medium truncate max-w-[50%]"
+              title="{{ equipo.laboratorio_nombre }}">
+              {{ equipo.laboratorio_nombre }}
+            </span>
+            } @else {
+            <span
+              class="text-xs border border-gray-200 text-gray-600 px-2 py-1 rounded font-medium truncate max-w-[50%]"
+              title="Inv: {{ equipo.numero_inventario }}">
+              #{{ equipo.numero_inventario }}
+            </span>
+            }
+
+            <span class="text-xs px-2 py-1 rounded font-medium" [ngClass]="{
+                  'bg-green-100 text-green-800': equipo.estado === 'Disponible',
+                  'bg-blue-100 text-blue-800': equipo.estado === 'En Uso',
+                  'bg-yellow-100 text-yellow-800': equipo.estado === 'Mantenimiento',
+                  'bg-red-100 text-red-800': equipo.estado === 'Dañado',
+                  'bg-gray-100 text-gray-600': !['Disponible', 'En Uso', 'Mantenimiento', 'Dañado'].includes(equipo.estado)
+                }">
+              {{ equipo.estado }}
+            </span>
+          </div>
+
+          <h3 class="text-lg font-semibold text-gray-900 mb-1 line-clamp-2">{{ equipo.nombre }}</h3>
+
+          <p class="text-xs text-gray-500 mb-4 line-clamp-2 flex-1">{{ equipo.descripcion || 'Sin descripción' }}</p>
+
+          <p class="text-sm text-gray-500 mb-5">
+            Disponibles: <strong class="text-gray-900">{{ equipo.cantidad_disponible }} / {{ equipo.cantidad_total
+              }}</strong>
+          </p>
+
+          <div class="flex gap-2 mt-auto">
+            <button
+              class="flex-1 bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors"
+              [disabled]="equipo.cantidad_disponible === 0 || equipo.estado !== 'Disponible'"
+              (click)="solicitarEquipo(equipo)">
+              Solicitar
+            </button>
+          </div>
+        </div>
+      </div>
+      } @empty {
+      <div
+        class="col-span-full text-center py-16 text-gray-500 bg-gray-50 rounded-xl border border-dashed border-gray-300">
+        No hay equipos registrados en el inventario.
+      </div>
+      }
+
+    </div>
+    }
+  </div>
+  }
+  }
+</div>
