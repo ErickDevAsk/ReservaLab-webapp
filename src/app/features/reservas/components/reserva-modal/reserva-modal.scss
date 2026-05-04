@@ -1,0 +1,113 @@
+.modal-backdrop {
+  @apply fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm;
+}
+
+.modal-container {
+  @apply bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh];
+}
+
+.modal-header {
+  @apply flex items-center justify-between px-6 py-5 border-b border-slate-100 shrink-0;
+
+  .modal-title {
+    @apply text-xl font-black text-slate-900;
+  }
+
+  .btn-close {
+    @apply p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors;
+  }
+}
+
+.modal-body-wrapper {
+  @apply overflow-y-auto flex-1;
+}
+
+.modal-body {
+  @apply px-6 pt-5 space-y-5;
+}
+
+.summary-card {
+  @apply bg-blue-50 border border-blue-100 rounded-xl p-4 space-y-2;
+
+  .summary-item {
+    @apply flex items-center gap-2 text-blue-700;
+
+    .date-text {
+      @apply font-bold text-sm capitalize;
+    }
+
+    .time-text {
+      @apply font-bold text-lg;
+    }
+  }
+}
+
+.form-group {
+  .form-label {
+    @apply block text-sm font-bold text-slate-700 mb-1.5;
+
+    .required-asterisk {
+      @apply text-red-500;
+    }
+  }
+
+  .loading-state {
+    @apply w-full px-3 py-2.5 border border-slate-200 rounded-xl bg-slate-50 flex items-center gap-2 text-slate-400 text-sm font-medium;
+  }
+
+  .form-control {
+    @apply w-full px-3 py-2.5 border border-slate-200 rounded-xl bg-slate-50 text-slate-800 font-medium focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all;
+
+    &.textarea-control {
+      @apply resize-none placeholder:text-slate-400;
+    }
+  }
+
+  .char-counter {
+    @apply text-xs mt-1 text-right font-medium;
+
+    &.error { @apply text-red-500; }
+    &.success { @apply text-green-600; }
+    &.empty { @apply text-slate-400; }
+  }
+}
+
+.norms-card {
+  @apply bg-slate-50 rounded-xl p-4;
+
+  .norms-title {
+    @apply text-sm font-black text-slate-700 mb-3;
+  }
+
+  .norms-list {
+    @apply space-y-2;
+
+    .norms-item {
+      @apply flex items-start gap-2 text-sm text-slate-600 font-medium;
+
+      .bullet {
+        @apply text-blue-500 mt-0.5 shrink-0;
+      }
+    }
+  }
+}
+
+.modal-footer {
+  @apply px-6 py-5 border-t border-slate-100 flex gap-3 shrink-0;
+
+  .btn-cancel {
+    @apply flex-1 py-3 px-4 border border-slate-200 rounded-xl font-bold text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-all active:scale-95;
+  }
+
+  .btn-confirm {
+    @apply flex-1 py-3 px-4 rounded-xl font-bold transition-all active:scale-95;
+
+    &.is-valid {
+      @apply bg-blue-600 text-white shadow-lg shadow-blue-200 hover:bg-blue-700;
+    }
+
+    &.is-invalid {
+      @apply bg-slate-100 text-slate-400 cursor-not-allowed;
+    }
+  }
+}

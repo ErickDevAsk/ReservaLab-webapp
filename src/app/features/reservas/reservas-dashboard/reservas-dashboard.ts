@@ -61,6 +61,7 @@ export class ReservasDashboard implements OnInit {
   //  Estado del servicio (reactivo)
   cargando = this.reservaService.loading;
   errorApi = this.reservaService.error;
+  cargandoCalendario = signal(false);
 
   ngOnInit(): void {
     // Escuchamos los parámetros de la URL
@@ -70,8 +71,7 @@ export class ReservasDashboard implements OnInit {
         this.laboratorioIdSeleccionado.set(Number(id));
         console.log('Filtro de calendario activado para el Lab ID:', this.laboratorioIdSeleccionado());
 
-        // 🔥 AQUÍ ES DONDE PASA LA MAGIA FUTURA:
-        // this.cargarDisponibilidadReal(this.laboratorioIdSeleccionado());
+        this.cargarDisponibilidadReal(this.laboratorioIdSeleccionado());
       }
     });
   }
@@ -159,6 +159,7 @@ export class ReservasDashboard implements OnInit {
         this.semanaBase.set(this.getLunes(nueva));
       }
     }
+    this.cargarDisponibilidadReal(this.laboratorioIdSeleccionado());
   }
 
   // Avanza al siguiente día o semana, dependiendo de la vista actual.
@@ -179,6 +180,7 @@ export class ReservasDashboard implements OnInit {
         this.semanaBase.set(this.getLunes(nueva));
       }
     }
+    this.cargarDisponibilidadReal(this.laboratorioIdSeleccionado());
   }
 
   cambiarVista(v: VistaCalendario): void { // Cambia entre vista semanal y diaria.
@@ -309,6 +311,86 @@ export class ReservasDashboard implements OnInit {
       },
     });
   }
+
+// ---------------------------------------------------------
+  //  MAGIA DE DISPONIBILIDAD REAL
+  // ---------------------------------------------------------
+
+  cargarDisponibilidadReal(labId: number | null): void {
+    if (!labId) return;
+
+    this.cargandoCalendario.set(true);
+
+    // NOTA: Asegúrate de que este método exista en tu ReservaService y apunte al GET de Django
+    this.reservaService.obtenerReservasPorLaboratorio(labId).subscribe({
+      next: (respuesta: any) => {
+        // Manejamos si Django manda paginación (.results) o el arreglo directo
+        const reservas = respuesta.results || respuesta;
+        console.log('Reservas traídas de Django:', reservas);
+
+        this.marcarBloquesOcupados(reservas);
+        this.cargandoCalendario.set(false);
+      },
+      error: (err: any) => {
+        console.error('Error al cargar la disponibilidad desde Django:', err);
+        this.cargandoCalendario.set(false);
+      }
+    });
+  }
+
+  resetearCalendario(): void {
+    // Volvemos a llenar la matriz de 7x11 con 'true' (Disponible)
+    this.disponibilidad.set(
+      Array.from({ length: 7 }, () => Array(11).fill(true))
+    );
+  }
+
+  marcarBloquesOcupados(reservas: any[]): void {
+    // 1. Limpiamos el calendario de reservas anteriores
+    this.resetearCalendario();
+
+    // Obtenemos los días que se están mostrando actualmente en pantalla
+    const diasActuales = this.diasSemana();
+
+    // 2. Usamos .update() de la señal para mutar el estado
+    this.disponibilidad.update((disp) => {
+      // Hacemos una copia profunda de la matriz para no romper la reactividad
+      const nuevaDisp = disp.map((dia) => [...dia]);
+
+      reservas.forEach(reserva => {
+        // Solo bloqueamos el espacio si está Aprobada o Pendiente (evitamos Canceladas o Rechazadas)
+        if (reserva.estado === 'Aprobada' || reserva.estado === 'Pendiente') {
+
+          // A) Buscar la columna (Día)
+          // Comparamos el formato 'YYYY-MM-DD' de Django con el de nuestros días mostrados
+          const diaIdx = diasActuales.findIndex(d =>
+            this.formatearFecha(d.fecha) === reserva.fecha
+          );
+
+          if (diaIdx !== -1) {
+            // B) Buscar la fila (Hora)
+            // Django puede mandar '09:00:00'. Cortamos los primeros 5 caracteres ('09:00') para que coincida.
+            const horaCorta = reserva.hora_inicio.substring(0, 5);
+            const horaIdx = this.horas.findIndex(h => h === horaCorta);
+
+            if (horaIdx !== -1) {
+              // C) Pintar los bloques de rojo según la duración
+              const duracion = reserva.duracion || 1;
+              for (let i = 0; i < duracion; i++) {
+                // Evitamos que se desborde el arreglo si una reserva sobrepasa las 18:00
+                if (horaIdx + i < this.horas.length) {
+                  nuevaDisp[diaIdx][horaIdx + i] = false; // false = Ocupado
+                }
+              }
+            }
+          }
+        }
+      });
+
+      return nuevaDisp;
+    });
+  }
+
 
   //  Helpers
 
