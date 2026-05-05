@@ -25,6 +25,7 @@ import { Reglamento } from './features/landing/reglamento/reglamento';
 import { AdminGestionEquipos } from './features/admin/admin-gestion-equipos/admin-gestion-equipos';
 import { GestionLabsComponent } from './features/admin/gestion-labs/gestion-labs';
 import { StudentLoansComponent } from './features/student/student-loans/student-loans';
+import { AdminLayout } from './features/admin/admin-layout/admin-layout';
 
 export const routes: Routes = [
   // 🌍 RUTAS PÚBLICAS
@@ -38,6 +39,7 @@ export const routes: Routes = [
   // ==========================================
   {
     path: 'admin',
+    component: AdminLayout,
     canActivate: [authGuard],
     data: { expectedRole: 'Administrador' },
     children: [

@@ -7,7 +7,6 @@ import { SidebarComponent } from '../../../shared/components/sidebar/sidebar';
 @Component({
   selector: 'app-tecnico-dashboard',
   standalone: true,
-  // 🔥 AGREGA SidebarComponent a los imports
   imports: [RouterModule, SidebarComponent],
   templateUrl: './tecnico-dashboard.html',
   styleUrl: './tecnico-dashboard.scss',

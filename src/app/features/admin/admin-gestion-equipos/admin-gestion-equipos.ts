@@ -30,18 +30,17 @@ export class AdminGestionEquipos implements OnInit {
   }
 
   getStockClass(equipo: Equipo): string {
-    if (equipo.cantidad_disponible === 0) return 'text-red-600 font-semibold';
-    if (equipo.cantidad_disponible <= 3) return 'text-yellow-500 font-semibold';
-    return 'text-gray-700';
+    if (equipo.cantidad_disponible === 0) return 'text-red-500 font-medium';
+    return 'text-slate-600 font-medium';
   }
 
   getStatusClass(estado: string): string {
     switch (estado.toLowerCase()) {
-      case 'disponible': return 'bg-green-100 text-green-700';
-      case 'en uso': return 'bg-blue-100 text-blue-700';
-      case 'mantenimiento': return 'bg-yellow-100 text-yellow-700';
-      case 'dañado': return 'bg-red-100 text-red-700';
-      default: return 'bg-gray-100 text-gray-700';
+      case 'disponible':    return 'bg-green-100/50 text-green-600 border border-green-200/60';
+      case 'en uso':        return 'bg-blue-100/50 text-blue-600 border border-blue-200/60';
+      case 'mantenimiento': return 'bg-yellow-100/50 text-yellow-600 border border-yellow-200/60';
+      case 'dañado':        return 'bg-red-100/50 text-red-600 border border-red-200/60';
+      default:              return 'bg-slate-100 text-slate-600 border border-slate-200';
     }
   }
   openModal(): void {
