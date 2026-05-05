@@ -1,34 +1,54 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router'; //Agregamos el router para redirigir al salir
 
 @Injectable({
   providedIn: 'root',
 })
-
 export class AuthService {
   private http = inject(HttpClient);
+  private router = inject(Router); // Inyectamos el router
+
   private apiAccountsUrl = 'http://127.0.0.1:8000/api/accounts';
-  //NUEVA URL base para Login (JWT)
   private apiTokenUrl = 'http://127.0.0.1:8000/api/token';
 
   register(userData: any): Observable<any> {
     return this.http.post(`${this.apiAccountsUrl}/register/`, userData);
   }
-  // a veces suele ser /api/token/ en lugar de /api/accounts/login/)
+
   login(credentials: any): Observable<any> {
     return this.http.post(`${this.apiTokenUrl}/`, credentials);
   }
 
   obtenerPerfil(): Observable<any> {
-    // Esta ruta debe coincidir con tu ViewSet de Django para obtener el perfil del usuario autenticado
     return this.http.get(`${this.apiAccountsUrl}/perfil/`);
   }
 
-  //FUNCIÓN PARA ACTUALIZAR EL PERFIL
   actualizarPerfil(datosNuevos: any): Observable<any> {
-    // Usamos PATCH para actualizar solo los campos enviados.
-    // Nota: Revisa con tu equipo si la URL termina en '/perfil/', '/update/' o similar en Django.
     return this.http.patch(`${this.apiAccountsUrl}/perfil/`, datosNuevos);
+  }
+
+  // ==========================================
+  // 🔥 NUEVAS FUNCIONES PARA EL MANEJO DE SESIÓN
+  // ==========================================
+
+  // Llama a esta función desde tu componente de Login cuando la petición sea exitosa
+  guardarSesion(token: string, rol: string) {
+    localStorage.setItem('access_token', token);
+    localStorage.setItem('user_role', rol.toLowerCase()); // Lo pasamos a minúsculas por si acaso
+  }
+
+  // Esta es la que usará tu Sidebar
+  getUserRole(): string {
+    // Si no hay rol guardado, asumimos 'estudiante' por seguridad
+    return localStorage.getItem('user_role') || 'estudiante';
+  }
+
+  // Limpia los datos y expulsa al usuario
+  logout() {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('user_role');
+    this.router.navigate(['/login']); // Lo mandamos a la pantalla de inicio
   }
 }

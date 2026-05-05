@@ -1,0 +1,24 @@
+/* Contenedor principal de la Sidebar */
+.sidebar-container {
+  @apply bg-white border-r border-slate-100 h-screen flex flex-col shrink-0 transition-all duration-300 z-40;
+}
+
+/* Enlaces de navegación por defecto */
+.nav-link {
+  @apply w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all cursor-pointer text-slate-600 hover:bg-slate-50 font-semibold mt-1;
+
+  /* Estilos para cuando la ruta está activa (Angular inyecta la clase 'active') */
+  &.active {
+    @apply bg-blue-600 text-white font-bold shadow-md shadow-blue-200 hover:bg-blue-700;
+  }
+}
+
+/* Botón de cerrar sesión */
+.logout-btn {
+  @apply w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-red-600 hover:bg-red-50 transition-all font-bold cursor-pointer;
+}
+
+/* Íconos para que no se deformen al colapsar */
+.nav-icon {
+  @apply shrink-0;
+}

@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
@@ -10,38 +10,47 @@ import { jwtDecode } from 'jwt-decode';
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.scss'
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnInit {
   private readonly router = inject(Router);
-  
-  // Solución al error rojo: Declaramos la variable de estado
+
   public sidebarCollapsed = signal<boolean>(false);
+  // Inicializamos con mayúscula para evitar errores si el token tarda en cargar
+  public userRole = signal<string>('Estudiante');
 
-  // Detectamos el rol del usuario desde el token
-  public userRole = signal<string | null>(this.getRoleFromToken());
+  ngOnInit() {
+    this.cargarRolDesdeToken();
+  }
 
-  private getRoleFromToken(): string | null {
+  private cargarRolDesdeToken() {
     const token = localStorage.getItem('access_token');
-    if (!token) return null;
-    try {
-      const decoded: any = jwtDecode(token);
-      return decoded.rol; // Retorna 'tecnico' o 'Estudiante'
-    } catch {
-      return null;
+    if (token) {
+      try {
+        const decoded: any = jwtDecode(token);
+        if (decoded.rol) {
+          // Asignamos el rol exactamente como viene de Django (Ej: 'Tecnico')
+          this.userRole.set(decoded.rol);
+        }
+      } catch (e) {
+        console.error('El token no es válido o expiró:', e);
+      }
     }
   }
 
-  // Método para el botón de colapsar
   toggleSidebar() {
     this.sidebarCollapsed.update(v => !v);
   }
 
-  // Métodos de navegación inteligente
+  // Rutas Dinámicas respetando la mayúscula
   getDashboardRoute(): string {
-    return this.userRole() === 'tecnico' ? '/tecnico/dashboard' : '/student/dashboard';
+    return (this.userRole() === 'Tecnico' || this.userRole() === 'Administrador')
+      ? '/tecnico/dashboard'
+      : '/student/dashboard';
   }
 
   getProfileRoute(): string {
-    return this.userRole() === 'tecnico' ? '/tecnico/perfil' : '/student/perfil';
+    return (this.userRole() === 'Tecnico' || this.userRole() === 'Administrador')
+      ? '/tecnico/perfil'
+      : '/student/perfil';
   }
 
   cerrarSesion() {

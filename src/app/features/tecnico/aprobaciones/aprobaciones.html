@@ -10,7 +10,7 @@
     </div>
 
     <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm">
-      {{ solicitudes.length }} Pendientes
+      {{ solicitudes().length }} Pendientes
     </span>
   </div>
 
@@ -41,27 +41,32 @@
 
       <tbody>
 
-        <tr *ngFor="let s of solicitudes" class="border-b hover:bg-gray-50">
+        <tr *ngFor="let s of solicitudes()" class="border-b hover:bg-gray-50">
           <td class="py-3">
-            <div class="font-medium">{{ s.usuario_nombre }}</div>
-            <span class="text-xs text-gray-400">REQ-{{ s.id }}</span>
+            <!-- Ahora sí usamos usuario_nombre -->
+            <div class="font-medium text-slate-800">{{ s.usuario_nombre || 'Usuario ID: ' + s.usuario }}</div>
+            <span class="text-xs text-slate-400 font-mono">REQ-{{ s.id }}</span>
           </td>
 
-          <td>{{ s.equipo_nombre }}</td>
+          <td class="font-semibold text-slate-700">
+            {{ s.equipo_nombre || 'Equipo ID: ' + s.equipo }}
+          </td>
+
           <td>
-            <span class="bg-purple-100 text-purple-600 px-2 py-1 rounded text-xs">
-              Préstamo
-            </span>
+            <span class="bg-purple-100 text-purple-600 px-2 py-1 rounded text-xs">Préstamo</span>
           </td>
 
-          <td>{{ s.fecha_devolucion }}</td>
+          <!-- Usamos el nombre real de la fecha que manda Django -->
+          <td>{{ s.fecha_devolucion_prevista | date:'shortDate' }}</td>
 
           <td class="space-x-2">
-            <button class="bg-green-100 text-green-600 px-2 py-1 rounded">✔</button>
-            <button class="bg-red-100 text-red-600 px-2 py-1 rounded">✖</button>
-            <button class="bg-gray-100 px-2 py-1 rounded">👁</button>
+            <!-- Botón APROBAR -->
+            <button (click)="gestionarSolicitud(s.id, 'Aprobado')" class="bg-green-100 text-green-600 px-2 py-1 rounded hover:bg-green-200" title="Aprobar">✔</button>
+            <!-- Botón RECHAZAR -->
+            <button (click)="gestionarSolicitud(s.id, 'Rechazado')" class="bg-red-100 text-red-600 px-2 py-1 rounded hover:bg-red-200" title="Rechazar">✖</button>
+            <!-- Botón VER DETALLES -->
+            <button (click)="abrirModal(s)" class="bg-gray-100 px-2 py-1 rounded hover:bg-gray-200" title="Ver Detalles">👁</button>
           </td>
-
         </tr>
 
       </tbody>
@@ -74,30 +79,36 @@
   <div class="grid grid-cols-2 gap-6">
 
     <!-- DEVOLUCIONES -->
-    <div class="bg-white p-6 rounded-xl shadow">
-
-      <h3 class="font-semibold mb-2 text-yellow-600">
-        ⏰ Devoluciones Próximas
+    <!-- Tarjeta: Devoluciones Próximas -->
+    <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex-1">
+      <h3 class="font-bold text-slate-800 flex items-center gap-2 mb-2">
+        <span>⏰</span> Devoluciones Próximas
       </h3>
+      <p class="text-xs text-slate-500 mb-4">Equipos que deben ser entregados.</p>
 
-      <p class="text-gray-500 text-sm mb-4">
-        Equipos que deben ser entregados.
-      </p>
+      <div class="space-y-3">
+        <!-- Iteramos sobre la señal devoluciones() -->
+        @for (d of devoluciones(); track d.id) {
+          <div class="flex items-center justify-between p-3 bg-slate-50 border border-slate-100 rounded-xl">
+            <div>
+              <!-- Mostramos los nombres reales que configuramos en el Serializer -->
+              <p class="font-bold text-slate-800">{{ d.equipo_nombre }}</p>
+              <p class="text-xs text-slate-500">{{ d.usuario_nombre }}</p>
+              <p class="text-[10px] text-slate-400 mt-0.5">REQ-{{ d.id }}</p>
+            </div>
 
-      <div *ngFor="let d of devoluciones"
-           class="border p-3 rounded flex justify-between items-center mb-3">
-
-        <div>
-          <p class="font-medium">{{ d.equipo_nombre }}</p>
-          <p class="text-xs text-gray-400">{{ d.usuario_nombre }}</p>
-        </div>
-
-        <button class="bg-blue-500 text-white px-3 py-1 rounded">
-          Recibir
-        </button>
-
+            <!-- 🔥 EL BOTÓN MÁGICO CONECTADO AL ESTADO 'Devuelto' -->
+            <button (click)="gestionarSolicitud(d.id, 'Devuelto')"
+                    class="bg-blue-500 text-white px-4 py-1.5 rounded-lg text-sm font-bold hover:bg-blue-600 transition-colors shadow-sm">
+              Recibir
+            </button>
+          </div>
+        } @empty {
+          <div class="text-center py-6">
+            <p class="text-sm text-slate-400 font-medium">No hay equipos por recibir.</p>
+          </div>
+        }
       </div>
-
     </div>
 
     <!-- VENCIDOS -->
@@ -111,7 +122,7 @@
         Equipos con retraso en la entrega.
       </p>
 
-      <div *ngFor="let v of vencidos"
+      <div *ngFor="let v of vencidos()"
            class="border p-3 rounded flex justify-between items-center bg-red-50 mb-2">
 
         <div>
@@ -130,3 +141,63 @@
   </div>
 
 </div>
+
+<!-- MODAL DE DETALLES DE SOLICITUD -->
+@if (isModalOpen()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden animate-in fade-in zoom-in duration-200">
+
+      <!-- Cabecera del Modal -->
+      <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+        <div>
+          <h2 class="text-xl font-bold text-slate-900">Detalles de Solicitud</h2>
+          <p class="text-xs font-mono text-slate-500">Folio: REQ-{{ solicitudSeleccionada()?.id }}</p>
+        </div>
+        <button (click)="cerrarModal()" class="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Cuerpo del Modal -->
+      <div class="p-6 space-y-6">
+        <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+          <p class="text-xs font-black uppercase text-slate-400 mb-1">Estudiante</p>
+          <!-- Cambiamos a usuario_nombre -->
+          <p class="font-bold text-slate-800">{{ solicitudSeleccionada()?.usuario_nombre || solicitudSeleccionada()?.usuario }}</p>
+        </div>
+        <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+          <p class="text-xs font-black uppercase text-slate-400 mb-1">Equipo Solicitado</p>
+          <!-- Cambiamos a equipo_nombre -->
+          <p class="font-bold text-blue-600">{{ solicitudSeleccionada()?.equipo_nombre || solicitudSeleccionada()?.equipo }}</p>
+        </div>
+
+        <div>
+          <p class="text-xs font-black uppercase text-slate-400 mb-1">Cantidad Solicitada</p>
+          <p class="font-bold text-slate-800">{{ solicitudSeleccionada()?.cantidad_solicitada }} unidades</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <p class="text-xs font-black uppercase text-slate-400 mb-1">Fecha de Solicitud</p>
+            <p class="font-medium text-slate-700">{{ solicitudSeleccionada()?.fecha_prestamo | date:'medium' }}</p>
+          </div>
+          <div>
+            <p class="text-xs font-black uppercase text-slate-400 mb-1">Fecha de Devolución</p>
+            <p class="font-medium text-amber-600">{{ solicitudSeleccionada()?.fecha_devolucion_prevista | date:'mediumDate' }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pie del Modal (Acciones) -->
+      <div class="p-6 bg-slate-50 border-t border-slate-100 flex gap-3">
+        <button (click)="gestionarSolicitud(solicitudSeleccionada().id, 'Rechazado')" class="flex-1 py-2.5 rounded-xl font-bold bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white transition-all">
+          Rechazar
+        </button>
+        <button (click)="gestionarSolicitud(solicitudSeleccionada().id, 'Aprobado')" class="flex-1 py-2.5 rounded-xl font-bold bg-emerald-500 text-white hover:bg-emerald-600 shadow-lg shadow-emerald-200 transition-all">
+          Aprobar Entrega
+        </button>
+      </div>
+
+    </div>
+  </div>
+}

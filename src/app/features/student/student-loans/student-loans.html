@@ -1,106 +1,226 @@
-<div class="p-8 max-w-[1200px] text-gray-800 font-sans">
+<div class="loans-wrapper">
 
-  <header class="mb-6">
-    <h1 class="text-3xl font-bold text-gray-900 mb-2">Préstamos de Equipos</h1>
-    <p class="text-gray-500">Gestiona tus préstamos y explora el catálogo disponible en ReservaLab.</p>
+  <header class="loans-header">
+    <h1>Préstamos de Equipos</h1>
+    <p>Gestiona tus préstamos y explora el catálogo disponible en ReservaLab.</p>
   </header>
 
-  <div class="mb-8">
-    <div class="inline-flex bg-gray-100 rounded-lg p-1">
+  <div class="tabs-container">
+    <div class="tab-group">
       <button
-        [ngClass]="activeTab() === 'catalogo' ? 'bg-white text-gray-900 shadow' : 'text-gray-500 hover:text-gray-700'"
-        class="px-4 py-2 rounded-md text-sm font-medium transition-all" (click)="setTab('catalogo')">
+        [class.active]="activeTab() === 'catalogo'"
+        class="tab-btn"
+        (click)="setTab('catalogo')">
         <i class="icon-box mr-2"></i> Catálogo
       </button>
       <button
-        [ngClass]="activeTab() === 'mis-prestamos' ? 'bg-white text-gray-900 shadow' : 'text-gray-500 hover:text-gray-700'"
-        class="px-4 py-2 rounded-md text-sm font-medium transition-all" (click)="setTab('mis-prestamos')">
+        [class.active]="activeTab() === 'mis-prestamos'"
+        class="tab-btn"
+        (click)="setTab('mis-prestamos')">
         <i class="icon-history mr-2"></i> Mis Préstamos
       </button>
     </div>
   </div>
 
   @if (activeTab() === 'catalogo') {
-
-  @if (isLoading()) {
-  <div class="flex justify-center items-center py-20 text-gray-500">
-    <i class="icon-spinner animate-spin text-3xl mr-3"></i> Cargando catálogo...
-  </div>
-  } @else if (error()) {
-  <div class="bg-red-50 text-red-600 p-4 rounded-lg text-center font-medium border border-red-200">
-    {{ error() }}
-  </div>
-  } @else {
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-
-    @for (equipo of equipos(); track equipo.id) {
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-
-      @for (equipo of equipos(); track equipo.id) {
-      <div
-        class="border border-gray-200 rounded-xl overflow-hidden bg-white hover:shadow-md transition-shadow flex flex-col">
-
-        <div class="h-40 bg-gray-50 border-b border-gray-100 flex items-center justify-center">
-          <i class="icon-box text-4xl text-gray-300"></i>
-        </div>
-
-        <div class="p-5 flex flex-col flex-1">
-          <div class="flex justify-between items-center mb-3">
-
-            @if (equipo.laboratorio_nombre) {
-            <span
-              class="text-xs border border-gray-200 text-gray-600 px-2 py-1 rounded font-medium truncate max-w-[50%]"
-              title="{{ equipo.laboratorio_nombre }}">
-              {{ equipo.laboratorio_nombre }}
-            </span>
-            } @else {
-            <span
-              class="text-xs border border-gray-200 text-gray-600 px-2 py-1 rounded font-medium truncate max-w-[50%]"
-              title="Inv: {{ equipo.numero_inventario }}">
-              #{{ equipo.numero_inventario }}
-            </span>
-            }
-
-            <span class="text-xs px-2 py-1 rounded font-medium" [ngClass]="{
-                  'bg-green-100 text-green-800': equipo.estado === 'Disponible',
-                  'bg-blue-100 text-blue-800': equipo.estado === 'En Uso',
-                  'bg-yellow-100 text-yellow-800': equipo.estado === 'Mantenimiento',
-                  'bg-red-100 text-red-800': equipo.estado === 'Dañado',
-                  'bg-gray-100 text-gray-600': !['Disponible', 'En Uso', 'Mantenimiento', 'Dañado'].includes(equipo.estado)
-                }">
-              {{ equipo.estado }}
-            </span>
-          </div>
-
-          <h3 class="text-lg font-semibold text-gray-900 mb-1 line-clamp-2">{{ equipo.nombre }}</h3>
-
-          <p class="text-xs text-gray-500 mb-4 line-clamp-2 flex-1">{{ equipo.descripcion || 'Sin descripción' }}</p>
-
-          <p class="text-sm text-gray-500 mb-5">
-            Disponibles: <strong class="text-gray-900">{{ equipo.cantidad_disponible }} / {{ equipo.cantidad_total
-              }}</strong>
-          </p>
-
-          <div class="flex gap-2 mt-auto">
-            <button
-              class="flex-1 bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors"
-              [disabled]="equipo.cantidad_disponible === 0 || equipo.estado !== 'Disponible'"
-              (click)="solicitarEquipo(equipo)">
-              Solicitar
-            </button>
-          </div>
-        </div>
+    @if (isLoading()) {
+      <div class="loading-state">
+        <i class="icon-spinner animate-spin"></i> Cargando catálogo...
       </div>
-      } @empty {
-      <div
-        class="col-span-full text-center py-16 text-gray-500 bg-gray-50 rounded-xl border border-dashed border-gray-300">
-        No hay equipos registrados en el inventario.
+    } @else if (error()) {
+      <div class="error-state">
+        {{ error() }}
       </div>
-      }
+    } @else {
+      <!-- El Grid real, sin duplicados -->
+      <div class="grid-catalog">
 
-    </div>
+        @for (equipo of equipos(); track equipo.id) {
+          <div class="equipment-card">
+
+            <div class="card-image">
+              <i class="icon-box"></i>
+            </div>
+
+            <div class="card-content">
+              <div class="card-meta">
+                @if (equipo.laboratorio_nombre) {
+                  <span class="meta-badge" [title]="equipo.laboratorio_nombre">
+                    {{ equipo.laboratorio_nombre }}
+                  </span>
+                } @else {
+                  <span class="meta-badge" title="Inv: {{ equipo.numero_inventario }}">
+                    #{{ equipo.numero_inventario }}
+                  </span>
+                }
+
+                <span class="status-badge" [ngClass]="{
+                    'status-disponible': equipo.estado === 'Disponible',
+                    'status-uso': equipo.estado === 'En Uso',
+                    'status-mantenimiento': equipo.estado === 'Mantenimiento',
+                    'status-danado': equipo.estado === 'Dañado',
+                    'status-default': !['Disponible', 'En Uso', 'Mantenimiento', 'Dañado'].includes(equipo.estado)
+                  }">
+                  {{ equipo.estado }}
+                </span>
+              </div>
+
+              <h3 class="card-title">{{ equipo.nombre }}</h3>
+              <p class="card-desc">{{ equipo.descripcion || 'Sin descripción' }}</p>
+
+              <p class="card-stock">
+                Disponibles: <strong>{{ equipo.cantidad_disponible }} / {{ equipo.cantidad_total }}</strong>
+              </p>
+
+              <div class="card-actions">
+                <button
+                  class="btn-primary"
+                  [disabled]="equipo.cantidad_disponible === 0 || equipo.estado !== 'Disponible'"
+                  (click)="solicitarEquipo(equipo)">
+                  Solicitar
+                </button>
+              </div>
+            </div>
+
+          </div>
+        } @empty {
+          <div class="empty-state">
+            No hay equipos registrados en el inventario.
+          </div>
+        }
+
+      </div>
     }
-  </div>
-  }
   }
 </div>
+
+
+<!-- Modal de Solicitud de Equipo -->
+@if (showModal()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden animate-in fade-in zoom-in duration-200">
+
+      <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+        <h2 class="text-xl font-bold text-slate-900">Solicitar Préstamo</h2>
+        <button (click)="closeModal()" class="text-slate-400 hover:text-slate-600 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="p-6 space-y-4">
+        <!-- Info del Equipo -->
+        <div class="bg-blue-50 p-4 rounded-xl flex items-center gap-4">
+          <div class="bg-blue-600 p-2 rounded-lg text-white">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="8" x="2" y="2" rx="2"/><rect width="20" height="8" x="2" y="14" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+          </div>
+          <div>
+            <p class="text-sm font-bold text-blue-900">{{ selectedEquipo()?.nombre }}</p>
+            <p class="text-xs text-blue-700">Stock disponible: {{ selectedEquipo()?.cantidad_disponible }}</p>
+          </div>
+        </div>
+
+        <!-- Formulario -->
+        <div class="space-y-3">
+          <div>
+            <label class="text-xs font-black uppercase tracking-wider text-slate-500 mb-1 block">Cantidad</label>
+            <input type="number" [(ngModel)]="loanForm.cantidad" min="1" [max]="selectedEquipo()?.cantidad_disponible || 1" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+          </div>
+          <div>
+            <label class="text-xs font-black uppercase tracking-wider text-slate-500 mb-1 block">Fecha de Devolución</label>
+            <input type="date" [(ngModel)]="loanForm.fecha_devolucion" [min]="minDate" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+          </div>
+        </div>
+      </div>
+
+      <div class="p-6 bg-slate-50 flex gap-3">
+        <button (click)="closeModal()" class="flex-1 py-2.5 rounded-xl font-bold text-slate-600 hover:bg-slate-200 transition-all">Cancelar</button>
+        <button (click)="confirmarSolicitud()" class="flex-1 py-2.5 rounded-xl font-bold bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all">Confirmar</button>
+      </div>
+    </div>
+  </div>
+}
+
+@if (activeTab() === 'mis-prestamos') {
+  <div class="bg-white rounded-2xl shadow-sm border border-slate-100 mt-6 animate-in fade-in duration-300">
+
+    <!-- 🔥 Contenedor Responsivo: Permite scroll horizontal en móviles sin romper el diseño -->
+    <div class="overflow-x-auto rounded-2xl">
+
+      <!-- El min-w-[700px] fuerza a que la tabla no se aplaste en pantallas chicas -->
+      <table class="w-full min-w-[700px] text-left text-sm">
+        <thead class="bg-slate-50 border-b border-slate-100 text-slate-500 font-bold uppercase text-xs tracking-wider">
+          <tr>
+            <th class="px-6 py-4 whitespace-nowrap">Equipo Solicitado</th>
+            <th class="px-6 py-4 whitespace-nowrap">Fechas</th>
+            <th class="px-6 py-4 whitespace-nowrap">Estado</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+
+          @for (p of misPrestamos(); track p.id) {
+            <tr class="hover:bg-slate-50 transition-colors">
+
+              <!-- COLUMNA 1: Datos del Equipo -->
+              <td class="px-6 py-4 whitespace-nowrap">
+                <p class="font-bold text-slate-800 text-base">{{ p.equipo_nombre }}</p>
+                <p class="text-xs text-slate-500 font-medium mt-0.5">Cantidad: {{ p.cantidad_solicitada }}</p>
+                <p class="text-[10px] text-slate-400 font-mono mt-1">REQ-{{ p.id }}</p>
+              </td>
+
+              <!-- COLUMNA 2: Fechas -->
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center gap-2 mb-1.5">
+                  <span class="w-2 h-2 rounded-full bg-blue-400 shrink-0"></span>
+                  <p class="text-slate-600 text-xs">Solicitado: <b>{{ p.fecha_prestamo | date:'shortDate' }}</b></p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-amber-400 shrink-0"></span>
+                  <p class="text-slate-600 text-xs">Devolución: <b>{{ p.fecha_devolucion_prevista | date:'shortDate' }}</b></p>
+                </div>
+              </td>
+
+              <!-- COLUMNA 3: Estados con colores -->
+              <td class="px-6 py-4 whitespace-nowrap">
+                @if (p.estado === 'Aprobado') {
+                  <span class="inline-flex items-center gap-1.5 bg-emerald-100 text-emerald-700 border border-emerald-200 px-3 py-1 rounded-full text-xs font-bold shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                    Aprobado
+                  </span>
+                } @else if (p.estado === 'Rechazado') {
+                  <span class="inline-flex items-center gap-1.5 bg-rose-100 text-rose-700 border border-rose-200 px-3 py-1 rounded-full text-xs font-bold shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                    Rechazado
+                  </span>
+                } @else if (p.estado === 'Devuelto') {
+                  <span class="inline-flex items-center gap-1.5 bg-blue-100 text-blue-700 border border-blue-200 px-3 py-1 rounded-full text-xs font-bold shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21 8-2 2-1.5-3.7A2 2 0 0 0 15.645 5H8.4a2 2 0 0 0-1.9 1.3L5 10l-2-2v11a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2z"/><path d="M10 22v-6.57"/><path d="M14 22v-6.57"/></svg>
+                    Devuelto
+                  </span>
+                } @else {
+                  <span class="inline-flex items-center gap-1.5 bg-slate-100 text-slate-700 border border-slate-200 px-3 py-1 rounded-full text-xs font-bold shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    {{ p.estado }}
+                  </span>
+                }
+              </td>
+
+            </tr>
+
+          } @empty {
+            <!-- Estado vacío (Si no tiene préstamos) -->
+            <tr>
+              <td colspan="3" class="px-6 py-16 text-center">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-50 mb-4 border border-slate-100">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+                </div>
+                <p class="text-slate-600 font-bold text-lg">Sin historial</p>
+                <p class="text-sm text-slate-400 mt-1 max-w-sm mx-auto">Cuando solicites un equipo del catálogo, el estado de tu petición aparecerá aquí.</p>
+              </td>
+            </tr>
+          }
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+}
