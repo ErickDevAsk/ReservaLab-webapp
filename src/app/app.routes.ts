@@ -16,7 +16,6 @@ import { GestionUsuariosComponent } from './features/admin/gestion-usuarios/gest
 // Importamos el Layout y las vistas del técnico
 import { TecnicoDashboard } from './features/tecnico/tecnico-dashboard/tecnico-dashboard';
 import { Dashboard } from './features/tecnico/dashboard/dashboard';
-import { GestionLabs } from './features/tecnico/gestion-labs/gestion-labs';
 import { Aprobaciones } from './features/tecnico/aprobaciones/aprobaciones';
 import { Reportes } from './features/tecnico/reportes/reportes';
 import { Perfil } from './features/tecnico/perfil/perfil';
@@ -47,6 +46,7 @@ export const routes: Routes = [
       { path: 'gestion-usuarios', component: GestionUsuariosComponent },
       { path: 'gestion-equipos', component: AdminGestionEquipos },
       { path: 'gestion-labs', component: GestionLabsComponent },
+      { path: 'aprobaciones', component: Aprobaciones },
       // Redirige por defecto al perfil si solo ponen /admin
       { path: '', redirectTo: 'perfil', pathMatch: 'full' }
     ]
@@ -83,11 +83,8 @@ export const routes: Routes = [
       { path: 'dashboard', component: Dashboard },
 
       { path: 'perfil', component: Perfil }, // <-- ¡Aquí está tu componente!
-      { path: 'gestion-labs', component: GestionLabs },
       { path: 'aprobaciones', component: Aprobaciones },
       { path: 'reportes', component: Reportes },
-
-      { path: 'labs', component: GestionLabs },
       { path: 'aprobaciones', component: Aprobaciones },
       { path: 'reportes', component: Reportes },
       { path: 'perfil', component: Perfil },

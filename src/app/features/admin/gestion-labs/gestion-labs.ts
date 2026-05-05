@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LaboratorioService, Laboratorio } from '../../../core/services/laboratorio'; // Ajusta la ruta si es necesario
@@ -11,6 +11,9 @@ import { LaboratorioService, Laboratorio } from '../../../core/services/laborato
 })
 export class GestionLabsComponent implements OnInit {
   private labService = inject(LaboratorioService);
+  constructor(
+      private cdr: ChangeDetectorRef
+    ) { }
 
   laboratorios: Laboratorio[] = [];
 
@@ -36,6 +39,7 @@ export class GestionLabsComponent implements OnInit {
     this.labService.getLaboratorios().subscribe({
       next: (data) => {
         this.laboratorios = data;
+        this.cdr.detectChanges();
       },
       error: (err) => console.error("Error al cargar labs:", err)
     });

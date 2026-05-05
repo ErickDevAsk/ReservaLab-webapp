@@ -41,16 +41,19 @@ export class SidebarComponent implements OnInit {
   }
 
   // Rutas Dinámicas respetando la mayúscula
+  // Rutas Dinámicas respetando la mayúscula
   getDashboardRoute(): string {
-    return (this.userRole() === 'Tecnico' || this.userRole() === 'Administrador')
-      ? '/tecnico/dashboard'
-      : '/student/dashboard';
+    const rol = this.userRole();
+    if (rol === 'Administrador') return '/admin/dashboard';
+    if (rol === 'Tecnico') return '/tecnico/dashboard';
+    return '/student/dashboard'; // Fallback por defecto para Estudiante
   }
 
   getProfileRoute(): string {
-    return (this.userRole() === 'Tecnico' || this.userRole() === 'Administrador')
-      ? '/tecnico/perfil'
-      : '/student/perfil';
+    const rol = this.userRole();
+    if (rol === 'Administrador') return '/admin/perfil';
+    if (rol === 'Tecnico') return '/tecnico/perfil';
+    return '/student/perfil';
   }
 
   cerrarSesion() {
