@@ -1,20 +1,21 @@
 import { Component, AfterViewInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import Chart from 'chart.js/auto';
+import { SidebarComponent } from '../../../shared/components/sidebar/sidebar';
+
 
 @Component({
   selector: 'app-tecnico-dashboard',
   standalone: true,
-  imports: [RouterModule],
+  // 🔥 AGREGA SidebarComponent a los imports
+  imports: [RouterModule, SidebarComponent],
   templateUrl: './tecnico-dashboard.html',
   styleUrl: './tecnico-dashboard.scss',
 })
 export class TecnicoDashboard implements AfterViewInit {
 
   ngAfterViewInit(): void {
-
     const ocupacionCtx = document.getElementById('ocupacionChart') as HTMLCanvasElement;
-
     if (ocupacionCtx) {
       new Chart(ocupacionCtx, {
         type: 'bar',
@@ -28,15 +29,12 @@ export class TecnicoDashboard implements AfterViewInit {
         },
         options: {
           responsive: true,
-          plugins: {
-            legend: { display: false }
-          }
+          plugins: { legend: { display: false } }
         }
       });
     }
 
     const reservasCtx = document.getElementById('reservasChart') as HTMLCanvasElement;
-
     if (reservasCtx) {
       new Chart(reservasCtx, {
         type: 'line',
@@ -51,12 +49,8 @@ export class TecnicoDashboard implements AfterViewInit {
             tension: 0.4
           }]
         },
-        options: {
-          responsive: true
-        }
+        options: { responsive: true }
       });
     }
-
   }
-
 }
