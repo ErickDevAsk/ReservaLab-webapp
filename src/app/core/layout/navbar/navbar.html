@@ -17,7 +17,7 @@
 
         @if (!isLoggedIn()) {
           <button routerLink="/login-reserva" class="btn-text">Iniciar Sesión</button>
-          <button routerLink="/register" class="btn-primary">Registrarse</button>
+          <button routerLink="/registro-estudiante" class="btn-primary">Registrarse</button>
         } @else {
           <span class="nav-link" style="font-weight: bold; color: #2563eb;">Hola, {{ username() }}</span>
           <button routerLink="/student-dashboard" class="btn-text">Mi Dashboard</button>

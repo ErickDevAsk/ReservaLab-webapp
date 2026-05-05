@@ -8,12 +8,13 @@
     <h1>Iniciar Sesión</h1>
     <p>¿No tienes una cuenta? <a href="#">Regístrate aquí</a></p>
 
-    <form (submit)="$event.preventDefault()">
+    <form (ngSubmit)="onLogin()">
+
       <div class="input-group">
         <label>Correo o Usuario</label>
         <div class="input-with-icon">
           <i class="bi bi-envelope"></i>
-          <input type="text" name="username" [(ngModel)]="loginData.username" placeholder="admin@uni.edu">
+          <input type="text" name="username" [(ngModel)]="loginData.username" placeholder="admin@uni.edu" tabindex="1">
         </div>
       </div>
 
@@ -21,16 +22,17 @@
         <label>Contraseña</label>
         <div class="input-with-icon">
           <i class="bi bi-lock"></i>
-          <input type="password" name="password" [(ngModel)]="loginData.password" placeholder="Tu contraseña">
+          <input type="password" name="password" [(ngModel)]="loginData.password" placeholder="Tu contraseña" tabindex="2">
         </div>
       </div>
 
       <div class="options">
-        <label><input type="checkbox"> Recordarme</label>
-        <a href="#">¿Olvidaste tu contraseña?</a>
+        <label><input type="checkbox" tabindex="3"> Recordarme</label>
+        <a href="#" tabindex="4">¿Olvidaste tu contraseña?</a>
       </div>
 
-      <button type="button" (click)="onLogin()" class="btn-primary">Iniciar Sesión</button>
+      <button type="submit" class="btn-primary" tabindex="5">Iniciar Sesión</button>
+
     </form>
   </div>
 </div>

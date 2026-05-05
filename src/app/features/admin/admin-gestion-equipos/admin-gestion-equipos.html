@@ -126,3 +126,15 @@
     (guardado)="onGuardado($event)"
   />
 }
+@if (confirmAbierto) {
+  <app-confirm-modal
+    tipo="danger"
+    titulo="Confirmar Eliminación"
+    mensaje="¿Estás seguro de que deseas eliminar este equipo de forma permanente? Esta acción no se puede deshacer."
+    labelCancelar="Cancelar"
+    labelConfirmar="Sí, Eliminar"
+    [cargando]="eliminando"
+    (cancelar)="cerrarConfirmacion()"
+    (confirmar)="confirmarEliminar()"
+  />
+}
