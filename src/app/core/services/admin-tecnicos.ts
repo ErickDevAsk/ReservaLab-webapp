@@ -25,4 +25,7 @@ export class AdminTecnicosService {
   eliminarTecnico(id: number): Observable<any> {
     return this.http.delete(`${this.API_URL}${id}/`);
   }
+  actualizarTecnico(id: number, datos: any): Observable<any> {
+    return this.http.patch(`${this.API_URL}${id}/`, datos);
+  }
 }

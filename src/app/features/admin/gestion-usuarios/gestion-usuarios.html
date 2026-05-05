@@ -4,16 +4,67 @@
   </header>
 
   <div class="gestion-grid">
+
+    <!-- FORMULARIO (Crear / Editar) -->
     <section class="form-section card">
-      <h3>➕ Nuevo Técnico</h3>
-      <form (ngSubmit)="registrarTecnico()">
-        <div class="form-group"><label>Nombre</label><input [(ngModel)]="nuevoTecnico.first_name" name="fn" required></div>
-        <div class="form-group"><label>Apellido</label><input [(ngModel)]="nuevoTecnico.last_name" name="ln" required></div>
-        <div class="form-group"><label>Matrícula</label><input [(ngModel)]="nuevoTecnico.matricula_id" name="mat" required></div>
-        <button type="submit" class="btn-primary">Crear Cuenta</button>
+      <h3>{{ isEditando ? '✏️ Editar Técnico' : '➕ Nuevo Técnico' }}</h3>
+
+      <form (ngSubmit)="isEditando ? actualizarTecnico() : registrarTecnico()">
+
+        <div class="form-group">
+          <label>Usuario (Username)</label>
+          <input [(ngModel)]="nuevoTecnico.username" name="usr" required [disabled]="isEditando">
+        </div>
+
+        <!-- Aquí usamos el nuevo @if moderno -->
+        @if (!isEditando) {
+          <div class="form-group">
+            <label>Contraseña</label>
+            <input type="password" [(ngModel)]="nuevoTecnico.password" name="pwd" required>
+          </div>
+        }
+
+        <div class="form-group">
+          <label>Nombre</label>
+          <input [(ngModel)]="nuevoTecnico.first_name" name="fn" required>
+        </div>
+
+        <div class="form-group">
+          <label>Apellido</label>
+          <input [(ngModel)]="nuevoTecnico.last_name" name="ln" required>
+        </div>
+
+        <div class="form-group">
+          <label>Correo Electrónico</label>
+          <input type="email" [(ngModel)]="nuevoTecnico.email" name="em" required>
+        </div>
+
+        <div class="form-group">
+          <label>Matrícula</label>
+          <input [(ngModel)]="nuevoTecnico.matricula_id" name="mat" required>
+        </div>
+
+        <div class="form-group">
+          <label>Carrera/Departamento</label>
+          <input [(ngModel)]="nuevoTecnico.carrera_departamento" name="carr" required>
+        </div>
+
+        <div class="flex gap-2 mt-4">
+          <button type="submit" class="btn-primary flex-1">
+            {{ isEditando ? 'Guardar Cambios' : 'Crear Cuenta' }}
+          </button>
+
+          <!-- Botón de cancelar con el nuevo @if -->
+          @if (isEditando) {
+            <button type="button" class="btn-secondary" (click)="cancelarEdicion()">
+              Cancelar
+            </button>
+          }
+        </div>
       </form>
     </section>
 
+    <!-- TABLA DE STAFF -->
     <section class="table-section card">
       <h3>👥 Staff Activo</h3>
 
@@ -24,25 +75,33 @@
               <th>Matrícula</th>
               <th>Nombre</th>
               <th>Carrera</th>
-              <th>Acción</th>
+              <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let t of tecnicos()">
-              <td>{{ t.matricula_id }}</td>
-              <td>{{ t.first_name }} {{ t.last_name }}</td>
-              <td>{{ t.carrera_departamento }}</td>
-              <td><button class="btn-danger">Baja</button></td>
-            </tr>
-
-            <tr *ngIf="tecnicos().length === 0 && !cargando()">
-              <td colspan="4" style="text-align: center; padding: 20px;">
-                No se encontraron técnicos en la base de datos.
-              </td>
-            </tr>
+            <!-- Aquí usamos el nuevo @for moderno -->
+            @for (t of tecnicos(); track t.id) {
+              <tr>
+                <td>{{ t.matricula_id }}</td>
+                <td>{{ t.first_name }} {{ t.last_name }}</td>
+                <td>{{ t.carrera_departamento }}</td>
+                <td class="flex gap-2">
+                  <button class="btn-primary text-sm px-2 py-1 rounded" (click)="prepararEdicion(t)">✏️ Editar</button>
+                  <button class="btn-danger text-sm px-2 py-1 rounded" (click)="darDeBaja(t.id)">🗑️ Baja</button>
+                </td>
+              </tr>
+            } @empty {
+              <!-- El @empty maneja solito el caso cuando no hay datos -->
+              <tr>
+                <td colspan="4" style="text-align: center; padding: 20px;">
+                  No se encontraron técnicos en la base de datos.
+                </td>
+              </tr>
+            }
           </tbody>
         </table>
       </div>
     </section>
+
   </div>
 </div>
