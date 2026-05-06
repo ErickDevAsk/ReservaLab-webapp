@@ -1,0 +1,37 @@
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+    <h3 class="text-lg font-semibold text-gray-800 mb-4">Tendencia de Reservas (Últimos 7 días)</h3>
+    <div class="h-72">
+      <ngx-charts-line-chart
+        [scheme]="colorSchemeLinea"
+        [results]="datosTendencia"
+        [gradient]="true"
+        [xAxis]="true"
+        [yAxis]="true"
+        [legend]="false"
+        [showXAxisLabel]="true"
+        [showYAxisLabel]="true"
+        xAxisLabel="Días"
+        yAxisLabel="Cantidad"
+        [autoScale]="true">
+      </ngx-charts-line-chart>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+    <h3 class="text-lg font-semibold text-gray-800 mb-4">Estado General de Reservas</h3>
+    <div class="h-72">
+      <ngx-charts-pie-chart
+        [scheme]="colorSchemePastel"
+        [results]="datosEstado"
+        [gradient]="false"
+        [legend]="true"
+        [legendPosition]="posicionLeyenda"
+        [labels]="true"
+        [doughnut]="true">
+      </ngx-charts-pie-chart>
+    </div>
+  </div>
+
+</div>

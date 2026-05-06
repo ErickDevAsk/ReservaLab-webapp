@@ -13,6 +13,7 @@ import { ReservasDashboard } from './features/reservas/reservas-dashboard/reserv
 // Importamos tu Centro de Mando (Sin el .ts)
 import { AdminProfileComponent } from './features/admin/admin-profile/admin-profile';
 import { GestionUsuariosComponent } from './features/admin/gestion-usuarios/gestion-usuarios';
+import { AdminDashboard } from './features/admin/admin-dashboard/admin-dashboard';
 // Importamos el Layout y las vistas del técnico
 import { TecnicoDashboard } from './features/tecnico/tecnico-dashboard/tecnico-dashboard';
 import { Dashboard } from './features/tecnico/dashboard/dashboard';
@@ -47,6 +48,7 @@ export const routes: Routes = [
       { path: 'gestion-equipos', component: AdminGestionEquipos },
       { path: 'gestion-labs', component: GestionLabsComponent },
       { path: 'aprobaciones', component: Aprobaciones },
+      { path: 'dashboard', component: AdminDashboard },
       // Redirige por defecto al perfil si solo ponen /admin
       { path: '', redirectTo: 'perfil', pathMatch: 'full' }
     ]
