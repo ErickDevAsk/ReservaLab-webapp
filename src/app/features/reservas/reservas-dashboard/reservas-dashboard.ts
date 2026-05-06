@@ -287,15 +287,17 @@ export class ReservasDashboard implements OnInit {
     this.reservaService.crearReserva(payload).subscribe({
       next: (respuesta) => {
         if (respuesta !== null) {
-          // ✅ Reserva exitosa
           this.notifService.exito(
             `¡Reserva #${this.reservaService.ultimaReservaId()} confirmada con éxito!`
           );
           this.mostrarModal.set(false);
-          this.marcarSlotOcupado(slot.diaIdx, slot.horaIdx);
+
+          // ENVIAMOS LA DURACIÓN AQUÍ
+          this.marcarSlotOcupado(slot.diaIdx, slot.horaIdx, datosModal.duracion);
+
           this.slotActivo.set(null);
         } else {
-          // ❌ Error controlado (ya seteado en el servicio)
+          // Error controlado (ya seteado en el servicio)
           const mensajeError =
             this.errorApi() ?? 'Error al procesar la reserva. Intenta de nuevo.';
           this.notifService.error(mensajeError);
@@ -374,8 +376,12 @@ export class ReservasDashboard implements OnInit {
             const horaIdx = this.horas.findIndex(h => h === horaCorta);
 
             if (horaIdx !== -1) {
-              // C) Pintar los bloques de rojo según la duración
-              const duracion = reserva.duracion || 1;
+              //CALCULAMOS LA DURACIÓN RESTANDO LAS HORAS (Ej. 11 - 09 = 2 horas)
+              const hInicio = parseInt(reserva.hora_inicio.split(':')[0]);
+              const hFin = parseInt(reserva.hora_fin.split(':')[0]);
+              // Si por alguna razón hFin falla, tomamos 1 por defecto
+              const duracion = (hFin && hInicio) ? (hFin - hInicio) : 1;
+
               for (let i = 0; i < duracion; i++) {
                 // Evitamos que se desborde el arreglo si una reserva sobrepasa las 18:00
                 if (horaIdx + i < this.horas.length) {
@@ -398,10 +404,16 @@ export class ReservasDashboard implements OnInit {
     return this.disponibilidad()[diaIdx]?.[horaIdx] ?? true;
   }
 
-  private marcarSlotOcupado(diaIdx: number, horaIdx: number): void {
+  private marcarSlotOcupado(diaIdx: number, horaIdx: number, duracion: number = 1): void {
     this.disponibilidad.update((disp) => {
       const copia = disp.map((dia) => [...dia]);
-      copia[diaIdx][horaIdx] = false;
+
+      // Hacemos un ciclo para bloquear las casillas correspondientes
+      for (let i = 0; i < duracion; i++) {
+        if (horaIdx + i < this.horas.length) {
+          copia[diaIdx][horaIdx + i] = false; // false = Ocupado
+        }
+      }
       return copia;
     });
   }
