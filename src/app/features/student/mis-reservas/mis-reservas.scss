@@ -1,0 +1,55 @@
+/* Contenedor principal */
+.reservas-container {
+  @apply p-6 max-w-7xl mx-auto;
+}
+
+/* Envoltorio responsivo de la tabla (permite scroll horizontal en móviles) */
+.table-wrapper {
+  @apply bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden overflow-x-auto;
+}
+
+/* Estilos de la tabla */
+.reservas-table {
+  @apply w-full min-w-[700px] text-left text-sm;
+
+  thead {
+    @apply bg-slate-50 border-b border-slate-100 text-slate-500 font-bold uppercase text-xs tracking-wider;
+
+    th {
+      @apply px-6 py-4 whitespace-nowrap;
+    }
+  }
+
+  tbody {
+    @apply divide-y divide-slate-100;
+
+    tr {
+      @apply hover:bg-slate-50 transition-colors;
+    }
+
+    td {
+      @apply px-6 py-4 whitespace-nowrap;
+    }
+  }
+}
+
+/* Badges de Estado */
+.badge {
+  @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold shadow-sm border;
+
+  &--aprobada {
+    @apply bg-emerald-100 text-emerald-700 border-emerald-200;
+  }
+
+  &--rechazada {
+    @apply bg-rose-100 text-rose-700 border-rose-200;
+  }
+
+  &--expiro {
+    @apply bg-slate-100 text-slate-500 border-slate-200;
+  }
+
+  &--default {
+    @apply bg-amber-100 text-amber-700 border-amber-200;
+  }
+}

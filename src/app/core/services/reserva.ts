@@ -103,6 +103,18 @@ export class ReservaService {
     );
   }
 
+  // Consulta las reservas del usuario logueado
+  obtenerMisReservas() {
+    // Esto construirá: http://localhost:8000/api/reservas/mis-reservas/
+    // Asegúrate de que esta URL coincida con lo que el backend de Django espere
+    return this.http.get<any>(`${this.API_URL}/mis-reservas/`).pipe(
+      catchError((err: any) => {
+        this.error.set(this.parsearErrorDjango(err));
+        return of([]);
+      })
+    );
+  }
+
   /**
     Parsea los diferentes formatos de error que puede retornar Django REST Framework.
     DRF puede enviar errores como string, objeto con "detail",

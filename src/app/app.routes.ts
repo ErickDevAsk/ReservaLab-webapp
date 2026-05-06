@@ -9,6 +9,7 @@ import { StudentLayout } from './features/student/student-layout/student-layout'
 import { StudentDashboardComponent } from './features/student/student-dashboard/student-dashboard.component';
 import { StudentProfileComponent } from './features/student/student-profile/student-profile';
 import { ReservasDashboard } from './features/reservas/reservas-dashboard/reservas-dashboard';
+import { MisReservasComponent } from './features/student/mis-reservas/mis-reservas';
 
 // Importamos tu Centro de Mando (Sin el .ts)
 import { AdminProfileComponent } from './features/admin/admin-profile/admin-profile';
@@ -35,7 +36,7 @@ export const routes: Routes = [
   { path: 'reglamento', component: Reglamento },
 
 // ==========================================
-  // 👑 ZONA DEL ADMINISTRADOR (Tú)
+  //  ZONA DEL ADMINISTRADOR (Tú)
   // ==========================================
   {
     path: 'admin',
@@ -54,7 +55,7 @@ export const routes: Routes = [
     ]
   },
   // ==========================================
-  // 🎓 ZONA DEL ESTUDIANTE (CON LAYOUT)
+  //  ZONA DEL ESTUDIANTE (CON LAYOUT)
   {
     path: 'student',
     component: StudentLayout,
@@ -65,15 +66,16 @@ export const routes: Routes = [
       { path: 'reservas', component: ReservasDashboard },
       { path: 'equipos', component: StudentLoansComponent },
       { path: 'perfil', component: StudentProfileComponent },
+      { path: 'mis-reservas', component: MisReservasComponent }, // <-- Nueva ruta para "Mis Reservas"
+
+      // default
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },
 
   // ==========================================
-  // 🛠️ ZONA DEL TÉCNICO
+  //  ZONA DEL TÉCNICO
   // ==========================================
-
-  // 🔧 ZONA DEL TÉCNICO (CON LAYOUT)
   {
     path: 'tecnico',
 
