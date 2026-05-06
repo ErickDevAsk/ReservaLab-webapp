@@ -1,0 +1,82 @@
+<div class="reservas-container">
+
+  <div class="mb-8">
+    <h1 class="text-2xl font-black text-slate-800">Mis Reservas</h1>
+    <p class="text-slate-500 text-sm mt-1">Historial de laboratorios que has apartado.</p>
+  </div>
+
+  @if (cargando()) {
+    <div class="flex justify-center py-12">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+    </div>
+  } @else {
+
+    <div class="table-wrapper">
+      <table class="reservas-table">
+        <thead>
+          <tr>
+            <th>Laboratorio</th>
+            <th>Horario</th>
+            <th>Motivo</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (r of misReservas(); track r.id) {
+            <tr>
+              <td>
+                <p class="font-bold text-slate-800 text-base">Laboratorio {{ r.laboratorio }}</p>
+                <p class="text-[10px] text-slate-400 font-mono mt-1">FOLIO-{{ r.id }}</p>
+              </td>
+
+              <td>
+                <div class="flex items-center gap-2 mb-1.5">
+                  <span class="w-2 h-2 rounded-full bg-blue-400 shrink-0"></span>
+                  <p class="text-slate-600 text-xs">Día: <b>{{ r.fecha | date:'longDate' }}</b></p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-amber-400 shrink-0"></span>
+                  <p class="text-slate-600 text-xs">Hora: <b>{{ r.hora_inicio }} - {{ r.hora_fin }}</b></p>
+                </div>
+              </td>
+
+              <td class="text-slate-600 text-xs truncate max-w-[200px]">
+                {{ r.motivo || 'Práctica académica' }}
+              </td>
+
+              <td>
+                @if (r.estadoDisplay === 'Aprobada') {
+                  <span class="badge badge--aprobada">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                    Aprobada
+                  </span>
+                } @else if (r.estadoDisplay === 'Expiró') {
+                  <span class="badge badge--expiro">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    Expiró
+                  </span>
+                } @else if (r.estadoDisplay === 'Rechazada' || r.estadoDisplay === 'Cancelada') {
+                  <span class="badge badge--rechazada">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                    {{ r.estadoDisplay }}
+                  </span>
+                } @else {
+                  <span class="badge badge--default">
+                    {{ r.estadoDisplay }}
+                  </span>
+                }
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="4" class="py-16 text-center">
+                <p class="text-slate-600 font-bold text-lg">No tienes reservas</p>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
