@@ -22,6 +22,11 @@ export class Aprobaciones implements OnInit {
   isModalOpen = signal(false);
   solicitudSeleccionada = signal<any>(null);
 
+  //  Signals para el Modal de Recepción / Incidencias
+  mostrarModalRecibir = signal(false);
+  modoDano = signal(false); // false = Pregunta si todo bien, true = Formulario de daño
+  solicitudActiva = signal<any>(null);
+
   ngOnInit() {
     this.cargarDatos();
   }
@@ -63,13 +68,62 @@ export class Aprobaciones implements OnInit {
     this.solicitudSeleccionada.set(null);
   }
 
-  // Asegúrate de tener la función gestionarSolicitud que hicimos antes:
+
+  // MODAL DE RECEPCIÓN E INCIDENCIAS
+  abrirModalRecibir(solicitud: any) {
+    this.solicitudActiva.set(solicitud);
+    this.modoDano.set(false); // Siempre empezamos con la pregunta initial
+    this.mostrarModalRecibir.set(true);
+  }
+
+  cerrarModalRecibir() {
+    this.mostrarModalRecibir.set(false);
+    this.solicitudActiva.set(null);
+  }
+
+  confirmarRecepcionBuena() {
+    const sol = this.solicitudActiva();
+    if (sol) {
+      // Reutilizamos la función base marcándolo como devuelto (suma stock normal)
+      this.gestionarSolicitud(sol.id, 'Devuelto');
+      this.cerrarModalRecibir();
+    }
+  }
+
+  registrarDanoEquipo(descripcion: string) {
+    const sol = this.solicitudActiva();
+    if (!sol || !descripcion.trim()) {
+      this.notifService.error('Por favor, escribe una descripción del daño.');
+      return;
+    }
+
+    // OJO: Asegúrate de que "sol.equipo" contenga el ID del equipo en tu JSON.
+    // Si tu serializer devuelve el ID en "sol.equipo_id", cámbialo aquí.
+    const payload = {
+      equipo: sol.equipo,
+      descripcion: descripcion
+    };
+
+    this.equipoService.registrarIncidencia(payload).subscribe({
+      next: () => {
+        // Marcamos la solicitud de préstamo como 'Con Incidencia'
+        this.gestionarSolicitud(sol.id, 'Con Incidencia');
+        // El notifService se maneja desde gestionarSolicitud, pero cerramos el modal aquí
+        this.cerrarModalRecibir();
+      },
+      error: (err) => {
+        console.error(err);
+        this.notifService.error('Hubo un error al guardar el reporte en la base de datos.');
+      }
+    });
+  }
+
+  // GESTIÓN CENTRALIZADA DE ESTADOS
   gestionarSolicitud(id: number | undefined, nuevoEstado: string) {
     if (!id) return;
 
     this.equipoService.actualizarEstadoPrestamo(id, nuevoEstado).subscribe({
       next: () => {
-        // 1. Personalizamos el mensaje según la acción realizada
         let msg = '';
         switch (nuevoEstado) {
           case 'Aprobado':
@@ -79,21 +133,20 @@ export class Aprobaciones implements OnInit {
             msg = 'Solicitud rechazada';
             break;
           case 'Devuelto':
-            msg = 'Equipo recibido y stock actualizado'; // Mensaje para el botón Recibir
+            msg = 'Equipo recibido y stock actualizado';
+            break;
+          case 'Con Incidencia':
+            msg = 'Daño registrado. El equipo ha sido bloqueado del inventario';
             break;
           default:
             msg = `Estado actualizado a ${nuevoEstado}`;
         }
 
         this.notifService.exito(`${msg} correctamente.`);
-
-        // 2. Recargamos los datos (esto moverá el ítem de la lista de Devoluciones a la nada/historial)
         this.cargarDatos();
 
-        // 3. Si el modal está abierto (usado en aprobaciones), lo cerramos
-        if (this.isModalOpen()) {
-          this.cerrarModal();
-        }
+        // Cerramos modal de aprobación si estaba abierto
+        if (this.isModalOpen()) this.cerrarModal();
       },
       error: (err) => {
         console.error('Error en la petición:', err);
@@ -101,5 +154,6 @@ export class Aprobaciones implements OnInit {
       }
     });
   }
-
 }
+
+

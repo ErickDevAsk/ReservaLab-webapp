@@ -120,4 +120,10 @@ export class EquipoService {
     );
   }
 
+  // Registrar una incidencia de equipo dañado
+  registrarIncidencia(datos: { equipo: number, descripcion: string }) {
+    // Apunta a la ruta que acabamos de crear en el urls.py
+    return this.http.post(`${this.API_EQUIPOS}incidencias/`, datos);
+  }
+
 }
