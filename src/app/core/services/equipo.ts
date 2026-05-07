@@ -126,4 +126,9 @@ export class EquipoService {
     return this.http.post(`${this.API_EQUIPOS}incidencias/`, datos);
   }
 
+  resolverIncidencia(idIncidencia: number) {
+    // Mandamos un POST vacío {} porque el ID ya va en la URL
+    return this.http.post(`${this.API_EQUIPOS}incidencias/${idIncidencia}/resolver/`, {});
+  }
+
 }
