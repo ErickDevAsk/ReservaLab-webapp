@@ -98,8 +98,8 @@
             </div>
 
             <!-- 🔥 EL BOTÓN MÁGICO CONECTADO AL ESTADO 'Devuelto' -->
-            <button (click)="gestionarSolicitud(d.id, 'Devuelto')"
-                    class="bg-blue-500 text-white px-4 py-1.5 rounded-lg text-sm font-bold hover:bg-blue-600 transition-colors shadow-sm">
+            <button (click)="abrirModalRecibir(d)"
+                class="bg-blue-500 text-white px-4 py-1.5 rounded-lg text-sm font-bold hover:bg-blue-600 transition-colors shadow-sm">
               Recibir
             </button>
           </div>
@@ -198,6 +198,75 @@
         </button>
       </div>
 
+    </div>
+  </div>
+}
+
+@if (mostrarModalRecibir()) {
+  <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-50 animate-in fade-in duration-200 p-4">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
+
+      <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+        <h3 class="font-bold text-slate-800">Recepción de Equipo</h3>
+        <button (click)="cerrarModalRecibir()" class="text-slate-400 hover:text-slate-600">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="p-6">
+
+        @if (!modoDano()) {
+          <div class="text-center">
+            <div class="w-16 h-16 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <h4 class="text-lg font-bold text-slate-800 mb-2">¿El equipo se encuentra en buen estado?</h4>
+            <p class="text-sm text-slate-500 mb-6">Confirma si el alumno entregó el equipo completo y funcionando correctamente.</p>
+
+            <div class="flex gap-3">
+              <button (click)="modoDano.set(true)"
+                      class="flex-1 bg-white border-2 border-rose-100 text-rose-600 py-2.5 rounded-xl font-bold hover:bg-rose-50 transition-colors">
+                No, reportar daño
+              </button>
+              <button (click)="confirmarRecepcionBuena()"
+                      class="flex-1 bg-emerald-500 text-white py-2.5 rounded-xl font-bold hover:bg-emerald-600 transition-colors shadow-sm">
+                Sí, todo bien
+              </button>
+            </div>
+          </div>
+        }
+
+        @else {
+          <div>
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
+              </div>
+              <div>
+                <h4 class="font-bold text-slate-800">Registrar Incidencia</h4>
+                <p class="text-xs text-slate-500">Este equipo no regresará al stock disponible.</p>
+              </div>
+            </div>
+
+            <label class="block text-sm font-bold text-slate-700 mb-2">Descripción del daño o problema:</label>
+            <textarea #descInput
+                      class="w-full border border-slate-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-rose-500 outline-none resize-none bg-slate-50 mb-4"
+                      rows="4"
+                      placeholder="Ej. El puerto 2 del switch no da enlace, el cable de corriente viene trozado..."></textarea>
+
+            <div class="flex gap-3">
+              <button (click)="modoDano.set(false)"
+                      class="flex-1 bg-slate-100 text-slate-600 py-2.5 rounded-xl font-bold hover:bg-slate-200 transition-colors">
+                Volver
+              </button>
+              <button (click)="registrarDanoEquipo(descInput.value)"
+                      class="flex-1 bg-rose-500 text-white py-2.5 rounded-xl font-bold hover:bg-rose-600 transition-colors shadow-sm">
+                Guardar Reporte
+              </button>
+            </div>
+          </div>
+        }
+      </div>
     </div>
   </div>
 }
