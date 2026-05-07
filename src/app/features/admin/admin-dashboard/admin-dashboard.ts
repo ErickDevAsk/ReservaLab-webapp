@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { NgxChartsModule} from '@swimlane/ngx-charts';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { LegendPosition } from '@swimlane/ngx-charts';
+import { DashboardService } from '../../../core/services/dashboard';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -9,55 +10,54 @@ import { LegendPosition } from '@swimlane/ngx-charts';
   templateUrl: './admin-dashboard.html',
   styleUrl: './admin-dashboard.scss',
 })
-export class AdminDashboard implements OnInit{
-
+export class AdminDashboard implements OnInit {
   posicionLeyenda = LegendPosition.Right;
+
+  // -- Contadores Superiores --
+  totalUsuarios = 0;
+  tecnicosActivos = 0;
+  laboratoriosRed = 0;
+  reservasHoy = 0;
+
   // -- Configuración de Colores --
-  // Puedes usar colores HEX o nombres de la paleta predefinida
   colorSchemeLinea: any = {
-    domain: ['#10B981'] // Verde esmeralda (como en tu foto)
+    domain: ['#10B981']
   };
 
   colorSchemePastel: any = {
-    domain: ['#3B82F6', '#F59E0B', '#EF4444', '#10B981'] // Azul, Amarillo, Rojo, Verde
+    domain: ['#3B82F6', '#F59E0B', '#EF4444', '#10B981']
   };
 
   // -- Datos para las Gráficas --
   datosTendencia: any[] = [];
   datosEstado: any[] = [];
 
-  constructor(/* inyecta tu servicio aquí */) {}
+  // Inyectamos el servicio aquí
+  constructor(private dashboardService: DashboardService) {}
 
   ngOnInit() {
-    // Aquí llamas a tus funciones para cargar contadores y datos de usuario...
-    this.cargarDatosGraficas();
+    this.cargarDatosDashboard();
   }
 
-  cargarDatosGraficas() {
-    // Simularemos la respuesta del backend por ahora.
-    // Cuando lo conectes a Django, aquí iría tu suscripción al servicio.
-    // Ejemplo: this.dashboardService.getGraficas().subscribe(data => { ... });
+  cargarDatosDashboard() {
+    // Nos suscribimos a la respuesta de Django
+    this.dashboardService.getAdminDashboard().subscribe({
+      next: (data: any) => {
+        // 1. Llenamos los contadores
+        this.totalUsuarios = data.totalUsuarios;
+        this.tecnicosActivos = data.tecnicosActivos;
+        this.laboratoriosRed = data.laboratoriosRed;
+        this.reservasHoy = data.reservasHoy;
 
-    // Datos para la Gráfica de Línea (Tendencia)
-    this.datosTendencia = [
-      {
-        name: 'Reservas',
-        series: [
-          { name: 'Lun', value: 45 },
-          { name: 'Mar', value: 52 },
-          { name: 'Mié', value: 48 },
-          { name: 'Jue', value: 61 },
-          { name: 'Vie', value: 38 }
-        ]
+        // 2. Llenamos las gráficas
+        // MUY IMPORTANTE: Usamos el operador spread [...] para que
+        // ngx-charts detecte el cambio y haga la animación correctamente.
+        this.datosEstado = [...data.datosEstado];
+        this.datosTendencia = [...data.datosTendencia];
+      },
+      error: (error: any) => {
+        console.error('Error al obtener los datos del Dashboard:', error);
       }
-    ];
-
-    // Datos para la Gráfica de Pastel (Distribución de Estados [cite: 158])
-    this.datosEstado = [
-      { name: 'Confirmadas', value: 87 },
-      { name: 'Pendientes', value: 24 },
-      { name: 'Canceladas', value: 5 },
-      { name: 'Devueltas', value: 120 }
-    ];
+    });
   }
 }
