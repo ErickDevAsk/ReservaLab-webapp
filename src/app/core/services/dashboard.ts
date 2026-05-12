@@ -31,6 +31,7 @@ export class DashboardService {
   // Separamos las URLs para tener ambas a la mano
   private adminUrl = 'http://localhost:8000/api/dashboard/admin/';
   private tecnicoUrl = 'http://localhost:8000/api/dashboard/tecnico/';
+  private reportesUrl = 'http://localhost:8000/api/dashboard/tecnico/reportes/';
 
   constructor(private http: HttpClient) {}
 
@@ -42,6 +43,10 @@ export class DashboardService {
   // 🔥 NUEVO: Petición para el Dashboard del Técnico
   getTecnicoDashboard(): Observable<TecnicoDashboardData> {
     return this.http.get<TecnicoDashboardData>(this.tecnicoUrl);
+  }
+
+  getReportesTecnico(): Observable<any> {
+    return this.http.get<any>(this.reportesUrl);
   }
 }
 

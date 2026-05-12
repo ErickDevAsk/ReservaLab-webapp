@@ -1,0 +1,48 @@
+/* reportes.scss */
+
+:host {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+// Aseguramos que los contenedores no crezcan más de su padre
+.min-w-0 {
+  min-width: 0;
+}
+
+// ----------------------------------------------------
+// 🔥 DOMANDO A NGX-CHARTS PARA MÓVILES
+// ----------------------------------------------------
+::ng-deep {
+  // 1. Forzamos a que todo el componente y el SVG midan máximo 100%
+  .ngx-charts-outer,
+  .ngx-charts {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    svg {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+  }
+
+  // 2. Ajustes en pantallas pequeñas (Celulares)
+  @media (max-width: 640px) {
+    // Ocultamos las leyendas laterales para que la gráfica ocupe todo el ancho
+    .chart-legend {
+      display: none !important;
+    }
+
+    // Ocultamos las etiquetas flotantes de la dona que se salen de la pantalla
+    .pie-label {
+      display: none !important;
+    }
+
+    // Hacemos el texto de los ejes un poco más pequeño para que quepa mejor
+    .tick text {
+      font-size: 10px !important;
+    }
+  }
+}

@@ -1,84 +1,93 @@
-<div class="space-y-6">
+<div class="space-y-6 pb-8 px-4 sm:px-6 overflow-x-hidden">
 
-  <!-- HEADER -->
-  <div class="flex justify-between items-center">
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
     <div>
-      <h1 class="text-3xl font-bold">Reportes y Estadísticas</h1>
-      <p class="text-gray-500">
-        Analiza el rendimiento y uso de los laboratorios.
-      </p>
-    </div>
-
-    <div class="flex gap-2">
-      <select class="border p-2 rounded">
-        <option>Este Mes</option>
-      </select>
-
-      <button class="border px-4 py-2 rounded">
-        ⬇ Exportar
-      </button>
+      <h1 class="text-2xl sm:text-3xl font-bold text-slate-800">Reportes y Estadísticas</h1>
+      <p class="text-sm sm:text-base text-gray-500">Analiza el rendimiento y uso de los laboratorios.</p>
     </div>
   </div>
 
-  <!-- CARDS -->
-  <div class="grid grid-cols-4 gap-6">
-
-    <div class="bg-white p-5 rounded-xl shadow">
-      <p class="text-gray-500">Total Préstamos</p>
-      <h2 class="text-2xl font-bold">1,248</h2>
-      <span class="text-green-500 text-sm">+12.5%</span>
+  <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6">
+    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 flex flex-col justify-between">
+      <p class="text-gray-500 text-sm font-medium">Total Préstamos</p>
+      <div class="mt-2 flex items-baseline gap-2">
+        <h2 class="text-3xl font-bold text-slate-800">{{ totalPrestamos() | number }}</h2>
+        <span class="text-green-500 text-sm font-semibold bg-green-50 px-2 py-0.5 rounded">+12.5%</span>
+      </div>
     </div>
 
-    <div class="bg-white p-5 rounded-xl shadow">
-      <p class="text-gray-500">Nuevos Usuarios</p>
-      <h2 class="text-2xl font-bold">84</h2>
-      <span class="text-green-500 text-sm">+5.2%</span>
+    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 flex flex-col justify-between">
+      <p class="text-gray-500 text-sm font-medium">Nuevos Usuarios</p>
+      <div class="mt-2 flex items-baseline gap-2">
+        <h2 class="text-3xl font-bold text-slate-800">{{ nuevosUsuarios() }}</h2>
+        <span class="text-green-500 text-sm font-semibold bg-green-50 px-2 py-0.5 rounded">+5.2%</span>
+      </div>
     </div>
 
-    <div class="bg-white p-5 rounded-xl shadow">
-      <p class="text-gray-500">Tasa de Ocupación</p>
-      <h2 class="text-2xl font-bold">78%</h2>
-      <span class="text-red-500 text-sm">-2.1%</span>
+    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 flex flex-col justify-between">
+      <p class="text-gray-500 text-sm font-medium">Tasa de Ocupación</p>
+      <div class="mt-2 flex items-baseline gap-2">
+        <h2 class="text-3xl font-bold text-slate-800">{{ tasaOcupacion() }}%</h2>
+        <span class="text-red-500 text-sm font-semibold bg-red-50 px-2 py-0.5 rounded">-2.1%</span>
+      </div>
     </div>
 
-    <div class="bg-white p-5 rounded-xl shadow">
-      <p class="text-gray-500">Reservas Activas</p>
-      <h2 class="text-2xl font-bold">42</h2>
-      <span class="text-green-500 text-sm">+18.4%</span>
+    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 flex flex-col justify-between">
+      <p class="text-gray-500 text-sm font-medium">Reservas Activas</p>
+      <div class="mt-2 flex items-baseline gap-2">
+        <h2 class="text-3xl font-bold text-slate-800">{{ reservasActivas() }}</h2>
+        <span class="text-green-500 text-sm font-semibold bg-green-50 px-2 py-0.5 rounded">+18.4%</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+
+    <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-100 flex flex-col min-w-0 overflow-hidden">
+      <h3 class="font-bold text-slate-800 mb-1">Ocupación por Día</h3>
+      <p class="text-xs sm:text-sm text-gray-500 mb-4">Porcentaje de uso y número de reservas semanales.</p>
+      <div class="h-64 sm:h-80 w-full relative">
+        <ngx-charts-bar-vertical-2d
+          [results]="barChartData()"
+          [xAxis]="true"
+          [yAxis]="true"
+          [legend]="true"
+          [showXAxisLabel]="false"
+          [showYAxisLabel]="false"
+          [scheme]="colorBarras"
+          [roundEdges]="false">
+        </ngx-charts-bar-vertical-2d>
+      </div>
+    </div>
+
+    <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-100 flex flex-col min-w-0 overflow-hidden">
+      <h3 class="font-bold text-slate-800 mb-1">Distribución por Categoría</h3>
+      <p class="text-xs sm:text-sm text-gray-500 mb-4">Uso de equipos según el área académica.</p>
+      <div class="h-64 sm:h-80 w-full relative chart-container">
+        <ngx-charts-pie-chart
+          [results]="pieChartData()"
+          [doughnut]="true"
+          [legend]="true"
+          [labels]="true"
+          [scheme]="colorDona">
+        </ngx-charts-pie-chart>
+      </div>
     </div>
 
   </div>
 
-  <!-- GRAFICAS -->
-  <div class="grid grid-cols-2 gap-6">
-
-    <!-- BARRAS -->
-    <div class="bg-white p-6 rounded-xl shadow">
-      <h3 class="font-semibold mb-2">Ocupación por Día</h3>
-      <p class="text-sm text-gray-500 mb-4">
-        Porcentaje de uso y número de reservas semanales.
-      </p>
-      <canvas id="barChart"></canvas>
+  <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-100 flex flex-col min-w-0 overflow-hidden">
+    <h3 class="font-bold text-slate-800 mb-1">Tendencia de Uso Semanal</h3>
+    <p class="text-xs sm:text-sm text-gray-500 mb-4">Evolución de las solicitudes de préstamo.</p>
+    <div class="h-64 sm:h-80 w-full relative">
+      <ngx-charts-line-chart
+        [results]="lineChartData()"
+        [xAxis]="true"
+        [yAxis]="true"
+        [legend]="false"
+        [scheme]="colorLinea">
+      </ngx-charts-line-chart>
     </div>
-
-    <!-- DONA -->
-    <div class="bg-white p-6 rounded-xl shadow">
-      <h3 class="font-semibold mb-2">Distribución por Categoría</h3>
-      <p class="text-sm text-gray-500 mb-4">
-        Uso de equipos según el área académica.
-      </p>
-      <canvas id="pieChart"></canvas>
-    </div>
-
-  </div>
-
-  <!-- LINEA -->
-  <div class="bg-white p-6 rounded-xl shadow">
-    <h3 class="font-semibold mb-2">Tendencia de Uso Mensual</h3>
-    <p class="text-sm text-gray-500 mb-4">
-      Evolución de las solicitudes de préstamo.
-    </p>
-    <canvas id="lineChart"></canvas>
   </div>
 
 </div>
