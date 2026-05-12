@@ -32,26 +32,36 @@ export class Aprobaciones implements OnInit {
   }
 
   cargarDatos() {
-    this.equipoService.getTodasLasSolicitudes().subscribe({
-      next: (data) => {
-        const hoy = new Date();
+      this.equipoService.getTodasLasSolicitudes().subscribe({
+        next: (data) => {
+          const hoy = new Date();
 
-        // 🔵 Pendientes de aprobación (Asegúrate que en Django el default sea 'Pendiente')
-        this.solicitudes.set(data.filter(d => d.estado.toLowerCase() === 'pendiente' || d.estado === 'En curso'));
+          // 🔵 Pendientes de aprobación
+          this.solicitudes.set(data.filter(d =>
+            d.estado.toLowerCase() === 'pendiente' || d.estado.toLowerCase() === 'en curso'
+          ));
 
-        // 🟡 Préstamos activos (Ya entregados al alumno)
-        this.devoluciones.set(data.filter(d => d.estado.toLowerCase() === 'activo' || d.estado === 'Aprobado'));
+          // 🟡 Préstamos activos (Ya entregados al alumno)
+          this.devoluciones.set(data.filter(d =>
+            d.estado.toLowerCase() === 'activo' || d.estado.toLowerCase() === 'aprobado'
+          ));
 
-        // 🔴 Préstamos que ya pasaron su fecha de devolución
-        this.vencidos.set(data.filter(d =>
-          d.estado !== 'Devuelto' && new Date(d.fecha_devolucion_prevista) < hoy
-        ));
-      },
-      error: (err) => {
-        this.notifService.error('No se pudieron cargar las solicitudes del servidor.');
-      }
-    });
-  }
+          // 🔴 Préstamos Vencidos (¡Adiós fantasmas!)
+          this.vencidos.set(data.filter(d => {
+            const estado = d.estado.toLowerCase();
+
+            // Un préstamo solo está vencido si SIGUE en manos del alumno (activo)
+            const sigueActivo = estado === 'activo' || estado === 'aprobado';
+            const yaVencio = new Date(d.fecha_devolucion_prevista) < hoy;
+
+            return sigueActivo && yaVencio;
+          }));
+        },
+        error: (err) => {
+          this.notifService.error('No se pudieron cargar las solicitudes del servidor.');
+        }
+      });
+    }
 
   /**
    * Acciónes para que el técnico apruebe la entrega del equipo
