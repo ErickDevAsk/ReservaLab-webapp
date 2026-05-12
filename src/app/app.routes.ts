@@ -44,7 +44,7 @@ export const routes: Routes = [
     canActivate: [authGuard],
     data: { expectedRole: 'Administrador' },
     children: [
-      { path: 'perfil', component: AdminProfileComponent },
+      { path: 'perfil', component: Perfil },
       { path: 'gestion-usuarios', component: GestionUsuariosComponent },
       { path: 'gestion-equipos', component: AdminGestionEquipos },
       { path: 'gestion-labs', component: GestionLabsComponent },

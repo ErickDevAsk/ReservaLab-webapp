@@ -7,7 +7,7 @@ import {
   ActividadTecnico,
 } from '../../../core/services/tecnico';
 import { NotificationService } from '../../../core/services/notification';
-
+import { AuthService } from '../../../core/services/auth';
 // Tabs disponibles en la vista de perfil
 type TabActivo = 'info' | 'historial';
 
@@ -20,26 +20,34 @@ type TabActivo = 'info' | 'historial';
 })
 export class Perfil implements OnInit {
 
-  //  Servicios 
+  //  Servicios
   private readonly tecnicoService = inject(TecnicoService);
   private readonly notifService   = inject(NotificationService);
+  private readonly authService    = inject(AuthService);
 
-  //  Estado del perfil 
+  //  Estado del perfil
   perfil         = signal<PerfilTecnico | null>(null);
   actividad      = signal<ActividadTecnico[]>([]);
   cargandoPerfil = this.tecnicoService.loading;
   errorPerfil    = this.tecnicoService.error;
 
-  //  Estado de la UI 
+  //  Estado de la UI
   tabActivo        = signal<TabActivo>('info');
   guardando        = signal<boolean>(false);
   cargandoHistorial = signal<boolean>(false);
   modoEdicion      = signal<boolean>(false);
 
-  //  Formulario de edición (copia del perfil) 
+  //  Formulario de edición (copia del perfil)
   formData = signal<Partial<PerfilTecnico>>({});
 
-  //  Computeds 
+  //  Computeds
+  /** Cargar el rol */
+  etiquetaRol = computed(() => {
+    const rol = this.perfil()?.rol?.toLowerCase();
+    if (rol === 'administrador') return 'Administrador del Sistema';
+    if (rol === 'tecnico') return 'Personal Técnico';
+    return 'Staff ReservaLab';
+  });
 
   /** Iniciales del nombre para el avatar */
   inicialesAvatar = computed(() => {
@@ -73,17 +81,17 @@ export class Perfil implements OnInit {
     ).length
   );
 
-  //  Lifecycle 
+  //  Lifecycle
 
   ngOnInit(): void {
     this.cargarPerfil();
     this.cargarHistorial();
   }
 
-  //  Carga de datos 
+  //  Carga de datos
 
   cargarPerfil(): void {
-    this.tecnicoService.getMiPerfil().subscribe({
+    this.authService.obtenerPerfil().subscribe({
       next: (datos) => {
         this.perfil.set(datos);
         // Inicializamos el formulario con los datos actuales
@@ -111,7 +119,7 @@ export class Perfil implements OnInit {
     });
   }
 
-  //  Control de tabs 
+  //  Control de tabs
 
   cambiarTab(tab: TabActivo): void {
     this.tabActivo.set(tab);
@@ -121,7 +129,7 @@ export class Perfil implements OnInit {
     }
   }
 
-  //  Control de edición 
+  //  Control de edición
 
   activarEdicion(): void {
     // Recargamos el formulario con los datos actuales antes de editar
@@ -138,32 +146,38 @@ export class Perfil implements OnInit {
   guardarCambios(): void {
     const datos = this.formData();
 
-    // Validaciones básicas del lado del cliente
     if (!datos.first_name?.trim() || !datos.last_name?.trim()) {
       this.notifService.advertencia('El nombre y apellido son obligatorios.');
       return;
     }
 
     if (!datos.email?.includes('@')) {
-      this.notifService.advertencia(
-        'Por favor ingresa un correo electrónico válido.'
-      );
+      this.notifService.advertencia('Por favor ingresa un correo electrónico válido.');
       return;
     }
 
     this.guardando.set(true);
 
-    // Simulamos el PATCH al backend mientras el endpoint esté listo
-    // En producción: this.tecnicoService.actualizarPerfil(datos).subscribe(...)
-    setTimeout(() => {
-      this.perfil.update((p) => (p ? { ...p, ...datos } : p));
-      this.modoEdicion.set(false);
-      this.guardando.set(false);
-      this.notifService.exito('Perfil actualizado correctamente.');
-    }, 800);
+    // Petición real al backend
+    this.authService.actualizarPerfil(datos).subscribe({
+      next: (perfilActualizado: any) => {
+        this.perfil.set(perfilActualizado);
+        this.modoEdicion.set(false);
+        this.guardando.set(false);
+        this.notifService.exito('Perfil actualizado correctamente.');
+
+        // Opcional: Si el usuario cambió su nombre, actualizamos el token/localStorage
+        // para que el Sidebar se actualice automáticamente.
+      },
+      error: (err: any) => {
+        this.guardando.set(false);
+        this.notifService.error('Ocurrió un error al actualizar el perfil.');
+        console.error(err);
+      }
+    });
   }
 
-  //  Helpers del historial 
+  //  Helpers del historial
 
   /** Retorna la clase CSS del ícono según el tipo de actividad */
   getIconoClase(tipo: ActividadTecnico['tipo']): string {
