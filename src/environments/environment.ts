@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'hhttps://reservalab-api.onrender.com/api',
+  apiUrl: 'https://reservalab-api.onrender.com/api',
 };
