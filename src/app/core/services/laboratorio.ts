@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../environments/environment.prod';
 
 // NUEVO: Le creamos la interfaz que el código de tu compañero está buscando
 export interface Laboratorio {
