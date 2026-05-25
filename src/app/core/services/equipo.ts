@@ -1,6 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, Observable, throwError, finalize } from 'rxjs';
+import { environment } from '../../../environments/environment.development';
 
 // Interfaces de Datos
 export interface Equipo {
@@ -24,8 +25,8 @@ export class EquipoService {
   private readonly http = inject(HttpClient);
 
   // URLs de la API (Asegúrate de que coincidan con tus urls.py de Django)
-  private readonly API_EQUIPOS = 'http://localhost:8000/api/equipos/';
-  private readonly API_LOANS = 'http://localhost:8000/api/loans/';
+  private readonly API_EQUIPOS = `${environment.apiUrl}equipos/`;
+  private readonly API_LOANS = `${environment.apiUrl}loans/`;
 
   // Signals de estado
   public loading = signal<boolean>(false);

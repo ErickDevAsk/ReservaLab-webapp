@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ export class AdminTecnicosService {
   private readonly http = inject(HttpClient);
 
   // Asegúrate de que esta URL coincida con tu ruta en urls.py de Django
-  private readonly API_URL = 'http://localhost:8000/api/accounts/tecnicos/';
+  private readonly API_URL = `${environment.apiUrl}accounts/tecnicos/`;
 
   // Obtener la lista de técnicos desde el ViewSet de Django
   obtenerStaff(): Observable<any[]> {

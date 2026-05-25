@@ -1,6 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, finalize, of } from 'rxjs';
+import { environment } from '../../../environments/environment.development';
 
 // Interfaz que modela la actividad reciente del técnico
 export interface ActividadTecnico {
@@ -29,7 +30,7 @@ export interface PerfilTecnico {
 })
 export class TecnicoService {
   private readonly http = inject(HttpClient);
-  private readonly API_URL = 'http://localhost:8000/api/accounts';
+  private readonly API_URL = `${environment.apiUrl}accounts`;
 
   // Signals de estado
   public loading = signal<boolean>(false);

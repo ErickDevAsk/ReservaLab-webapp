@@ -2,6 +2,7 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, finalize, of, tap } from 'rxjs';
+import { environment } from '../../../environments/environment.development';
 
 // Interfaces de payload
 
@@ -37,7 +38,7 @@ export class ReservaService {
   private readonly http = inject(HttpClient);
 
   // URL base con slash final para evitar redirección 301 de Django
-  private readonly API_URL = 'http://localhost:8000/api/reservas';
+  private readonly API_URL = `${environment.apiUrl}reservas/`;
 
   //     Signals de estado público
   public loading  = signal<boolean>(false);

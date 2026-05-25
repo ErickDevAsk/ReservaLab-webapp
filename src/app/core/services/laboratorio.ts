@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
+import { environment } from '../../../environments/environment';
 
 // NUEVO: Le creamos la interfaz que el código de tu compañero está buscando
 export interface Laboratorio {
@@ -18,7 +19,7 @@ export interface Laboratorio {
 })
 export class LaboratorioService {
   private readonly http = inject(HttpClient);
-  private readonly API_URL = 'http://localhost:8000/labs/laboratorios/';
+  private readonly API_URL = `${environment.apiUrl}labs/laboratorios/`;
 
   // Tu método original intacto (para que tu modal siga funcionando)
   obtenerLaboratorios() {

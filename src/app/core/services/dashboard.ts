@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment.development';
 
 // Interfaz para los datos del Admin
 export interface AdminDashboardData {
@@ -29,9 +30,9 @@ export interface TecnicoDashboardData {
 })
 export class DashboardService {
   // Separamos las URLs para tener ambas a la mano
-  private adminUrl = 'http://localhost:8000/api/dashboard/admin/';
-  private tecnicoUrl = 'http://localhost:8000/api/dashboard/tecnico/';
-  private reportesUrl = 'http://localhost:8000/api/dashboard/tecnico/reportes/';
+  private adminUrl = `${environment.apiUrl}dashboard/admin/`;
+  private tecnicoUrl = `${environment.apiUrl}dashboard/tecnico/`;
+  private reportesUrl = `${environment.apiUrl}dashboard/tecnico/reportes/`;
 
   constructor(private http: HttpClient) {}
 

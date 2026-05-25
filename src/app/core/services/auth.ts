@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router'; //Agregamos el router para redirigir al salir
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -10,8 +11,8 @@ export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router); // Inyectamos el router
 
-  private apiAccountsUrl = 'http://127.0.0.1:8000/api/accounts';
-  private apiTokenUrl = 'http://127.0.0.1:8000/api/token';
+  private apiAccountsUrl = `${environment.apiUrl}accounts`; // Asegúrate de que esta URL coincida con tu urls.py de Django
+  private apiTokenUrl = `${environment.apiUrl}token`; // URL para obtener el token JWT
 
   register(userData: any): Observable<any> {
     return this.http.post(`${this.apiAccountsUrl}/register/`, userData);
