@@ -94,7 +94,7 @@ export class ReservaService {
   // ==========================================
   obtenerReservasPorLaboratorio(labId: number) {
     // Esto construirá: http://localhost:8000/api/reservas/laboratorio/1/
-    return this.http.get<any[]>(`${this.API_URL}/laboratorio/${labId}/`).pipe(
+    return this.http.get<any[]>(`${this.API_URL}laboratorio/${labId}/`).pipe(
       catchError((err) => {
         // Aprovechamos tu excelente parseador de errores
         this.error.set(this.parsearErrorDjango(err));
@@ -108,7 +108,7 @@ export class ReservaService {
   obtenerMisReservas() {
     // Esto construirá: http://localhost:8000/api/reservas/mis-reservas/
     // Asegúrate de que esta URL coincida con lo que el backend de Django espere
-    return this.http.get<any>(`${this.API_URL}/mis-reservas/`).pipe(
+    return this.http.get<any>(`${this.API_URL}mis-reservas/`).pipe(
       catchError((err: any) => {
         this.error.set(this.parsearErrorDjango(err));
         return of([]);
