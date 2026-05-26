@@ -56,7 +56,7 @@ export class ReservaService {
     this.ultimaReservaId.set(null);
 
     return this.http
-      .post<ReservaResponse>(`${this.API_URL}/crear/`, datos)
+      .post<ReservaResponse>(`${this.API_URL}crear/`, datos)
       .pipe(
         tap((respuesta) => {
           this.success.set(true);
@@ -84,7 +84,7 @@ export class ReservaService {
 
   // Consulta disponibilidad de un laboratorio en una fecha específica.
   consultarDisponibilidad(lab: string, fecha: string) {
-    return this.http.get<any>(`${this.API_URL}/disponibilidad/`, {
+    return this.http.get<any>(`${this.API_URL}disponibilidad/`, {
       params: { lab, fecha },
     });
   }

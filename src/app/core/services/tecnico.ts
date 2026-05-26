@@ -44,7 +44,7 @@ export class TecnicoService {
     this.loading.set(true);
     this.error.set(null);
 
-    return this.http.get<PerfilTecnico>(`${this.API_URL}/me/`).pipe(
+    return this.http.get<PerfilTecnico>(`${this.API_URL}me/`).pipe(
       catchError((err) => {
         const mensaje =
           err.status === 401
@@ -62,7 +62,7 @@ export class TecnicoService {
    //Obtiene el historial de actividades recientes del técnico.
   getActividadReciente() {
     return this.http
-      .get<ActividadTecnico[]>(`${this.API_URL}/actividad/`)
+      .get<ActividadTecnico[]>(`${this.API_URL}actividad/`)
       .pipe(catchError(() => of(this.getMockActividad())));
   }
 
