@@ -64,4 +64,12 @@ export class LoginComponent {
       }
     });
   }
+  abrirMensajeSoporte() {
+
+  alert(
+    "Recuperación de Credenciales - ReservaLab\n\n" +
+    "Por políticas de seguridad de la institución, el restablecimiento de contraseñas debe ser gestionado directamente por el Administrador del Sistema o el área de Soporte Técnico de TI.\n\n" +
+    "Por favor, acude al laboratorio o envía un correo a: soporte.reservalab@buap.mx"
+  );
+}
 }
